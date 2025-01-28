@@ -1,0 +1,295 @@
+{
+	"info": {
+		"_postman_id": "414a24ec-a41c-4b46-a9d6-d5d30465ec97",
+		"name": "dvd_rental",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7375862"
+	},
+	"item": [
+		{
+			"name": "actors",
+			"item": [
+				{
+					"name": "GET /ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {",
+									"    pm.expect(pm.response.code).to.be.equal(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/ping",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /actor",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"let firstName = generateRandomString(6)",
+									"let lastName = generateRandomString(8)",
+									"pm.globals.set(\"firstName\", firstName);",
+									"pm.globals.set(\"lastName\", lastName);",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"actor_id\");",
+									"    pm.expect(pm.response.json().data.actor_id).to.exist;",
+									"    pm.globals.set(\"actorId\", pm.response.json().data.actor_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"{{firstName}}\",\n    \"last_name\": \"{{lastName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/actor",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"actor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/actor?page=1&limit=10",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"actor"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /actor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/actor/{{actorId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"actor",
+								"{{actorId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /actor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"let updatedFirstName = generateRandomString(6)",
+									"let updatedLastName = generateRandomString(8)",
+									"pm.globals.set(\"updatedFirstName\", updatedFirstName);",
+									"pm.globals.set(\"updatedLastName\", updatedLastName);",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"{{updatedFirstName}}\",\n    \"last_name\": \"{{updatedLastName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/actor/{{actorId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"actor",
+								"{{actorId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

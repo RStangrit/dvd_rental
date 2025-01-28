@@ -10,6 +10,7 @@ func (newActor *Actor) createActor() error {
 	if result.Error != nil {
 		return result.Error
 	}
+
 	return nil
 }
 
@@ -48,6 +49,15 @@ func readOneActor(actorId int64) (*Actor, error) {
 
 func (actor Actor) updateoneActor() error {
 	result := db.GORM.Table("actor").Omit("id").Updates(actor)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func (actor Actor) deleteOneActor() error {
+	result := db.GORM.Delete(actor)
 	if result.Error != nil {
 		return result.Error
 	}

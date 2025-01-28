@@ -7,5 +7,5 @@ func RegisterRoutes(server *gin.Engine) {
 	server.GET("/actor", getActorsHandler)
 	server.GET("/actor/:id", getActorHandler)
 	server.PUT("/actor/:id", putActorHandler)
-	server.DELETE("/actor/:id")
+	server.DELETE("/actor/:id", deleteActorHandler)
 }

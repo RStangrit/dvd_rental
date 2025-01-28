@@ -1,7 +1,6 @@
 package actor
 
 import (
-	"fmt"
 	"main/pkg/db"
 	"main/pkg/utils"
 	"net/http"
@@ -68,7 +67,6 @@ func putActorHandler(context *gin.Context) {
 		return
 	}
 
-	fmt.Println(actorId)
 	actor, err := readOneActor(actorId)
 
 	if err != nil {
@@ -94,5 +92,22 @@ func putActorHandler(context *gin.Context) {
 }
 
 func deleteActorHandler(context *gin.Context) {
+	actorId, err := utils.GetIntParam(context, "id")
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid actor ID format"})
+		return
+	}
 
+	actor, err := readOneActor(actorId)
+	if err != nil {
+		context.JSON(http.StatusNotFound, gin.H{"error": "Actor not found"})
+		return
+	}
+
+	err = actor.deleteOneActor()
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete actor"})
+	}
+
+	context.JSON(http.StatusOK, gin.H{"deleted": actor})
 }
