@@ -10,18 +10,19 @@ import (
 
 func postActorHandler(context *gin.Context) {
 	var newActor Actor
+	var err error
 
-	if err := context.ShouldBindJSON(&newActor); err != nil {
+	if err = context.ShouldBindJSON(&newActor); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := validateActorData(&newActor); err != nil {
+	if err = newActor.Validate(); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := newActor.createActor(); err != nil {
+	if err = newActor.createActor(); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -31,7 +32,9 @@ func postActorHandler(context *gin.Context) {
 
 func getActorsHandler(context *gin.Context) {
 	var pagination db.Pagination
-	if err := context.ShouldBindQuery(&pagination); err != nil {
+	var err error
+
+	if err = context.ShouldBindQuery(&pagination); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid pagination parameters"})
 		return
 	}

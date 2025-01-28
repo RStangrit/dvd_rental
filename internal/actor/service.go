@@ -2,8 +2,8 @@ package actor
 
 import "errors"
 
-func validateActorData(actor *Actor) error {
-	if actor.FirstName == "" || actor.LastName == "" {
+func (a *Actor) Validate() error {
+	if a.FirstName == "" || a.LastName == "" {
 		return errors.New("first name and last name are required")
 	}
 	return nil

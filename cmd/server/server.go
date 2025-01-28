@@ -2,6 +2,7 @@ package server
 
 import (
 	"main/internal/actor"
+	"main/internal/film"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -16,5 +17,6 @@ func InitServer() {
 		})
 	})
 	actor.RegisterRoutes(server)
+	film.RegisterRoutes(server)
 	server.Run()
 }
