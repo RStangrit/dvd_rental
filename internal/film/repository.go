@@ -45,3 +45,21 @@ func readOneFilm(filmId int64) (*Film, error) {
 
 	return &film, nil
 }
+
+func (film Film) updateOneFilm() error {
+	result := db.GORM.Table("film").Omit("id").Updates(film)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func (film Film) deleteOneFilm() error {
+	result := db.GORM.Delete(film)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}

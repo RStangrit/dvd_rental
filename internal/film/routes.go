@@ -8,6 +8,6 @@ func RegisterRoutes(server *gin.Engine) {
 	server.POST("/film", postFilmHandler)
 	server.GET("/films", getFilmshandler)
 	server.GET("/film/:id", getFilmHandler)
-	server.PUT("/film/:id")
-	server.DELETE("/film/:id")
+	server.PUT("/film/:id", putFilmHandler)
+	server.DELETE("/film/:id", deleteFilmHandler)
 }

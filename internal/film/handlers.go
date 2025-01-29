@@ -59,7 +59,66 @@ func getFilmHandler(context *gin.Context) {
 	film, err := readOneFilm(filmId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{"data": film})
+}
+
+func putFilmHandler(context *gin.Context) {
+	filmId, err := utils.GetIntParam(context, "id")
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film ID format"})
+		return
+	}
+
+	film, err := readOneFilm(filmId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var updatedFilm Film
+	err = context.ShouldBindJSON(&updatedFilm)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film data format"})
+		return
+	}
+
+	if err = updatedFilm.Validate(); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updatedFilm.FilmID = int(film.FilmID)
+
+	err = updatedFilm.updateOneFilm()
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update film"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": updatedFilm})
+}
+
+func deleteFilmHandler(context *gin.Context) {
+	filmId, err := utils.GetIntParam(context, "id")
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film ID format"})
+		return
+	}
+
+	film, err := readOneFilm(filmId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = film.deleteOneFilm()
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete film"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"deleted": film})
 }

@@ -42,6 +42,7 @@ func getActorsHandler(context *gin.Context) {
 	actors, totalRecords, err := readAllActors(pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{"data": actors, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
@@ -72,7 +73,7 @@ func putActorHandler(context *gin.Context) {
 
 	actor, err := readOneActor(actorId)
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"error": "Actor not found"})
+		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -80,6 +81,7 @@ func putActorHandler(context *gin.Context) {
 	err = context.ShouldBindJSON(&updatedActor)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid actor data format"})
+		return
 	}
 
 	updatedActor.ActorID = int(actor.ActorID)
@@ -109,6 +111,7 @@ func deleteActorHandler(context *gin.Context) {
 	err = actor.deleteOneActor()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete actor"})
+		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{"deleted": actor})
