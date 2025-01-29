@@ -20,7 +20,7 @@ func InitDb() error {
 
 	GORM, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return err
+		panic(err)
 	}
 	fmt.Println("connection to the database has been successfully established")
 	return nil
