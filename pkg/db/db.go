@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"main/config"
 	"main/internal/models"
+	"main/internal/seeds"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -24,7 +25,30 @@ func InitDb() error {
 		panic(err)
 	}
 	fmt.Println("connection to the database has been successfully established")
-	GORM.AutoMigrate(&models.Actor{}, &models.Film{})
+
+	err = createTables()
+	if err != nil {
+		panic(err)
+	}
+
+	err = seedData(seeds.ReturnLangSeeds())
+	if err != nil {
+		panic(err)
+	}
+
+	return nil
+}
+
+func createTables() error {
+	err := GORM.AutoMigrate(&models.Language{}, &models.Actor{}, &models.Film{})
+	return err
+}
+
+func seedData(languages []models.Language) error {
+	if err := GORM.Create(&languages).Error; err != nil {
+		return err
+	}
+
 	return nil
 }
 
