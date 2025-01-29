@@ -6,7 +6,7 @@ import (
 
 func RegisterRoutes(server *gin.Engine) {
 	server.POST("/film", postFilmHandler)
-	server.GET("/films")
+	server.GET("/films", getFilmshandler)
 	server.GET("/film/:id")
 	server.PUT("/film/:id")
 	server.DELETE("/film/:id")
