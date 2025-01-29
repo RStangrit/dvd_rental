@@ -1,6 +1,9 @@
-package film
+package handlers
 
 import (
+	"main/internal/models"
+	"main/internal/repositories"
+	"main/internal/services"
 	"main/pkg/db"
 	"main/pkg/utils"
 	"net/http"
@@ -8,8 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func postFilmHandler(context *gin.Context) {
-	var newFilm Film
+func PostFilmHandler(context *gin.Context) {
+	var newFilm models.Film
 	var err error
 
 	if err = context.ShouldBindJSON(&newFilm); err != nil {
@@ -17,12 +20,12 @@ func postFilmHandler(context *gin.Context) {
 		return
 	}
 
-	if err = newFilm.Validate(); err != nil {
+	if err = services.ValidateFilm(&newFilm); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err = newFilm.createFilm(); err != nil {
+	if err = repositories.CreateFilm(&newFilm); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 
@@ -31,7 +34,7 @@ func postFilmHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newFilm})
 }
 
-func getFilmshandler(context *gin.Context) {
+func GetFilmshandler(context *gin.Context) {
 	var pagination db.Pagination
 	var err error
 
@@ -40,7 +43,7 @@ func getFilmshandler(context *gin.Context) {
 		return
 	}
 
-	films, totalRecords, err := readAllFilms(pagination)
+	films, totalRecords, err := repositories.ReadAllFilms(pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -49,14 +52,14 @@ func getFilmshandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": films, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
-func getFilmHandler(context *gin.Context) {
+func GetFilmHandler(context *gin.Context) {
 	filmId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film ID format"})
 		return
 	}
 
-	film, err := readOneFilm(filmId)
+	film, err := repositories.ReadOneFilm(filmId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -65,34 +68,34 @@ func getFilmHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": film})
 }
 
-func putFilmHandler(context *gin.Context) {
+func PutFilmHandler(context *gin.Context) {
 	filmId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film ID format"})
 		return
 	}
 
-	film, err := readOneFilm(filmId)
+	film, err := repositories.ReadOneFilm(filmId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	var updatedFilm Film
+	var updatedFilm models.Film
 	err = context.ShouldBindJSON(&updatedFilm)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film data format"})
 		return
 	}
 
-	if err = updatedFilm.Validate(); err != nil {
+	if err = services.ValidateFilm(&updatedFilm); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	updatedFilm.FilmID = int(film.FilmID)
 
-	err = updatedFilm.updateOneFilm()
+	err = repositories.UpdateOneFilm(updatedFilm)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update film"})
 		return
@@ -101,20 +104,20 @@ func putFilmHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": updatedFilm})
 }
 
-func deleteFilmHandler(context *gin.Context) {
+func DeleteFilmHandler(context *gin.Context) {
 	filmId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film ID format"})
 		return
 	}
 
-	film, err := readOneFilm(filmId)
+	film, err := repositories.ReadOneFilm(filmId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = film.deleteOneFilm()
+	err = repositories.DeleteOneFilm(*film)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete film"})
 		return

@@ -1,4 +1,4 @@
-package film
+package models
 
 import (
 	"time"

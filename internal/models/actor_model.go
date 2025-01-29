@@ -1,4 +1,4 @@
-package actor
+package models
 
 type Actor struct {
 	ActorID   int    `json:"actor_id" gorm:"primaryKey;autoIncrement"`

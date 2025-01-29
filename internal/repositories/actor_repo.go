@@ -1,11 +1,12 @@
-package actor
+package repositories
 
 import (
 	"errors"
+	"main/internal/models"
 	"main/pkg/db"
 )
 
-func (newActor *Actor) createActor() error {
+func CreateActor(newActor *models.Actor) error {
 	result := db.GORM.Table("actor").Create(&newActor)
 	if result.Error != nil {
 		return result.Error
@@ -14,8 +15,8 @@ func (newActor *Actor) createActor() error {
 	return nil
 }
 
-func readAllActors(pagination db.Pagination) ([]Actor, int64, error) {
-	var actors []Actor
+func ReadAllActors(pagination db.Pagination) ([]models.Actor, int64, error) {
+	var actors []models.Actor
 	var totalRecords int64
 
 	db.GORM.Table("actor").Count(&totalRecords)
@@ -32,8 +33,8 @@ func readAllActors(pagination db.Pagination) ([]Actor, int64, error) {
 	return actors, totalRecords, nil
 }
 
-func readOneActor(actorId int64) (*Actor, error) {
-	var actor Actor
+func ReadOneActor(actorId int64) (*models.Actor, error) {
+	var actor models.Actor
 	result := db.GORM.Table("actor").First(&actor, actorId)
 
 	if result.Error != nil {
@@ -47,7 +48,7 @@ func readOneActor(actorId int64) (*Actor, error) {
 	return &actor, nil
 }
 
-func (actor Actor) updateoneActor() error {
+func UpdateOneActor(actor models.Actor) error {
 	result := db.GORM.Table("actor").Omit("id").Updates(actor)
 	if result.Error != nil {
 		return result.Error
@@ -56,7 +57,7 @@ func (actor Actor) updateoneActor() error {
 	return nil
 }
 
-func (actor Actor) deleteOneActor() error {
+func DeleteOneActor(actor models.Actor) error {
 	result := db.GORM.Delete(actor)
 	if result.Error != nil {
 		return result.Error

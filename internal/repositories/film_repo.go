@@ -1,11 +1,12 @@
-package film
+package repositories
 
 import (
 	"errors"
+	"main/internal/models"
 	"main/pkg/db"
 )
 
-func (newFilm *Film) createFilm() error {
+func CreateFilm(newFilm *models.Film) error {
 	result := db.GORM.Table("film").Create(&newFilm)
 	if result.Error != nil {
 		return result.Error
@@ -14,8 +15,8 @@ func (newFilm *Film) createFilm() error {
 	return nil
 }
 
-func readAllFilms(pagination db.Pagination) ([]Film, int64, error) {
-	var films []Film
+func ReadAllFilms(pagination db.Pagination) ([]models.Film, int64, error) {
+	var films []models.Film
 	var totalRecords int64
 
 	db.GORM.Table("film").Count(&totalRecords)
@@ -32,8 +33,8 @@ func readAllFilms(pagination db.Pagination) ([]Film, int64, error) {
 	return films, totalRecords, nil
 }
 
-func readOneFilm(filmId int64) (*Film, error) {
-	var film Film
+func ReadOneFilm(filmId int64) (*models.Film, error) {
+	var film models.Film
 	result := db.GORM.Table("film").First(&film, filmId)
 	if result.Error != nil {
 		return nil, result.Error
@@ -46,7 +47,7 @@ func readOneFilm(filmId int64) (*Film, error) {
 	return &film, nil
 }
 
-func (film Film) updateOneFilm() error {
+func UpdateOneFilm(film models.Film) error {
 	result := db.GORM.Table("film").Omit("id").Updates(film)
 	if result.Error != nil {
 		return result.Error
@@ -55,7 +56,7 @@ func (film Film) updateOneFilm() error {
 	return nil
 }
 
-func (film Film) deleteOneFilm() error {
+func DeleteOneFilm(film models.Film) error {
 	result := db.GORM.Delete(film)
 	if result.Error != nil {
 		return result.Error

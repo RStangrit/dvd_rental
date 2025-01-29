@@ -1,8 +1,7 @@
 package server
 
 import (
-	"main/internal/actor"
-	"main/internal/film"
+	"main/internal/routes"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -16,7 +15,7 @@ func InitServer() {
 			"message": "pong",
 		})
 	})
-	actor.RegisterRoutes(server)
-	film.RegisterRoutes(server)
+	routes.RegisterActorRoutes(server)
+	routes.RegisterFilmRoutes(server)
 	server.Run()
 }

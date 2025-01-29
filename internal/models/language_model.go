@@ -1,4 +1,4 @@
-package language
+package models
 
 type Language struct {
 	LanguageID int    `json:"language_id" gorm:"primaryKey;autoIncrement"`
