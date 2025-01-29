@@ -31,3 +31,17 @@ func readAllFilms(pagination db.Pagination) ([]Film, int64, error) {
 
 	return films, totalRecords, nil
 }
+
+func readOneFilm(filmId int64) (*Film, error) {
+	var film Film
+	result := db.GORM.Table("film").First(&film, filmId)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return nil, errors.New("film not found")
+	}
+
+	return &film, nil
+}

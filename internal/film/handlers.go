@@ -2,6 +2,7 @@ package film
 
 import (
 	"main/pkg/db"
+	"main/pkg/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -42,7 +43,23 @@ func getFilmshandler(context *gin.Context) {
 	films, totalRecords, err := readAllFilms(pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{"data": films, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
+}
+
+func getFilmHandler(context *gin.Context) {
+	filmId, err := utils.GetIntParam(context, "id")
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film ID format"})
+		return
+	}
+
+	film, err := readOneFilm(filmId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": film})
 }

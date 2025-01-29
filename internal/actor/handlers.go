@@ -56,7 +56,7 @@ func getActorHandler(context *gin.Context) {
 
 	actor, err := readOneActor(actorId)
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"error": "Actor not found"})
+		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -71,7 +71,6 @@ func putActorHandler(context *gin.Context) {
 	}
 
 	actor, err := readOneActor(actorId)
-
 	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"error": "Actor not found"})
 		return
