@@ -28,5 +28,7 @@ func InitServer() {
 	routes.RegisterCustomerRoutes(server)
 	routes.RegisterStaffRoutes(server)
 	routes.RegisterStoreRoutes(server)
+	routes.RegisterRentalRoutes(server)
+	routes.RegisterPaymentRoutes(server)
 	server.Run()
 }

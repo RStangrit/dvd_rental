@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Payment struct {
-	PaymentID   int16     `json:"payment_id" gorm:"type:integer;primaryKey;autoIncrement"`
+	PaymentID   int       `json:"payment_id" gorm:"type:integer;primaryKey;autoIncrement"`
 	CustomerID  int16     `json:"customer_id" gorm:"type:int2;not null;foreignKey:CustomerID"`
 	StaffID     int16     `json:"staff_id" gorm:"type:int2;not null;foreignKey:StaffID"`
 	RentalID    int32     `json:"rental_id" gorm:"type:int4;not null;foreignKey:RentalID"`
