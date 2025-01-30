@@ -16,6 +16,7 @@ type Staff struct {
 	Picture    []byte    `json:"picture" gorm:"type:bytea;not null"`
 	Rentals    []Rental  `json:"-" gorm:"foreignKey:StaffID"`
 	Payments   []Payment `json:"-" gorm:"foreignKey:StaffID"`
+	Stores     Store     `json:"-" gorm:"foreignKey:StaffID"`
 }
 
 func (Staff) TableName() string {
