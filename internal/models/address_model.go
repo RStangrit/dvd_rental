@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Address struct {
-	AddressID  int16     `json:"address_id" gorm:"type:serial4;primaryKey;autoIncrement"`
+	AddressID  int16     `json:"address_id" gorm:"type:integer;primaryKey;autoIncrement"`
 	Address    string    `json:"address" gorm:"type:varchar(50);not null"`
 	Address2   string    `json:"address2" gorm:"type:varchar(50)"`
 	District   string    `json:"district" gorm:"type:varchar(20);not null"`
