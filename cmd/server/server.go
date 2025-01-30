@@ -15,6 +15,7 @@ func InitServer() {
 			"message": "pong",
 		})
 	})
+	routes.RegisterLanguageRoutes(server)
 	routes.RegisterActorRoutes(server)
 	routes.RegisterFilmRoutes(server)
 	server.Run()
