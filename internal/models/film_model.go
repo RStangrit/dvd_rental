@@ -20,6 +20,9 @@ type Film struct {
 	LastUpdate      time.Time      `json:"last_update" gorm:"type:timestamp;not null;autoUpdateTime"`
 	SpecialFeatures pq.StringArray `json:"special_features" gorm:"type:text[]"`
 	Fulltext        string         `json:"fulltext" gorm:"type:tsvector"`
+	FilmsActor      []FilmActor    `json:"-" gorm:"foreignKey:FilmID"`
+	FilmsCategories []FilmCategory `json:"-" gorm:"foreignKey:FilmID"`
+	FilmsInventory  []Inventory    `json:"-" gorm:"foreignKey:FilmID"`
 }
 
 func (Film) TableName() string {

@@ -40,7 +40,17 @@ func InitDb() error {
 }
 
 func createTables() error {
-	err := GORM.AutoMigrate(&models.Language{}, &models.Actor{}, &models.Film{})
+	err := GORM.AutoMigrate(
+		&models.Language{},
+		&models.Actor{},
+		&models.Film{},
+		&models.Category{},
+		&models.FilmActor{},
+		&models.Inventory{},
+		&models.FilmCategory{},
+		&models.Country{},
+	)
+
 	return err
 }
 
