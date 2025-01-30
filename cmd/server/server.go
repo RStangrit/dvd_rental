@@ -24,5 +24,7 @@ func InitServer() {
 	routes.RegisterFilmCategoryRoutes(server)
 	routes.RegisterCountryRoutes(server)
 	routes.RegisterCityRoutes(server)
+	routes.RegisterAddressRoutes(server)
+	routes.RegisterCustomerRoutes(server)
 	server.Run()
 }
