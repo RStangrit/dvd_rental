@@ -1,8 +1,11 @@
-package actor
+package services
 
-import "errors"
+import (
+	"errors"
+	"main/internal/models"
+)
 
-func validateActorData(actor *Actor) error {
+func ValidateActor(actor models.Actor) error {
 	if actor.FirstName == "" || actor.LastName == "" {
 		return errors.New("first name and last name are required")
 	}

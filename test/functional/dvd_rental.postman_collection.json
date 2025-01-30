@@ -1,0 +1,1126 @@
+{
+	"info": {
+		"_postman_id": "414a24ec-a41c-4b46-a9d6-d5d30465ec97",
+		"name": "dvd_rental",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7375862"
+	},
+	"item": [
+		{
+			"name": "languages",
+			"item": [
+				{
+					"name": "GET /ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {",
+									"    pm.expect(pm.response.code).to.be.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains the message 'pong'\", function () {",
+									"    pm.expect(pm.response.json().message).to.equal('pong');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/ping",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /language",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"language_id\");",
+									"    pm.expect(pm.response.json().data.language_id).to.exist;",
+									"    pm.globals.set(\"languageId\", pm.response.json().data.language_id);",
+									"});",
+									"// Test to check if the response contains the fields actor_id, first_name, and last_name with the correct data types",
+									"pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"",
+									"    pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('name').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"let languageName = generateRandomString(6)",
+									"pm.globals.set(\"languageName\", languageName);",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{languageName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/language",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"language"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is an array containing objects with language_id, name, and last_update\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
+									"    responseData.forEach((language) => {",
+									"    pm.expect(language).to.have.property('language_id').that.is.a('number');",
+									"    pm.expect(language).to.have.property('name').that.is.a('string');",
+									"    pm.expect(language).to.have.property('last_update').that.is.a('string');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/languages?page=1&limit=10",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"languages"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /language/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"language_id\");",
+									"    pm.expect(pm.response.json().data.language_id).to.exist;",
+									"    pm.globals.set(\"languageId\", pm.response.json().data.language_id);",
+									"});",
+									"// Test to check if the response contains the fields actor_id, first_name, and last_name with the correct data types",
+									"pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"",
+									"    pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('name').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/language/{{languageId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"language",
+								"{{languageId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /language/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"let updatedLanguageName = generateRandomString(6)",
+									"pm.globals.set(\"updatedLanguageName\", updatedLanguageName);",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"language_id\");",
+									"    pm.expect(pm.response.json().data.language_id).to.exist;",
+									"    pm.globals.set(\"languageId\", pm.response.json().data.language_id);",
+									"});",
+									"// Test to check if the response contains the fields actor_id, first_name, and last_name with the correct data types",
+									"pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"",
+									"    pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('name').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{updatedLanguageName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/language/{{languageId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"language",
+								"{{languageId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /language/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"language_id\");",
+									"    pm.expect(pm.response.json().deleted.language_id).to.exist;",
+									"    pm.globals.set(\"languageId\", pm.response.json().deleted.language_id);",
+									"});",
+									"",
+									"pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
+									"    var responseData = pm.response.json().deleted;",
+									"",
+									"    pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('name').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/language/{{languageId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"language",
+								"{{languageId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "actors",
+			"item": [
+				{
+					"name": "GET /ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {",
+									"    pm.expect(pm.response.code).to.be.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains the message 'pong'\", function () {",
+									"    pm.expect(pm.response.json().message).to.equal('pong');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/ping",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /actor",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"let firstName = generateRandomString(6)",
+									"let lastName = generateRandomString(8)",
+									"pm.globals.set(\"firstName\", firstName);",
+									"pm.globals.set(\"lastName\", lastName);",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"actor_id\");",
+									"    pm.expect(pm.response.json().data.actor_id).to.exist;",
+									"    pm.globals.set(\"actorId\", pm.response.json().data.actor_id);",
+									"});",
+									"// Test to check if the response contains the fields actor_id, first_name, and last_name with the correct data types",
+									"pm.test(\"Response contains the fields actor_id, first_name, and last_name with correct data types\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"",
+									"    pm.expect(responseData).to.have.property('actor_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('first_name').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_name').that.is.a('string');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"{{firstName}}\",\n    \"last_name\": \"{{lastName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/actor",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"actor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is an array containing objects with actor_id, first_name, and last_name\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
+									"    responseData.forEach((actor) => {",
+									"        pm.expect(actor).to.have.property('actor_id');",
+									"        pm.expect(actor).to.have.property('first_name');",
+									"        pm.expect(actor).to.have.property('last_name');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/actors?page=1&limit=10",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"actors"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /actor/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains the fields actor_id, first_name, and last_name with correct data types\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"",
+									"    pm.expect(responseData).to.have.property('actor_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('first_name').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_name').that.is.a('string');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/actor/{{actorId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"actor",
+								"{{actorId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /actor/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains the fields actor_id, first_name, and last_name with correct data types\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"",
+									"    pm.expect(responseData).to.have.property('actor_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('first_name').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_name').that.is.a('string');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"let updatedFirstName = generateRandomString(6)",
+									"let updatedLastName = generateRandomString(8)",
+									"pm.globals.set(\"updatedFirstName\", updatedFirstName);",
+									"pm.globals.set(\"updatedLastName\", updatedLastName);",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"{{updatedFirstName}}\",\n    \"last_name\": \"{{updatedLastName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/actor/{{actorId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"actor",
+								"{{actorId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /actor/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has correct body\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.deleted.actor_id).to.be.a(\"number\");",
+									"    pm.expect(jsonData.deleted.first_name).to.be.a(\"string\");",
+									"    pm.expect(jsonData.deleted.last_name).to.be.a(\"string\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/actor/{{actorId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"actor",
+								"{{actorId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "films",
+			"item": [
+				{
+					"name": "GET /ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {",
+									"    pm.expect(pm.response.code).to.be.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains the message 'pong'\", function () {",
+									"    pm.expect(pm.response.json().message).to.equal('pong');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/ping",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /film",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomFilm() {",
+									"    const ratings = [\"G\", \"PG\", \"PG-13\", \"R\", \"NC-17\"];",
+									"    const specialFeaturesList = [\"Trailers\", \"Deleted Scenes\", \"Behind the Scenes\", \"Commentaries\"];",
+									"    ",
+									"    return {",
+									"        title: `Title ${Math.floor(Math.random() * 1000)}`,",
+									"        description: `Description ${Math.random().toString(36).substring(7)}`,",
+									"        release_year: Math.floor(Math.random() * (2025 - 1900 + 1)) + 1901,",
+									"        language_id: Math.floor(Math.random() * 6) + 1,",
+									"        rental_duration: Math.floor(Math.random() * 30) + 1,",
+									"        rental_rate: parseFloat((Math.random() * (10 - 1) + 1).toFixed(2)),",
+									"        length: Math.floor(Math.random() * (240 - 60 + 1)) + 60,",
+									"        replacement_cost: parseFloat((Math.random() * (20 - 1) + 1).toFixed(2)),",
+									"        rating: ratings[Math.floor(Math.random() * ratings.length)],",
+									"        special_features: Array.from({ length: Math.floor(Math.random() * specialFeaturesList.length) + 1 }, () =>",
+									"            specialFeaturesList[Math.floor(Math.random() * specialFeaturesList.length)]",
+									"        ),",
+									"        fulltext: `Lorem ipsum ${Math.random().toString(36).substring(7)}`,",
+									"    };",
+									"}",
+									"",
+									"filmObject = generateRandomFilm()",
+									"pm.globals.set(\"filmObject\", JSON.stringify(filmObject));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"var responseJSON = pm.response.json();",
+									"",
+									"// Test the response body structure and values",
+									"pm.test(\"Response body structure is valid\", function () {",
+									"    pm.expect(responseJSON).to.be.an('object').that.has.property('data');",
+									"});",
+									"",
+									"// checking that each film object has the required properties",
+									"pm.test(\"Film object structure is valid\", function () {",
+									"    pm.expect(responseJSON.data).has.property('film_id').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('title').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('description').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('release_year').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('language_id').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('rental_duration').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('rental_rate').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('length').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('replacement_cost').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('rating').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('last_update').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('special_features').that.is.an('array');",
+									"    pm.expect(responseJSON.data).has.property('fulltext').that.is.a('string');",
+									"    pm.globals.set(\"filmId\", pm.response.json().data.film_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{filmObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/film",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"film"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /films",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response should be valid and contain required fields\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('data').that.is.an('array');",
+									"    jsonData.data.forEach(film => {",
+									"        pm.expect(film).to.have.property('film_id').that.is.a('number');",
+									"        pm.expect(film).to.have.property('title').that.is.a('string');",
+									"        pm.expect(film).to.have.property('description').that.is.a('string');",
+									"        pm.expect(film).to.have.property('release_year').that.is.a('number');",
+									"        pm.expect(film).to.have.property('language_id').that.is.a('number');",
+									"        pm.expect(film).to.have.property('rental_duration').that.is.a('number');",
+									"        pm.expect(film).to.have.property('rental_rate').that.is.a('number');",
+									"        pm.expect(film).to.have.property('length').that.is.a('number');",
+									"        pm.expect(film).to.have.property('replacement_cost').that.is.a('number');",
+									"        pm.expect(film).to.have.property('rating').that.is.a('string');",
+									"        pm.expect(film).to.have.property('last_update').that.is.a('string');",
+									"        pm.expect(film).to.have.property('special_features').that.is.an('array');",
+									"        pm.expect(film).to.have.property('fulltext').that.is.a('string');",
+									"    });",
+									"    pm.expect(jsonData).to.have.property('limit').that.is.a('number');",
+									"    pm.expect(jsonData).to.have.property('page').that.is.a('number');",
+									"    pm.expect(jsonData).to.have.property('total').that.is.a('number');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/films?page=1&limit=10",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"films"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /film/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response should be valid and contain required fields for a single film\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('data').that.is.an('object');",
+									"    let film = jsonData.data;",
+									"    pm.expect(film).to.have.property('film_id').that.is.a('number');",
+									"    pm.expect(film).to.have.property('title').that.is.a('string');",
+									"    pm.expect(film).to.have.property('description').that.is.a('string');",
+									"    pm.expect(film).to.have.property('release_year').that.is.a('number');",
+									"    pm.expect(film).to.have.property('language_id').that.is.a('number');",
+									"    pm.expect(film).to.have.property('rental_duration').that.is.a('number');",
+									"    pm.expect(film).to.have.property('rental_rate').that.is.a('number');",
+									"    pm.expect(film).to.have.property('length').that.is.a('number');",
+									"    pm.expect(film).to.have.property('replacement_cost').that.is.a('number');",
+									"    pm.expect(film).to.have.property('rating').that.is.a('string');",
+									"    pm.expect(film).to.have.property('last_update').that.is.a('string');",
+									"    pm.expect(film).to.have.property('special_features').that.is.an('array');",
+									"    pm.expect(film).to.have.property('fulltext').that.is.a('string');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/film/{{filmId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"film",
+								"{{filmId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /film/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomFilm() {",
+									"    const ratings = [\"G\", \"PG\", \"PG-13\", \"R\", \"NC-17\"];",
+									"    const specialFeaturesList = [\"Trailers\", \"Deleted Scenes\", \"Behind the Scenes\", \"Commentaries\"];",
+									"    ",
+									"    return {",
+									"        title: `Title ${Math.floor(Math.random() * 1000)}`,",
+									"        description: `Description ${Math.random().toString(36).substring(7)}`,",
+									"        release_year: Math.floor(Math.random() * (2025 - 1900 + 1)) + 1901,",
+									"        language_id: Math.floor(Math.random() * 6) + 1,",
+									"        rental_duration: Math.floor(Math.random() * 30) + 1,",
+									"        rental_rate: parseFloat((Math.random() * (10 - 1) + 1).toFixed(2)),",
+									"        length: Math.floor(Math.random() * (240 - 60 + 1)) + 60,",
+									"        replacement_cost: parseFloat((Math.random() * (20 - 1) + 1).toFixed(2)),",
+									"        rating: ratings[Math.floor(Math.random() * ratings.length)],",
+									"        special_features: Array.from({ length: Math.floor(Math.random() * specialFeaturesList.length) + 1 }, () =>",
+									"            specialFeaturesList[Math.floor(Math.random() * specialFeaturesList.length)]",
+									"        ),",
+									"        fulltext: `Lorem ipsum ${Math.random().toString(36).substring(7)}`,",
+									"    };",
+									"}",
+									"",
+									"filmObject = generateRandomFilm()",
+									"pm.globals.set(\"updatedFilmObject\", JSON.stringify(filmObject));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var responseJSON = pm.response.json();",
+									"",
+									"// Test the response body structure and values",
+									"pm.test(\"Response body structure is valid\", function () {",
+									"    pm.expect(responseJSON).to.be.an('object').that.has.property('data');",
+									"});",
+									"",
+									"// checking that each film object has the required properties",
+									"pm.test(\"Film object structure is valid\", function () {",
+									"    pm.expect(responseJSON.data).has.property('film_id').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('title').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('description').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('release_year').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('language_id').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('rental_duration').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('rental_rate').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('length').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('replacement_cost').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('rating').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('last_update').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('special_features').that.is.an('array');",
+									"    pm.expect(responseJSON.data).has.property('fulltext').that.is.a('string');",
+									"    pm.globals.set(\"filmId\", pm.response.json().data.film_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{updatedFilmObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/film/{{filmId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"film",
+								"{{filmId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /film/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has correct body\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.deleted.film_id).to.be.a(\"number\");",
+									"    pm.expect(jsonData.deleted.title).to.be.a(\"string\");",
+									"    pm.expect(jsonData.deleted.description).to.be.a(\"string\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/film/{{filmId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"film",
+								"{{filmId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
