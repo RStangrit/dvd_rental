@@ -1,18 +1,12 @@
 package repositories
 
 import (
-	"errors"
 	"main/internal/models"
 	"main/pkg/db"
 )
 
 func CreateActor(newActor *models.Actor) error {
-	result := db.GORM.Table("actor").Create(&newActor)
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
+	return db.GORM.Table("actor").Create(&newActor).Error
 }
 
 func ReadAllActors(pagination db.Pagination) ([]models.Actor, int64, error) {
@@ -20,48 +14,20 @@ func ReadAllActors(pagination db.Pagination) ([]models.Actor, int64, error) {
 	var totalRecords int64
 
 	db.GORM.Table("actor").Count(&totalRecords)
-
-	result := db.GORM.Table("actor").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("actor_id asc").Find(&actors)
-	if result.Error != nil {
-		return nil, 0, result.Error
-	}
-
-	if result.RowsAffected == 0 {
-		return nil, 0, errors.New("actors not found")
-	}
-
-	return actors, totalRecords, nil
+	err := db.GORM.Table("actor").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("actor_id asc").Find(&actors).Error
+	return actors, totalRecords, err
 }
 
 func ReadOneActor(actorId int64) (*models.Actor, error) {
 	var actor models.Actor
-	result := db.GORM.Table("actor").First(&actor, actorId)
-
-	if result.Error != nil {
-		return nil, result.Error
-	}
-
-	if result.RowsAffected == 0 {
-		return nil, errors.New("actor not found")
-	}
-
-	return &actor, nil
+	err := db.GORM.Table("actor").First(&actor, actorId).Error
+	return &actor, err
 }
 
 func UpdateOneActor(actor models.Actor) error {
-	result := db.GORM.Table("actor").Omit("id").Updates(actor)
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
+	return db.GORM.Table("actor").Omit("actor_id").Updates(actor).Error
 }
 
 func DeleteOneActor(actor models.Actor) error {
-	result := db.GORM.Delete(actor)
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
+	return db.GORM.Delete(&actor).Error
 }
