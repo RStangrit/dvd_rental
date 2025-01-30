@@ -13,7 +13,7 @@ func ValidateCustomer(customer *models.Customer) error {
 	if customer.LastName == "" || len(customer.LastName) > 45 {
 		return errors.New("last name is required and must be less than 45 characters")
 	}
-	if customer.Email == "" || len(customer.Email) > 50 || !isValidEmail(customer.Email) {
+	if customer.Email == "" || len(customer.Email) > 50 || !isValidCustomerEmail(customer.Email) {
 		return errors.New("valid email is required and must be less than 50 characters")
 	}
 	if customer.AddressID <= 0 {
@@ -28,8 +28,7 @@ func ValidateCustomer(customer *models.Customer) error {
 	return nil
 }
 
-func isValidEmail(email string) bool {
-	// Simple email validation regex
+func isValidCustomerEmail(email string) bool {
 	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	return re.MatchString(email)
 }
