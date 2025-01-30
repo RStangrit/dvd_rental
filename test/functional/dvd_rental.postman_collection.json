@@ -7,6 +7,367 @@
 	},
 	"item": [
 		{
+			"name": "languages",
+			"item": [
+				{
+					"name": "GET /ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {",
+									"    pm.expect(pm.response.code).to.be.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains the message 'pong'\", function () {",
+									"    pm.expect(pm.response.json().message).to.equal('pong');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/ping",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /language",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"language_id\");",
+									"    pm.expect(pm.response.json().data.language_id).to.exist;",
+									"    pm.globals.set(\"languageId\", pm.response.json().data.language_id);",
+									"});",
+									"// Test to check if the response contains the fields actor_id, first_name, and last_name with the correct data types",
+									"pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"",
+									"    pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('name').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"let languageName = generateRandomString(6)",
+									"pm.globals.set(\"languageName\", languageName);",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{languageName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/language",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"language"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is an array containing objects with language_id, name, and last_update\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
+									"    responseData.forEach((language) => {",
+									"    pm.expect(language).to.have.property('language_id').that.is.a('number');",
+									"    pm.expect(language).to.have.property('name').that.is.a('string');",
+									"    pm.expect(language).to.have.property('last_update').that.is.a('string');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/languages?page=1&limit=10",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"languages"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /language/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"language_id\");",
+									"    pm.expect(pm.response.json().data.language_id).to.exist;",
+									"    pm.globals.set(\"languageId\", pm.response.json().data.language_id);",
+									"});",
+									"// Test to check if the response contains the fields actor_id, first_name, and last_name with the correct data types",
+									"pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"",
+									"    pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('name').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/language/{{languageId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"language",
+								"{{languageId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /language/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"let updatedLanguageName = generateRandomString(6)",
+									"pm.globals.set(\"updatedLanguageName\", updatedLanguageName);",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"language_id\");",
+									"    pm.expect(pm.response.json().data.language_id).to.exist;",
+									"    pm.globals.set(\"languageId\", pm.response.json().data.language_id);",
+									"});",
+									"// Test to check if the response contains the fields actor_id, first_name, and last_name with the correct data types",
+									"pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"",
+									"    pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('name').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{updatedLanguageName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/language/{{languageId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"language",
+								"{{languageId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /language/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"language_id\");",
+									"    pm.expect(pm.response.json().deleted.language_id).to.exist;",
+									"    pm.globals.set(\"languageId\", pm.response.json().deleted.language_id);",
+									"});",
+									"",
+									"pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
+									"    var responseData = pm.response.json().deleted;",
+									"",
+									"    pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('name').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/language/{{languageId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"language",
+								"{{languageId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "actors",
 			"item": [
 				{
