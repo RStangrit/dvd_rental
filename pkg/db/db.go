@@ -49,6 +49,13 @@ func createTables() error {
 		&models.Inventory{},
 		&models.FilmCategory{},
 		&models.Country{},
+		&models.City{},
+		&models.Address{},
+		&models.Customer{},
+		&models.Staff{},
+		&models.Store{},
+		&models.Rental{},
+		&models.Payment{},
 	)
 
 	return err
