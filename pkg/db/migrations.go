@@ -7,7 +7,7 @@ import (
 	"sort"
 )
 
-var modelRegistry []interface{}
+var modelRegistry []any
 
 var modelOrder = map[string]int{
 	"language.Language":          1,
@@ -33,7 +33,7 @@ func reorderModels() {
 	})
 }
 
-func getOrder(model interface{}) int {
+func getOrder(model any) int {
 	modelType := reflect.TypeOf(model)
 	if modelType.Kind() == reflect.Ptr {
 		modelType = modelType.Elem()
@@ -44,7 +44,7 @@ func getOrder(model interface{}) int {
 	return 999
 }
 
-func RegisterModel(model interface{}) {
+func RegisterModel(model any) {
 	modelRegistry = append(modelRegistry, model)
 }
 

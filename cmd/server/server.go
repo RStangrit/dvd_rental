@@ -1,6 +1,8 @@
 package server
 
 import (
+	"log"
+	"main/config"
 	"main/internal/actor"
 	"main/internal/address"
 	"main/internal/category"
@@ -17,32 +19,65 @@ import (
 	"main/internal/staff"
 	"main/internal/store"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
 
 func InitServer() {
+	params := config.LoadConfig()
+	server := setupServer()
+
+	registerRoutes(server)
+
+	port := getPort(params.Port)
+	log.Printf("Server is running on port %s", port)
+
+	if err := server.Run(":" + port); err != nil {
+		log.Fatal("Failed to start server:", err)
+	}
+}
+
+func setupServer() *gin.Engine {
 	server := gin.Default()
 
-	server.GET("/ping", func(context *gin.Context) {
-		context.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
+	server.GET("/ping", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"message": "pong"})
 	})
-	language.RegisterLanguageRoutes(server)
-	actor.RegisterActorRoutes(server)
-	film.RegisterFilmRoutes(server)
-	category.RegisterCategoryRoutes(server)
-	film_actor.RegisterFilmActorRoutes(server)
-	inventory.RegisterInventoryRoutes(server)
-	film_category.RegisterFilmCategoryRoutes(server)
-	country.RegisterCountryRoutes(server)
-	city.RegisterCityRoutes(server)
-	address.RegisterAddressRoutes(server)
-	customer.RegisterCustomerRoutes(server)
-	staff.RegisterStaffRoutes(server)
-	store.RegisterStoreRoutes(server)
-	rental.RegisterRentalRoutes(server)
-	payment.RegisterPaymentRoutes(server)
-	server.Run()
+
+	return server
+}
+
+func getPort(configPort string) string {
+	if configPort != "" {
+		return configPort
+	}
+	if envPort := os.Getenv("PORT"); envPort != "" {
+		return envPort
+	}
+	return "8080"
+}
+
+func registerRoutes(server *gin.Engine) {
+	routes := []func(*gin.Engine){
+		language.RegisterLanguageRoutes,
+		actor.RegisterActorRoutes,
+		film.RegisterFilmRoutes,
+		category.RegisterCategoryRoutes,
+		film_actor.RegisterFilmActorRoutes,
+		inventory.RegisterInventoryRoutes,
+		film_category.RegisterFilmCategoryRoutes,
+		country.RegisterCountryRoutes,
+		city.RegisterCityRoutes,
+		address.RegisterAddressRoutes,
+		customer.RegisterCustomerRoutes,
+		staff.RegisterStaffRoutes,
+		store.RegisterStoreRoutes,
+		rental.RegisterRentalRoutes,
+		payment.RegisterPaymentRoutes,
+	}
+
+	for _, register := range routes {
+		register(server)
+	}
 }
