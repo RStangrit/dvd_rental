@@ -1,7 +1,21 @@
 package server
 
 import (
-	"main/internal/routes"
+	"main/internal/actor"
+	"main/internal/address"
+	"main/internal/category"
+	"main/internal/city"
+	"main/internal/country"
+	"main/internal/customer"
+	"main/internal/film"
+	"main/internal/film_actor"
+	"main/internal/film_category"
+	"main/internal/inventory"
+	"main/internal/language"
+	"main/internal/payment"
+	"main/internal/rental"
+	"main/internal/staff"
+	"main/internal/store"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,20 +29,20 @@ func InitServer() {
 			"message": "pong",
 		})
 	})
-	routes.RegisterLanguageRoutes(server)
-	routes.RegisterActorRoutes(server)
-	routes.RegisterFilmRoutes(server)
-	routes.RegisterCategoryRoutes(server)
-	routes.RegisterFilmActorRoutes(server)
-	routes.RegisterInventoryRoutes(server)
-	routes.RegisterFilmCategoryRoutes(server)
-	routes.RegisterCountryRoutes(server)
-	routes.RegisterCityRoutes(server)
-	routes.RegisterAddressRoutes(server)
-	routes.RegisterCustomerRoutes(server)
-	routes.RegisterStaffRoutes(server)
-	routes.RegisterStoreRoutes(server)
-	routes.RegisterRentalRoutes(server)
-	routes.RegisterPaymentRoutes(server)
+	language.RegisterLanguageRoutes(server)
+	actor.RegisterActorRoutes(server)
+	film.RegisterFilmRoutes(server)
+	category.RegisterCategoryRoutes(server)
+	film_actor.RegisterFilmActorRoutes(server)
+	inventory.RegisterInventoryRoutes(server)
+	film_category.RegisterFilmCategoryRoutes(server)
+	country.RegisterCountryRoutes(server)
+	city.RegisterCityRoutes(server)
+	address.RegisterAddressRoutes(server)
+	customer.RegisterCustomerRoutes(server)
+	staff.RegisterStaffRoutes(server)
+	store.RegisterStoreRoutes(server)
+	rental.RegisterRentalRoutes(server)
+	payment.RegisterPaymentRoutes(server)
 	server.Run()
 }
