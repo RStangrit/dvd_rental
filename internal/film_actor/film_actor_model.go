@@ -8,7 +8,7 @@ import (
 type FilmActor struct {
 	ActorID    int       `json:"actor_id" gorm:"primaryKey;not null;foreignKey:ActorID"`
 	FilmID     int       `json:"film_id" gorm:"primaryKey;not null;foreignKey:FilmID"`
-	LastUpdate time.Time `json:"last_update" gorm:"type:timestamp;not null;autoUpdateTime"`
+	LastUpdate time.Time `json:"last_update" gorm:"type:timestamp;not null;autoUpdateTime;default:now()"`
 }
 
 func (FilmActor) TableName() string {

@@ -21,7 +21,7 @@ type Film struct {
 	Length          uint16                       `json:"length" gorm:"type:smallint"`
 	ReplacementCost float32                      `json:"replacement_cost" gorm:"type:numeric(5,2);not null;default:19.99"`
 	Rating          string                       `json:"rating"`
-	LastUpdate      time.Time                    `json:"last_update" gorm:"type:timestamp;not null;autoUpdateTime"`
+	LastUpdate      time.Time                    `json:"last_update" gorm:"type:timestamp;not null;autoUpdateTime;default:now()"`
 	SpecialFeatures pq.StringArray               `json:"special_features" gorm:"type:text[]"`
 	Fulltext        string                       `json:"fulltext" gorm:"type:tsvector"`
 	FilmsActor      []film_actor.FilmActor       `json:"-" gorm:"foreignKey:FilmID"`
