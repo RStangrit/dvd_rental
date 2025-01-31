@@ -3,7 +3,6 @@ package staff
 import (
 	"main/internal/payment"
 	"main/internal/rental"
-	"main/internal/store"
 	"main/pkg/db"
 	"time"
 )
@@ -22,7 +21,6 @@ type Staff struct {
 	Picture    []byte            `json:"picture" gorm:"type:bytea;not null"`
 	Rentals    []rental.Rental   `json:"-" gorm:"foreignKey:StaffID"`
 	Payments   []payment.Payment `json:"-" gorm:"foreignKey:StaffID"`
-	Stores     store.Store       `json:"-" gorm:"foreignKey:StaffID"`
 }
 
 func (Staff) TableName() string {
