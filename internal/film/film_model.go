@@ -31,7 +31,7 @@ type Film struct {
 
 type FilmFilter struct {
 	Title       string  `form:"title"`
-	Description *string `form:"desacription"`
+	Description *string `form:"description"`
 	ReleaseYear int     `form:"release_year"`
 }
 

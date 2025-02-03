@@ -70,7 +70,7 @@ func PostFilmsHandler(context *gin.Context) {
 func GetFilmshandler(context *gin.Context) {
 	var pagination db.Pagination
 	var err error
-	//struct filters, works only with non-empty values
+	//struct filters, makes code more clear and works only with non-empty values
 	var filters FilmFilter
 
 	if err = context.ShouldBindQuery(&pagination); err != nil {
