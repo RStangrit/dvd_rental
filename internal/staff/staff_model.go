@@ -5,6 +5,8 @@ import (
 	"main/internal/rental"
 	"main/pkg/db"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Staff struct {
@@ -19,6 +21,7 @@ type Staff struct {
 	Password   string            `json:"password" gorm:"type:varchar(40);not null"`
 	LastUpdate time.Time         `json:"last_update" gorm:"type:timestamp;not null;default:now()"`
 	Picture    []byte            `json:"picture" gorm:"type:bytea;not null"`
+	DeletedAt  gorm.DeletedAt    `json:"deleted_at"`
 	Rentals    []rental.Rental   `json:"-" gorm:"foreignKey:StaffID"`
 	Payments   []payment.Payment `json:"-" gorm:"foreignKey:StaffID"`
 }

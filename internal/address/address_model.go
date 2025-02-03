@@ -6,6 +6,8 @@ import (
 	"main/internal/store"
 	"main/pkg/db"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Address struct {
@@ -17,6 +19,7 @@ type Address struct {
 	PostalCode string            `json:"postal_code" gorm:"type:varchar(10)"`
 	Phone      string            `json:"phone" gorm:"type:varchar(20);not null"`
 	LastUpdate time.Time         `json:"last_update" gorm:"type:timestamp;not null;default:now()"`
+	DeletedAt  gorm.DeletedAt    `json:"deleted_at"`
 	Customer   customer.Customer `json:"-" gorm:"foreignKey:AddressID"`
 	Staff      staff.Staff       `json:"-" gorm:"foreignKey:AddressID"`
 	Store      store.Store       `json:"-" gorm:"foreignKey:AddressID"`

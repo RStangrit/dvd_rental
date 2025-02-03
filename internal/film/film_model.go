@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/lib/pq"
+	"gorm.io/gorm"
 )
 
 type Film struct {
@@ -24,6 +25,7 @@ type Film struct {
 	LastUpdate      time.Time                    `json:"last_update" gorm:"type:timestamp;not null;autoUpdateTime;default:now()"`
 	SpecialFeatures pq.StringArray               `json:"special_features" gorm:"type:text[]"`
 	Fulltext        string                       `json:"fulltext" gorm:"type:tsvector"`
+	DeletedAt       gorm.DeletedAt               `json:"deleted_at"`
 	FilmsActor      []film_actor.FilmActor       `json:"-" gorm:"foreignKey:FilmID"`
 	FilmsCategories []film_category.FilmCategory `json:"-" gorm:"foreignKey:FilmID"`
 	FilmsInventory  []inventory.Inventory        `json:"-" gorm:"foreignKey:FilmID"`
