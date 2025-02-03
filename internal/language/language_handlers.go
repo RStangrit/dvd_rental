@@ -30,6 +30,43 @@ func PostLanguageHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newLanguage})
 }
 
+func PostLanguagesHandler(context *gin.Context) {
+	var newLanguages []Language
+	var err error
+
+	if err = context.ShouldBindJSON(&newLanguages); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var validationErrors []string
+	var createdLanguages []Language
+
+	for _, newLanguage := range newLanguages {
+		if err = ValidateLanguage(&newLanguage); err != nil {
+			validationErrors = append(validationErrors, err.Error())
+			continue
+		}
+
+		if err = CreateLanguage(&newLanguage); err != nil {
+			context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		createdLanguages = append(createdLanguages, newLanguage)
+	}
+
+	if len(validationErrors) > 0 {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": validationErrors,
+			"data":   createdLanguages,
+		})
+		return
+	}
+
+	context.JSON(http.StatusCreated, gin.H{"data": createdLanguages})
+}
+
 func GetLanguagesHandler(context *gin.Context) {
 	var pagination db.Pagination
 	var err error

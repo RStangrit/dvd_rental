@@ -134,6 +134,89 @@
 					"response": []
 				},
 				{
+					"name": "POST /languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Body matches expectations\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"data\");",
+									"    pm.expect(pm.response.text()).to.include(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"Response is an array containing objects with language_id, name, and last_update\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
+									"    responseData.forEach((language) => {",
+									"        pm.expect(language).to.have.property('language_id').that.is.a('number');",
+									"        pm.expect(language).to.have.property('name').that.is.a('string');",
+									"        pm.expect(language).to.have.property('last_update').that.is.a('string');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"let languageName1 = generateRandomString(6)",
+									"let languageName2 = generateRandomString(6)",
+									"let languageName3 = generateRandomString(21)",
+									"pm.globals.set(\"languageName1\", languageName1);",
+									"pm.globals.set(\"languageName2\", languageName2);",
+									"pm.globals.set(\"languageName3\", languageName3);",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"name\": \"{{languageName1}}\"\n    },\n    {\n        \"name\": \"{{languageName2}}\"\n    },\n    {\n        \"name\": \"{{languageName3}}\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/languages",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"languages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "GET /languages",
 					"event": [
 						{
@@ -491,6 +574,94 @@
 							],
 							"path": [
 								"actor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /actors",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"let firstNameActor1 = generateRandomString(6)",
+									"let lastNameActor1 = generateRandomString(8)",
+									"let firstNameActor2 = generateRandomString(6)",
+									"let lastNameActor2 = generateRandomString(8)",
+									"let lastNameActor3 = generateRandomString(8)",
+									"pm.globals.set(\"firstNameActor1\", firstNameActor1);",
+									"pm.globals.set(\"lastNameActor1\", lastNameActor1);",
+									"pm.globals.set(\"firstNameActor2\", firstNameActor2);",
+									"pm.globals.set(\"lastNameActor2\", lastNameActor2);",
+									"pm.globals.set(\"lastNameActor3\", lastNameActor2);",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Body matches expectations\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"data\");",
+									"    pm.expect(pm.response.text()).to.include(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"Response is an array containing objects with actor_id, first_name, and last_name\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
+									"    responseData.forEach((actor) => {",
+									"        pm.expect(actor).to.have.property('actor_id');",
+									"        pm.expect(actor).to.have.property('first_name');",
+									"        pm.expect(actor).to.have.property('last_name');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"first_name\": \"{{firstNameActor1}}\",\n        \"last_name\": \"{{lastNameActor1}}\"\n    },\n    {\n        \"first_name\": \"{{firstNameActor2}}\",\n        \"last_name\": \"{{lastNameActor2}}\"\n    },\n    {\n        \"last_name\": \"{{lastNameActor3}}\"\n    }\n]\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/actors",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"actors"
 							]
 						}
 					},
@@ -868,6 +1039,110 @@
 							],
 							"path": [
 								"film"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /films",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomFilm() {",
+									"    const ratings = [\"G\", \"PG\", \"PG-13\", \"R\", \"NC-17\"];",
+									"    const specialFeaturesList = [\"Trailers\", \"Deleted Scenes\", \"Behind the Scenes\", \"Commentaries\"];",
+									"",
+									"    return {",
+									"        title: `Title ${Math.floor(Math.random() * 1000)}`,",
+									"        description: `Description ${Math.random().toString(36).substring(7)}`,",
+									"        release_year: Math.floor(Math.random() * (2025 - 1900 + 1)) + 1901,",
+									"        language_id: Math.floor(Math.random() * 6) + 1,",
+									"        rental_duration: Math.floor(Math.random() * 30) + 1,",
+									"        rental_rate: parseFloat((Math.random() * (10 - 1) + 1).toFixed(2)),",
+									"        length: Math.floor(Math.random() * (240 - 60 + 1)) + 60,",
+									"        replacement_cost: parseFloat((Math.random() * (20 - 1) + 1).toFixed(2)),",
+									"        rating: ratings[Math.floor(Math.random() * ratings.length)],",
+									"        special_features: Array.from({ length: Math.floor(Math.random() * specialFeaturesList.length) + 1 }, () =>",
+									"            specialFeaturesList[Math.floor(Math.random() * specialFeaturesList.length)]",
+									"        ),",
+									"        fulltext: `Lorem ipsum ${Math.random().toString(36).substring(7)}`,",
+									"    };",
+									"}",
+									"",
+									"filmObject1 = generateRandomFilm()",
+									"filmObject2 = generateRandomFilm()",
+									"filmObject3 = { foo: 1 }",
+									"var combinedFilmObject = []",
+									"combinedFilmObject.push(filmObject1, filmObject2, filmObject3)",
+									"pm.globals.set(\"combinedFilmObject\", JSON.stringify(combinedFilmObject));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"var responseJSON = pm.response.json();",
+									"",
+									"// Test the response body structure and values",
+									"pm.test(\"Response body structure is valid\", function () {",
+									"    pm.expect(responseJSON).to.be.an('object').that.has.property('data');",
+									"    pm.expect(responseJSON).to.be.an('object').that.has.property('errors');",
+									"});",
+									"",
+									"pm.test(\"Response should be valid and contain required fields\", function () {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('data').that.is.an('array');",
+									"    jsonData.data.forEach(film => {",
+									"        pm.expect(film).to.have.property('film_id').that.is.a('number');",
+									"        pm.expect(film).to.have.property('title').that.is.a('string');",
+									"        pm.expect(film).to.have.property('description').that.is.a('string');",
+									"        pm.expect(film).to.have.property('release_year').that.is.a('number');",
+									"        pm.expect(film).to.have.property('language_id').that.is.a('number');",
+									"        pm.expect(film).to.have.property('rental_duration').that.is.a('number');",
+									"        pm.expect(film).to.have.property('rental_rate').that.is.a('number');",
+									"        pm.expect(film).to.have.property('length').that.is.a('number');",
+									"        pm.expect(film).to.have.property('replacement_cost').that.is.a('number');",
+									"        pm.expect(film).to.have.property('rating').that.is.a('string');",
+									"        pm.expect(film).to.have.property('last_update').that.is.a('string');",
+									"        pm.expect(film).to.have.property('special_features').that.is.an('array');",
+									"        pm.expect(film).to.have.property('fulltext').that.is.a('string');",
+									"    });",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{combinedFilmObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/films",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"films"
 							]
 						}
 					},

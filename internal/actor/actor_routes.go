@@ -6,6 +6,7 @@ import (
 
 func RegisterActorRoutes(server *gin.Engine) {
 	server.POST("/actor", PostActorHandler)
+	server.POST("/actors", PostActorsHandler)
 	server.GET("/actors", GetActorsHandler)
 	server.GET("/actor/:id", GetActorHandler)
 	server.PUT("/actor/:id", PutActorHandler)

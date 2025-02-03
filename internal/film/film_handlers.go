@@ -25,10 +25,46 @@ func PostFilmHandler(context *gin.Context) {
 	if err = CreateFilm(&newFilm); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
-
 	}
 
 	context.JSON(http.StatusCreated, gin.H{"data": newFilm})
+}
+
+func PostFilmsHandler(context *gin.Context) {
+	var newFilms []Film
+	var err error
+
+	if err = context.ShouldBindJSON(&newFilms); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var validationErrors []string
+	var createdFilms []Film
+
+	for _, newFilm := range newFilms {
+		if err = ValidateFilm(&newFilm); err != nil {
+			validationErrors = append(validationErrors, err.Error())
+			continue
+		}
+
+		if err = CreateFilm(&newFilm); err != nil {
+			context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		createdFilms = append(createdFilms, newFilm)
+	}
+
+	if len(validationErrors) > 0 {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": validationErrors,
+			"data":   createdFilms,
+		})
+		return
+	}
+
+	context.JSON(http.StatusCreated, gin.H{"data": createdFilms})
 }
 
 func GetFilmshandler(context *gin.Context) {

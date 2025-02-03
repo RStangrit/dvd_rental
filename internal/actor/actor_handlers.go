@@ -17,7 +17,7 @@ func PostActorHandler(context *gin.Context) {
 		return
 	}
 
-	if err = ValidateActor(newActor); err != nil {
+	if err = ValidateActor(&newActor); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -28,6 +28,44 @@ func PostActorHandler(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusCreated, gin.H{"data": newActor})
+}
+
+func PostActorsHandler(context *gin.Context) {
+	var newACtors []Actor
+	var err error
+
+	if err = context.ShouldBindJSON(&newACtors); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var validationErrors []string
+	var createdActors []Actor
+
+	for _, newActor := range newACtors {
+		if err = ValidateActor(&newActor); err != nil {
+			validationErrors = append(validationErrors, err.Error())
+			continue
+		}
+
+		if err = CreateActor(&newActor); err != nil {
+			context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		createdActors = append(createdActors, newActor)
+	}
+
+	if len(validationErrors) > 0 {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": validationErrors,
+			"data":   createdActors,
+		})
+		return
+	}
+
+	context.JSON(http.StatusCreated, gin.H{"data": newACtors})
+
 }
 
 func GetActorsHandler(context *gin.Context) {

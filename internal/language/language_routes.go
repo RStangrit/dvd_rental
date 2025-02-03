@@ -6,6 +6,7 @@ import (
 
 func RegisterLanguageRoutes(server *gin.Engine) {
 	server.POST("/language", PostLanguageHandler)
+	server.POST("/languages", PostLanguagesHandler)
 	server.GET("/languages", GetLanguagesHandler)
 	server.GET("/language/:id", GetLanguageHandler)
 	server.PUT("/language/:id", PutLanguageHandler)
