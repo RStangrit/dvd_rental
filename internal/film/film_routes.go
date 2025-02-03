@@ -11,4 +11,5 @@ func RegisterFilmRoutes(server *gin.Engine) {
 	server.GET("/film/:id", GetFilmHandler)
 	server.PUT("/film/:id", PutFilmHandler)
 	server.DELETE("/film/:id", DeleteFilmHandler)
+	server.POST("/film/:id/discount", PostFilmDiscountHandler)
 }

@@ -2,6 +2,8 @@ package film
 
 import (
 	"main/pkg/db"
+
+	"gorm.io/gorm"
 )
 
 func CreateFilm(newFilm *Film) error {
@@ -29,4 +31,12 @@ func UpdateOneFilm(film Film) error {
 
 func DeleteOneFilm(film Film) error {
 	return db.GORM.Delete(&film).Error
+}
+
+func DiscountOneFilm(film Film, discount float64) error {
+	return db.GORM.Table("film").
+		Where("film_id = ?", &film.FilmID).
+		Updates(map[string]interface{}{
+			"rental_rate": gorm.Expr("rental_rate * (1 - CAST(? AS FLOAT) / 100)", discount),
+		}).Error
 }

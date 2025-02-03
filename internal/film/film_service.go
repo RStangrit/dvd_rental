@@ -2,6 +2,7 @@ package film
 
 import (
 	"errors"
+	"math"
 	"time"
 )
 
@@ -50,4 +51,18 @@ func isValidFeature(feature string) bool {
 	validFeatures := map[string]bool{"Trailers": true, "Commentaries": true, "Deleted Scenes": true, "Behind the Scenes": true}
 	_, exists := validFeatures[feature]
 	return exists
+}
+
+func ValidateDiscountPercentage(discount float64) error {
+	if discount != math.Trunc(discount) {
+		return errors.New("discount percentage must be a whole number")
+	}
+
+	d := int(discount)
+
+	if d < 1 || d > 99 {
+		return errors.New("discount percentage must be between 1 and 99")
+	}
+
+	return nil
 }
