@@ -29,6 +29,12 @@ type Film struct {
 	FilmsInventory  []inventory.Inventory        `json:"-" gorm:"foreignKey:FilmID"`
 }
 
+type FilmFilter struct {
+	Title       string  `form:"title"`
+	Description *string `form:"desacription"`
+	ReleaseYear int     `form:"release_year"`
+}
+
 func (Film) TableName() string {
 	return "film"
 }

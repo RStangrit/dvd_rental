@@ -70,13 +70,20 @@ func PostFilmsHandler(context *gin.Context) {
 func GetFilmshandler(context *gin.Context) {
 	var pagination db.Pagination
 	var err error
+	//struct filters, works only with non-empty values
+	var filters FilmFilter
 
 	if err = context.ShouldBindQuery(&pagination); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid pagination parameters"})
 		return
 	}
 
-	films, totalRecords, err := ReadAllFilms(pagination)
+	if err = context.ShouldBindQuery(&filters); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid query parameters"})
+		return
+	}
+
+	films, totalRecords, err := ReadAllFilms(pagination, filters)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

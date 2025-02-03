@@ -8,12 +8,12 @@ func CreateFilm(newFilm *Film) error {
 	return db.GORM.Table("film").Create(&newFilm).Error
 }
 
-func ReadAllFilms(pagination db.Pagination) ([]Film, int64, error) {
+func ReadAllFilms(pagination db.Pagination, filters FilmFilter) ([]Film, int64, error) {
 	var films []Film
 	var totalRecords int64
 
 	db.GORM.Table("film").Count(&totalRecords)
-	err := db.GORM.Table("film").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("film_id asc").Find(&films).Error
+	err := db.GORM.Table("film").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("film_id asc").Where(filters).Find(&films).Error
 	return films, totalRecords, err
 }
 
