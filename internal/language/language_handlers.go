@@ -76,7 +76,14 @@ func GetLanguagesHandler(context *gin.Context) {
 		return
 	}
 
-	languages, totalRecords, err := ReadAllLanguages(pagination)
+	//map filters, if no parameters are passed, the WHERE conditions are not included and the query will return all records
+	filters := make(map[string]any)
+
+	if name := context.Query("name"); name != "" {
+		filters["name"] = name
+	}
+
+	languages, totalRecords, err := ReadAllLanguages(pagination, filters)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
