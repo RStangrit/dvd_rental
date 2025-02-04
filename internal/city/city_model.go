@@ -10,7 +10,7 @@ import (
 
 type City struct {
 	CityID     int               `json:"city_id" gorm:"type:integer;primaryKey;autoIncrement"`
-	City       string            `json:"city" gorm:"type:varchar(50);not null"`
+	City       string            `json:"city" gorm:"type:varchar(50);not null" binding:"required"`
 	CountryID  int16             `json:"country_id" gorm:"type:int2;not null;foreignKey:CountryID"`
 	LastUpdate time.Time         `json:"last_update" gorm:"type:timestamp;not null;default:now()"`
 	DeletedAt  gorm.DeletedAt    `json:"deleted_at"`

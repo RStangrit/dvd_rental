@@ -9,6 +9,7 @@ import (
 	"main/internal/city"
 	"main/internal/country"
 	"main/internal/customer"
+	"main/internal/development"
 	"main/internal/film"
 	"main/internal/film_actor"
 	"main/internal/film_category"
@@ -75,6 +76,7 @@ func registerRoutes(server *gin.Engine) {
 		store.RegisterStoreRoutes,
 		rental.RegisterRentalRoutes,
 		payment.RegisterPaymentRoutes,
+		development.RegisterDevelopmentRoutes,
 	}
 
 	for _, register := range routes {
