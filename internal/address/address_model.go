@@ -2,9 +2,9 @@ package address
 
 import (
 	"main/internal/customer"
+	"main/internal/models"
 	"main/internal/staff"
 	"main/internal/store"
-	"main/pkg/db"
 	"time"
 
 	"gorm.io/gorm"
@@ -30,5 +30,5 @@ func (Address) TableName() string {
 }
 
 func init() {
-	db.RegisterModel(&Address{})
+	models.RegisterModel(&Address{})
 }

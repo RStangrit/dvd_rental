@@ -1,8 +1,8 @@
 package rental
 
 import (
+	"main/internal/models"
 	"main/internal/payment"
-	"main/pkg/db"
 	"time"
 
 	"gorm.io/gorm"
@@ -25,5 +25,5 @@ func (Rental) TableName() string {
 }
 
 func init() {
-	db.RegisterModel(&Rental{})
+	models.RegisterModel(&Rental{})
 }

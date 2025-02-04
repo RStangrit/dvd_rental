@@ -1,9 +1,9 @@
 package staff
 
 import (
+	"main/internal/models"
 	"main/internal/payment"
 	"main/internal/rental"
-	"main/pkg/db"
 	"time"
 
 	"gorm.io/gorm"
@@ -31,5 +31,5 @@ func (Staff) TableName() string {
 }
 
 func init() {
-	db.RegisterModel(&Staff{})
+	models.RegisterModel(&Staff{})
 }

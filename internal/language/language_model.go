@@ -2,7 +2,7 @@ package language
 
 import (
 	"main/internal/film"
-	"main/pkg/db"
+	"main/internal/models"
 	"time"
 
 	"gorm.io/gorm"
@@ -21,5 +21,5 @@ func (Language) TableName() string {
 }
 
 func init() {
-	db.RegisterModel(&Language{})
+	models.RegisterModel(&Language{})
 }

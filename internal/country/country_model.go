@@ -2,7 +2,7 @@ package country
 
 import (
 	"main/internal/city"
-	"main/pkg/db"
+	"main/internal/models"
 	"time"
 
 	"gorm.io/gorm"
@@ -21,5 +21,5 @@ func (Country) TableName() string {
 }
 
 func init() {
-	db.RegisterModel(&Country{})
+	models.RegisterModel(&Country{})
 }

@@ -1,7 +1,7 @@
 package payment
 
 import (
-	"main/pkg/db"
+	"main/internal/models"
 	"time"
 
 	"gorm.io/gorm"
@@ -22,5 +22,5 @@ func (Payment) TableName() string {
 }
 
 func init() {
-	db.RegisterModel(&Payment{})
+	models.RegisterModel(&Payment{})
 }

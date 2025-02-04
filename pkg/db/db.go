@@ -24,11 +24,6 @@ func InitDb() error {
 	}
 	fmt.Println("connection to the database has been successfully established")
 
-	err = createTables()
-	if err != nil {
-		panic(err)
-	}
-
 	return nil
 }
 

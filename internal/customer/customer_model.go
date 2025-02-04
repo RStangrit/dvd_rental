@@ -1,9 +1,9 @@
 package customer
 
 import (
+	"main/internal/models"
 	"main/internal/payment"
 	"main/internal/rental"
-	"main/pkg/db"
 	"time"
 
 	"gorm.io/gorm"
@@ -30,5 +30,5 @@ func (Customer) TableName() string {
 }
 
 func init() {
-	db.RegisterModel(&Customer{})
+	models.RegisterModel(&Customer{})
 }

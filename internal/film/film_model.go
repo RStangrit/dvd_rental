@@ -4,7 +4,7 @@ import (
 	"main/internal/film_actor"
 	"main/internal/film_category"
 	"main/internal/inventory"
-	"main/pkg/db"
+	"main/internal/models"
 	"time"
 
 	"github.com/lib/pq"
@@ -42,5 +42,5 @@ func (Film) TableName() string {
 }
 
 func init() {
-	db.RegisterModel(&Film{})
+	models.RegisterModel(&Film{})
 }

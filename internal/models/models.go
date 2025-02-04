@@ -1,13 +1,11 @@
-package db
+package models
 
 import (
-	"fmt"
-	"log"
 	"reflect"
 	"sort"
 )
 
-var modelRegistry []any
+var ModelRegistry []any
 
 var modelOrder = map[string]int{
 	"language.Language":          1,
@@ -27,9 +25,13 @@ var modelOrder = map[string]int{
 	"payment.Payment":            15,
 }
 
-func reorderModels() {
-	sort.SliceStable(modelRegistry, func(i, j int) bool {
-		return getOrder(modelRegistry[i]) < getOrder(modelRegistry[j])
+func RegisterModel(model any) {
+	ModelRegistry = append(ModelRegistry, model)
+}
+
+func ReorderModels() {
+	sort.SliceStable(ModelRegistry, func(i, j int) bool {
+		return getOrder(ModelRegistry[i]) < getOrder(ModelRegistry[j])
 	})
 }
 
@@ -42,22 +44,4 @@ func getOrder(model any) int {
 		return order
 	}
 	return 999
-}
-
-func RegisterModel(model any) {
-	modelRegistry = append(modelRegistry, model)
-}
-
-func createTables() error {
-	reorderModels()
-
-	if len(modelRegistry) == 0 {
-		return fmt.Errorf("no models registered for migration")
-	}
-
-	for _, model := range modelRegistry {
-		log.Printf("Starting migration for table: %T\n", model)
-	}
-
-	return GORM.AutoMigrate(modelRegistry...)
 }

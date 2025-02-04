@@ -1,8 +1,8 @@
 package inventory
 
 import (
+	"main/internal/models"
 	"main/internal/rental"
-	"main/pkg/db"
 	"time"
 
 	"gorm.io/gorm"
@@ -22,5 +22,5 @@ func (Inventory) TableName() string {
 }
 
 func init() {
-	db.RegisterModel(&Inventory{})
+	models.RegisterModel(&Inventory{})
 }

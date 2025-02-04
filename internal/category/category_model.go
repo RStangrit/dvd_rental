@@ -2,7 +2,7 @@ package category
 
 import (
 	"main/internal/film_category"
-	"main/pkg/db"
+	"main/internal/models"
 	"time"
 
 	"gorm.io/gorm"
@@ -21,5 +21,5 @@ func (Category) TableName() string {
 }
 
 func init() {
-	db.RegisterModel(&Category{})
+	models.RegisterModel(&Category{})
 }

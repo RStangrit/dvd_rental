@@ -1,8 +1,8 @@
 package store
 
 import (
+	"main/internal/models"
 	"main/internal/staff"
-	"main/pkg/db"
 	"time"
 
 	"gorm.io/gorm"
@@ -22,5 +22,5 @@ func (Store) TableName() string {
 }
 
 func init() {
-	db.RegisterModel(&Store{})
+	models.RegisterModel(&Store{})
 }

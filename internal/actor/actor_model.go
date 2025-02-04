@@ -2,7 +2,7 @@ package actor
 
 import (
 	"main/internal/film_actor"
-	"main/pkg/db"
+	"main/internal/models"
 	"time"
 
 	"gorm.io/gorm"
@@ -22,5 +22,5 @@ func (Actor) TableName() string {
 }
 
 func init() {
-	db.RegisterModel(&Actor{})
+	models.RegisterModel(&Actor{})
 }
