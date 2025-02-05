@@ -25,6 +25,15 @@ func ReadOneFilm(filmId int64) (*Film, error) {
 	return &film, err
 }
 
+func ReadOneFilmActors(filmId int64) (Film, error) {
+	var film Film
+	err := db.GORM.Preload("FilmActors").First(&film, filmId).Error
+	if err != nil {
+		return Film{}, err
+	}
+	return film, err
+}
+
 func UpdateOneFilm(film Film) error {
 	return db.GORM.Table("film").Omit("id").Updates(film).Error
 }

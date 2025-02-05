@@ -121,7 +121,7 @@ func GetLanguageAssociatedFilmsHandler(context *gin.Context) {
 		return
 	}
 
-	language.LoadFilms(db.GORM)
+	err = language.LoadFilms(db.GORM)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

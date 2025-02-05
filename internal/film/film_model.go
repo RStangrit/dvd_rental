@@ -26,7 +26,7 @@ type Film struct {
 	SpecialFeatures pq.StringArray               `json:"special_features" gorm:"type:text[]"`
 	Fulltext        string                       `json:"fulltext" gorm:"type:tsvector"`
 	DeletedAt       gorm.DeletedAt               `json:"deleted_at"`
-	FilmsActor      []film_actor.FilmActor       `json:"-" gorm:"foreignKey:FilmID"`
+	FilmActors      []film_actor.FilmActor       `json:"film_actors" gorm:"foreignKey:FilmID"`
 	FilmsCategories []film_category.FilmCategory `json:"-" gorm:"foreignKey:FilmID"`
 	FilmsInventory  []inventory.Inventory        `json:"-" gorm:"foreignKey:FilmID"`
 }

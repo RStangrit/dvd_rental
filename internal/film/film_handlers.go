@@ -108,6 +108,22 @@ func GetFilmHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": film})
 }
 
+func GetFilmActorsHandler(context *gin.Context) {
+	filmId, err := utils.GetIntParam(context, "id")
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film ID format"})
+		return
+	}
+
+	filmWIthActors, err := ReadOneFilmActors(filmId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": filmWIthActors})
+}
+
 func PutFilmHandler(context *gin.Context) {
 	filmId, err := utils.GetIntParam(context, "id")
 	if err != nil {
