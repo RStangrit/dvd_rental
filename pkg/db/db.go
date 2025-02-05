@@ -22,11 +22,11 @@ func InitDb() error {
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
-			SlowThreshold:             time.Second, // Slow SQL threshold
-			LogLevel:                  logger.Info, // Log level
-			IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
-			ParameterizedQueries:      true,        // Don't include params in the SQL log
-			Colorful:                  true,        // Disable color
+			SlowThreshold:             time.Second,   // Slow SQL threshold
+			LogLevel:                  logger.Silent, // Log level
+			IgnoreRecordNotFoundError: true,          // Ignore ErrRecordNotFound error for logger
+			ParameterizedQueries:      true,          // Don't include params in the SQL log
+			Colorful:                  true,          // Disable color
 		},
 	)
 
@@ -39,6 +39,17 @@ func InitDb() error {
 		panic(err)
 	}
 	fmt.Println("connection to the database has been successfully established")
+
+	pool, err := GORM.DB()
+	if err != nil {
+		panic(err)
+	}
+
+	pool.SetMaxOpenConns(10)
+	pool.SetMaxIdleConns(2)
+	pool.SetConnMaxLifetime(30 * time.Minute)
+	pool.SetConnMaxIdleTime(10 * time.Minute)
+	fmt.Println("database has been successfully configured")
 
 	trackQueryTime()
 
