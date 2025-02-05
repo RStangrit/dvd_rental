@@ -115,13 +115,13 @@ func GetFilmActorsHandler(context *gin.Context) {
 		return
 	}
 
-	filmWIthActors, err := ReadOneFilmActors(filmId)
+	filmActors, err := ReadOneFilmActors(filmId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"data": filmWIthActors})
+	context.JSON(http.StatusOK, gin.H{"data": filmActors})
 }
 
 func PutFilmHandler(context *gin.Context) {

@@ -102,6 +102,22 @@ func GetActorHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": actor})
 }
 
+func GetActorFilmsHandler(context *gin.Context) {
+	actorId, err := utils.GetIntParam(context, "id")
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid actor ID format"})
+		return
+	}
+
+	actorFilms, err := ReadOneActorFilms(actorId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": actorFilms})
+}
+
 func PutActorHandler(context *gin.Context) {
 	actorId, err := utils.GetIntParam(context, "id")
 	if err != nil {

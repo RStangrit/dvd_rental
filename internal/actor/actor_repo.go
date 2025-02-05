@@ -23,6 +23,18 @@ func ReadOneActor(actorId int64) (*Actor, error) {
 	return &actor, err
 }
 
+func ReadOneActorFilms(actorId int64) (Actor, error) {
+	var actor Actor
+	err := db.GORM.Preload("ActorFilms"). // Загружает связанные записи в []FilmActor
+						Where("actor.actor_id = ?", actorId).
+						First(&actor).Error
+
+	if err != nil {
+		return Actor{}, err
+	}
+	return actor, err
+}
+
 func UpdateOneActor(actor Actor) error {
 	return db.GORM.Table("actor").Omit("actor_id").Updates(actor).Error
 }
