@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"main/config"
+	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -23,6 +24,20 @@ func InitDb() error {
 		panic(err)
 	}
 	fmt.Println("connection to the database has been successfully established")
+
+	GORM.Callback().Query().Before("gorm:query").Register("start_time", func(db *gorm.DB) {
+		db.InstanceSet("start_time", time.Now())
+	})
+
+	GORM.Callback().Query().After("gorm:query").Register("end_time", func(db *gorm.DB) {
+		startTime, ok := db.InstanceGet("start_time")
+		if !ok {
+			return
+		}
+
+		duration := time.Since(startTime.(time.Time))
+		fmt.Printf("Query took: %v\n", duration)
+	})
 
 	return nil
 }
