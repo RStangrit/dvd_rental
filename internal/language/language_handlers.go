@@ -108,6 +108,28 @@ func GetLanguageHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": language})
 }
 
+func GetLanguageAssociatedFilmsHandler(context *gin.Context) {
+	languageId, err := utils.GetIntParam(context, "id")
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid language ID format"})
+		return
+	}
+
+	language, err := ReadOneLanguage(languageId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	language.LoadFilms(db.GORM)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": language})
+}
+
 func PutLanguageHandler(context *gin.Context) {
 	languageId, err := utils.GetIntParam(context, "id")
 	if err != nil {

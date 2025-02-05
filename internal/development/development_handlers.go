@@ -6,5 +6,4 @@ import (
 
 func GetTestHandler(context *gin.Context) {
 	// makeTransaction(context)
-	testLoading()
 }

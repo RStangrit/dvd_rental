@@ -12,7 +12,6 @@ import (
 )
 
 type Film struct {
-	gorm.Model
 	FilmID          int                          `json:"film_id" gorm:"type: integer;primaryKey;autoIncrement;not null"`
 	Title           string                       `json:"title" gorm:"type: varchar(255);not null;index"`
 	Description     *string                      `json:"description" gorm:"type:text"`

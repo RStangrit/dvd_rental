@@ -1,27 +1,12 @@
 package development
 
 import (
-	"fmt"
-	"main/internal/language"
 	"main/pkg/db"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
-
-func testLoading() {
-	var languages []language.Language
-	// db.GORM.Table("language").Find(&languages)
-	db.GORM.Table("film").Preload("Films").Find(&languages)
-
-	for _, language := range languages {
-		fmt.Println(language.Name)
-		for _, film := range language.Films {
-			fmt.Println(film.Title)
-		}
-	}
-}
 
 var countryObject = NewCountry(generateRandomString(51))
 var cityObject = NewCity("1")
