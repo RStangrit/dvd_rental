@@ -2,7 +2,9 @@ package db
 
 import (
 	"fmt"
+	"log"
 	"main/config"
+	"os"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -17,11 +19,21 @@ var (
 func InitDb() error {
 	params := config.LoadConfig()
 	dsn := params.DSN
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold:             time.Second, // Slow SQL threshold
+			LogLevel:                  logger.Info, // Log level
+			IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
+			ParameterizedQueries:      true,        // Don't include params in the SQL log
+			Colorful:                  true,        // Disable color
+		},
+	)
 
 	var err error
 
 	GORM, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: newLogger,
 	})
 	if err != nil {
 		panic(err)
