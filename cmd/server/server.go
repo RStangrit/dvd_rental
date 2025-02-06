@@ -20,6 +20,7 @@ import (
 	"main/internal/rental"
 	"main/internal/staff"
 	"main/internal/store"
+	"main/middleware"
 	"net/http"
 	"os"
 
@@ -43,8 +44,10 @@ func InitServer() {
 func setupServer() *gin.Engine {
 	server := gin.Default()
 
-	server.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"message": "pong"})
+	server.Use(middleware.LoggerMiddleware())
+
+	server.GET("/ping", func(context *gin.Context) {
+		context.JSON(http.StatusOK, gin.H{"message": "pong"})
 	})
 
 	return server
