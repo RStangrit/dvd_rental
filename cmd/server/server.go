@@ -20,6 +20,7 @@ import (
 	"main/internal/rental"
 	"main/internal/staff"
 	"main/internal/store"
+	user "main/internal/user"
 	"main/middleware"
 	"net/http"
 	"os"
@@ -80,6 +81,7 @@ func registerRoutes(server *gin.Engine) {
 		store.RegisterStoreRoutes,
 		rental.RegisterRentalRoutes,
 		payment.RegisterPaymentRoutes,
+		user.RegisterUserRoutes,
 		file.RegisterFileRoutes,
 		development.RegisterDevelopmentRoutes,
 	}

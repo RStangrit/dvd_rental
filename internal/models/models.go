@@ -23,6 +23,7 @@ var modelOrder = map[string]int{
 	"store.Store":                13,
 	"rental.Rental":              14,
 	"payment.Payment":            15,
+	"user.User":                  16,
 }
 
 func RegisterModel(model any) {
