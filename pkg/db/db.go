@@ -2,12 +2,14 @@ package db
 
 import (
 	"fmt"
+	"log"
 	"main/config"
-	"main/internal/models"
-	"main/internal/seeds"
+	"os"
+	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var (
@@ -17,56 +19,57 @@ var (
 func InitDb() error {
 	params := config.LoadConfig()
 	dsn := params.DSN
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold:             time.Second,   // Slow SQL threshold
+			LogLevel:                  logger.Silent, // Log level
+			IgnoreRecordNotFoundError: true,          // Ignore ErrRecordNotFound error for logger
+			ParameterizedQueries:      true,          // Don't include params in the SQL log
+			Colorful:                  true,          // Disable color
+		},
+	)
 
 	var err error
 
-	GORM, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	GORM, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: newLogger,
+	})
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("connection to the database has been successfully established")
 
-	err = createTables()
+	pool, err := GORM.DB()
 	if err != nil {
 		panic(err)
 	}
 
-	err = seedData(seeds.ReturnLangSeeds())
-	if err != nil {
-		panic(err)
-	}
+	pool.SetMaxOpenConns(10)
+	pool.SetMaxIdleConns(2)
+	pool.SetConnMaxLifetime(30 * time.Minute)
+	pool.SetConnMaxIdleTime(10 * time.Minute)
+	fmt.Println("database has been successfully configured")
+
+	trackQueryTime()
 
 	return nil
 }
 
-func createTables() error {
-	err := GORM.AutoMigrate(
-		&models.Language{},
-		&models.Actor{},
-		&models.Film{},
-		&models.Category{},
-		&models.FilmActor{},
-		&models.Inventory{},
-		&models.FilmCategory{},
-		&models.Country{},
-		&models.City{},
-		&models.Address{},
-		&models.Customer{},
-		&models.Staff{},
-		&models.Store{},
-		&models.Rental{},
-		&models.Payment{},
-	)
+func trackQueryTime() {
+	GORM.Callback().Query().Before("gorm:query").Register("start_time", func(db *gorm.DB) {
+		db.InstanceSet("start_time", time.Now())
+	})
 
-	return err
-}
+	GORM.Callback().Query().After("gorm:query").Register("end_time", func(db *gorm.DB) {
+		startTime, ok := db.InstanceGet("start_time")
+		if !ok {
+			return
+		}
 
-func seedData(languages []models.Language) error {
-	if err := GORM.Create(&languages).Error; err != nil {
-		return err
-	}
-
-	return nil
+		duration := time.Since(startTime.(time.Time))
+		fmt.Printf("Query took: %v\n", duration)
+	})
 }
 
 type Pagination struct {
