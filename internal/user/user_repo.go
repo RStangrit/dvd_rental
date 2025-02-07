@@ -1,20 +1,17 @@
 package user
 
 import (
-	"fmt"
 	"main/pkg/db"
 	"main/pkg/utils"
 )
 
 func CreateUser(newUser *User) error {
 	var err error
-	fmt.Println(newUser)
 	newUser.Password, err = utils.GenerateHashFromPassword(newUser.Password)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(newUser)
 	return db.GORM.Table("user").Create(&newUser).Error
 }
 

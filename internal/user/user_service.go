@@ -2,7 +2,6 @@ package user
 
 import (
 	"errors"
-	"fmt"
 	"net/mail"
 	"regexp"
 )
@@ -24,12 +23,10 @@ func ValidateUser(user *User) error {
 		return errors.New("password is required")
 	}
 
-	// Validate password strength (example)
 	if len(user.Password) < 8 {
 		return errors.New("password must be at least 8 characters long")
 	}
 	if !strongPassword(user.Password) {
-		fmt.Println(user.Password, !strongPassword(user.Password))
 		return errors.New("password must contain at least one uppercase letter, one lowercase letter, one number and one special character")
 	}
 
