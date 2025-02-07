@@ -15,7 +15,7 @@ func CreateUser(newUser *User) error {
 	return db.GORM.Table("user").Create(&newUser).Error
 }
 
-func ReadAllusers(pagination db.Pagination) ([]User, int64, error) {
+func ReadAllUsers(pagination db.Pagination) ([]User, int64, error) {
 	var users []User
 	var totalRecords int64
 

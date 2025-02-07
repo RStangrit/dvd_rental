@@ -1,6 +1,8 @@
 package user
 
 import (
+	"main/pkg/auth"
+	"main/pkg/db"
 	"main/pkg/utils"
 	"net/http"
 
@@ -34,7 +36,21 @@ func GetUserHandler(context *gin.Context) {
 }
 
 func GetUsersHandler(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{"data": "handler in development"})
+	var pagination db.Pagination
+	var err error
+
+	if err = context.ShouldBindQuery(&pagination); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid pagination parameters"})
+		return
+	}
+
+	users, totalRecords, err := ReadAllUsers(pagination)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": users, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
 func PutUserHandler(context *gin.Context) {
@@ -50,21 +66,27 @@ func LoginUserHandler(context *gin.Context) {
 	var err error
 
 	if err = context.ShouldBindJSON(&inputUser); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "step": "1"})
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	user, err := ReadOneUserByEmail(inputUser.Email)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "step": "2"})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	err = utils.CompareHashAndPassword(user.Password, inputUser.Password)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "step": "3"})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"data": "successfully authorized"})
+	tokenString, err := auth.CreateToken(user.Email)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": "successfully authorized", "token": tokenString})
 }

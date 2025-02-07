@@ -8,9 +8,10 @@ import (
 )
 
 type Config struct {
-	Port    string
-	GinMode string
-	DSN     string
+	Port      string
+	GinMode   string
+	DSN       string
+	SecretKey string
 }
 
 func LoadConfig() *Config {
@@ -20,9 +21,10 @@ func LoadConfig() *Config {
 	}
 
 	return &Config{
-		Port:    getEnv("SERVER_PORT", "8080"),
-		GinMode: getEnv("GIN_MODE", "debug"),
-		DSN:     getEnv("DATABASE_URL", "localhost"),
+		Port:      getEnv("SERVER_PORT", "8080"),
+		GinMode:   getEnv("GIN_MODE", "debug"),
+		DSN:       getEnv("DATABASE_URL", "localhost"),
+		SecretKey: getEnv("SECRET_KEY", "null"),
 	}
 }
 
