@@ -1,0 +1,16 @@
+[build]
+  cmd = "go build -o main ."
+  bin = "main"
+  exclude_dir = ["node_modules", "vendor"]
+  include_ext = ["go", "toml"]
+
+[log]
+  level = "debug"
+
+[watcher]
+  # Watch all files in the current directory and subdirectories
+  watch_dir = "."
+  # Exclude specific files or directories
+  exclude_dir = ["node_modules", "vendor", ".git"]
+  # Specify the interval for checking file changes
+  interval = 1000
