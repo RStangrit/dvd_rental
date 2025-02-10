@@ -3,7 +3,6 @@ package user
 import (
 	"main/pkg/auth"
 	"main/pkg/db"
-	"main/pkg/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -76,7 +75,7 @@ func LoginUserHandler(context *gin.Context) {
 		return
 	}
 
-	err = utils.CompareHashAndPassword(user.Password, inputUser.Password)
+	err = auth.CompareHashAndPassword(user.Password, inputUser.Password)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

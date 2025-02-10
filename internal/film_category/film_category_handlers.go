@@ -34,7 +34,11 @@ func GetFilmCategoriesHandler(context *gin.Context) {
 		return
 	}
 
-	filmCategories, totalRecords, err := ReadAllFilmCategories(pagination)
+	field := context.DefaultQuery("field", "film_id")
+	order := context.DefaultQuery("order", "asc")
+	sortParams := utils.JoinStrings(field, order)
+
+	filmCategories, totalRecords, err := ReadAllFilmCategories(pagination, sortParams)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

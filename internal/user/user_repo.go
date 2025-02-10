@@ -1,13 +1,13 @@
 package user
 
 import (
+	"main/pkg/auth"
 	"main/pkg/db"
-	"main/pkg/utils"
 )
 
 func CreateUser(newUser *User) error {
 	var err error
-	newUser.Password, err = utils.GenerateHashFromPassword(newUser.Password)
+	newUser.Password, err = auth.GenerateHashFromPassword(newUser.Password)
 	if err != nil {
 		return err
 	}

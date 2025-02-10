@@ -2,9 +2,9 @@ package utils
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func GetIntParam(context *gin.Context, intParamName string) (int64, error) {
@@ -15,14 +15,6 @@ func GetIntParam(context *gin.Context, intParamName string) (int64, error) {
 	return int64(intValue), nil
 }
 
-func GenerateHashFromPassword(password string) (string, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return "", err
-	}
-	return string(hashedPassword), nil
-}
-
-func CompareHashAndPassword(hashedPassword, password string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+func JoinStrings(strs ...string) string {
+	return strings.Join(strs, " ")
 }
