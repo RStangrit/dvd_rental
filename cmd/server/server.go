@@ -45,7 +45,7 @@ func InitServer() {
 func setupServer() *gin.Engine {
 	server := gin.Default()
 
-	server.Use(middleware.LoggerMiddleware())
+	server.Use(middleware.TimeTrackerMiddleware(), middleware.CorsMiddleware(), middleware.LoggerMiddleware())
 
 	server.GET("/ping", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{"message": "pong"})

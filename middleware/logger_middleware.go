@@ -1,19 +1,21 @@
 package middleware
 
 import (
-	"log"
-	"time"
+	"bytes"
+	"fmt"
+	"io"
 
 	"github.com/gin-gonic/gin"
 )
 
 func LoggerMiddleware() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		start := time.Now()
+		body, _ := context.GetRawData()
+		fmt.Printf("Method: %s\nPath: %s\nHeaders: %v\nBody: %s\n",
+			context.Request.Method, context.Request.URL.Path, context.Request.Header, string(body))
+
+		context.Request.Body = io.NopCloser(bytes.NewBuffer(body))
 
 		context.Next()
-
-		duration := time.Since(start)
-		log.Printf("Request %s %s took %v", context.Request.Method, context.Request.URL.Path, duration)
 	}
 }
