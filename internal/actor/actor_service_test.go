@@ -2,24 +2,10 @@ package actor
 
 import (
 	"errors"
-	"fmt"
 	"testing"
 )
 
 func Test_ValidateActor(t *testing.T) {
-	var actor = Actor{
-		ActorID:   0,
-		FirstName: "",
-		LastName:  "",
-	}
-
-	err := ValidateActor(&actor)
-	if err == nil {
-		t.Errorf("ValidateActor(&actor) validation failed")
-	}
-}
-
-func Test_ValidateActorV2(t *testing.T) {
 
 	tests := []struct {
 		name        string
@@ -42,8 +28,6 @@ func Test_ValidateActorV2(t *testing.T) {
 			err := ValidateActor(&actor)
 
 			if !errors.Is(err, test.expectedErr) {
-				assertion := errors.Is(err, test.expectedErr)
-				fmt.Println(assertion)
 				t.Errorf("ValidateActor test failed: expected %v, received %v", test.expectedErr, err)
 			}
 		})
