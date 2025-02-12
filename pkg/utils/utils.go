@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -8,11 +9,15 @@ import (
 )
 
 func GetIntParam(context *gin.Context, intParamName string) (int64, error) {
-	intValue, err := strconv.ParseInt(context.Param(intParamName), 10, 64)
-	if err != nil {
-		return 0, err
+	paramValue := context.Param(intParamName)
+	if paramValue == "" {
+		return 0, fmt.Errorf("parameter %s is empty", intParamName)
 	}
-	return int64(intValue), nil
+	intValue, err := strconv.ParseInt(paramValue, 10, 64)
+	if err != nil {
+		return 0, fmt.Errorf("invalid integer value for parameter %s: %s", intParamName, paramValue)
+	}
+	return intValue, nil
 }
 
 func JoinStrings(strs ...string) string {
