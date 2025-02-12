@@ -17,10 +17,16 @@ type Actor struct {
 	DeletedAt  gorm.DeletedAt         `json:"deleted_at"`
 }
 
+var tableName = "actor"
+
 func (Actor) TableName() string {
-	return "actor"
+	return tableName
+}
+
+func registerModels() {
+	models.RegisterModel(&Actor{})
 }
 
 func init() {
-	models.RegisterModel(&Actor{})
+	registerModels()
 }
