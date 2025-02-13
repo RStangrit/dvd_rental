@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"net/http/httptest"
 	"testing"
 
@@ -56,7 +55,6 @@ func Test_GetIntParam(t *testing.T) {
 				t.Fatalf("unexpected error: %v", err)
 			}
 
-			fmt.Println(result, test.expected)
 			if result != test.expected {
 				t.Errorf("GetIntParam(%s, %s) = %d, expected %d", test.paramName, test.paramValue, result, test.expected)
 			}

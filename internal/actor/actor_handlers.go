@@ -22,7 +22,7 @@ func PostActorHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateActor(&newActor); err != nil {
+	if err = CreateActor(db.GORM, &newActor); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -48,7 +48,7 @@ func PostActorsHandler(context *gin.Context) {
 			continue
 		}
 
-		if err = CreateActor(&newActor); err != nil {
+		if err = CreateActor(db.GORM, &newActor); err != nil {
 			context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -77,7 +77,7 @@ func GetActorsHandler(context *gin.Context) {
 		return
 	}
 
-	actors, totalRecords, err := ReadAllActors(pagination)
+	actors, totalRecords, err := ReadAllActors(db.GORM, pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -93,7 +93,7 @@ func GetActorHandler(context *gin.Context) {
 		return
 	}
 
-	actor, err := ReadOneActor(actorId)
+	actor, err := ReadOneActor(db.GORM, actorId)
 	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -109,7 +109,7 @@ func GetActorFilmsHandler(context *gin.Context) {
 		return
 	}
 
-	actorFilms, err := ReadOneActorFilms(actorId)
+	actorFilms, err := ReadOneActorFilms(db.GORM, actorId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -125,7 +125,7 @@ func PutActorHandler(context *gin.Context) {
 		return
 	}
 
-	actor, err := ReadOneActor(actorId)
+	actor, err := ReadOneActor(db.GORM, actorId)
 	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -140,7 +140,7 @@ func PutActorHandler(context *gin.Context) {
 
 	updatedActor.ActorID = int(actor.ActorID)
 
-	err = UpdateOneActor(updatedActor)
+	err = UpdateOneActor(db.GORM, updatedActor)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update actor"})
 		return
@@ -156,13 +156,13 @@ func DeleteActorHandler(context *gin.Context) {
 		return
 	}
 
-	actor, err := ReadOneActor(actorId)
+	actor, err := ReadOneActor(db.GORM, actorId)
 	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"error": "Actor not found"})
 		return
 	}
 
-	err = DeleteOneActor(*actor)
+	err = DeleteOneActor(db.GORM, *actor)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete actor"})
 		return
