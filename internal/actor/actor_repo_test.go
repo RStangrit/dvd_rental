@@ -34,7 +34,7 @@ func Test_CreateActor(t *testing.T) {
 }
 
 func Test_ReadAllActors(t *testing.T) {
-	expectedActors := []Actor{
+	expectedActors := []*Actor{
 		{ActorID: 1, FirstName: "John", LastName: "Doe"},
 		{ActorID: 2, FirstName: "Jane", LastName: "Smith"},
 	}
@@ -82,7 +82,7 @@ func Test_ReadOneActor(t *testing.T) {
 }
 
 func Test_ReadOneActorFilms(t *testing.T) {
-	fixedTime := time.Date(2025, time.February, 14, 9, 56, 28, 693128929, time.UTC)
+	fixedTime := time.Now()
 
 	expectedFilmActor := &film_actor.FilmActor{
 		ActorID:    1,
@@ -91,7 +91,7 @@ func Test_ReadOneActorFilms(t *testing.T) {
 		DeletedAt:  gorm.DeletedAt{Valid: false},
 	}
 
-	expectedActor := Actor{
+	expectedActor := &Actor{
 		ActorID:   1,
 		FirstName: "John",
 		LastName:  "Doe",

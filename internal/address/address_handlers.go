@@ -22,7 +22,7 @@ func PostAddressHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateAddress(&newAddress); err != nil {
+	if err = CreateAddress(db.GORM, &newAddress); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -39,7 +39,7 @@ func GetAddressesHandler(context *gin.Context) {
 		return
 	}
 
-	addresses, totalRecords, err := ReadAllAddresses(pagination)
+	addresses, totalRecords, err := ReadAllAddresses(db.GORM, pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -55,7 +55,7 @@ func GetAddressHandler(context *gin.Context) {
 		return
 	}
 
-	address, err := ReadOneAddress(addressId)
+	address, err := ReadOneAddress(db.GORM, addressId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -71,7 +71,7 @@ func PutAddressHandler(context *gin.Context) {
 		return
 	}
 
-	address, err := ReadOneAddress(addressId)
+	address, err := ReadOneAddress(db.GORM, addressId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -91,7 +91,7 @@ func PutAddressHandler(context *gin.Context) {
 
 	updatedAddress.AddressID = int(address.AddressID)
 
-	err = UpdateOneAddress(updatedAddress)
+	err = UpdateOneAddress(db.GORM, updatedAddress)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update address"})
 		return
@@ -107,13 +107,13 @@ func DeleteAddressHandler(context *gin.Context) {
 		return
 	}
 
-	address, err := ReadOneAddress(addressId)
+	address, err := ReadOneAddress(db.GORM, addressId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneAddress(*address)
+	err = DeleteOneAddress(db.GORM, *address)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete address"})
 		return

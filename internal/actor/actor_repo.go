@@ -10,8 +10,8 @@ func CreateActor(db *gorm.DB, newActor *Actor) error {
 	return db.Table("actor").Create(&newActor).Error
 }
 
-func ReadAllActors(db *gorm.DB, pagination db.Pagination) ([]Actor, int64, error) {
-	var actors []Actor
+func ReadAllActors(db *gorm.DB, pagination db.Pagination) ([]*Actor, int64, error) {
+	var actors []*Actor
 	var totalRecords int64
 
 	db.Table("actor").Count(&totalRecords)
@@ -25,16 +25,13 @@ func ReadOneActor(db *gorm.DB, actorId int64) (*Actor, error) {
 	return &actor, err
 }
 
-func ReadOneActorFilms(db *gorm.DB, actorId int64) (Actor, error) {
+func ReadOneActorFilms(db *gorm.DB, actorId int64) (*Actor, error) {
 	var actor Actor
 	err := db.Preload("ActorFilms").
 		Where("actor.actor_id = ?", actorId).
 		First(&actor).Error
 
-	if err != nil {
-		return Actor{}, err
-	}
-	return actor, err
+	return &actor, err
 }
 
 func UpdateOneActor(db *gorm.DB, actor Actor) error {
