@@ -3,43 +3,45 @@ package user
 import (
 	"main/pkg/auth"
 	"main/pkg/db"
+
+	"gorm.io/gorm"
 )
 
-func CreateUser(newUser *User) error {
+func CreateUser(db *gorm.DB, newUser *User) error {
 	var err error
 	newUser.Password, err = auth.GenerateHashFromPassword(newUser.Password)
 	if err != nil {
 		return err
 	}
 
-	return db.GORM.Table("user").Create(&newUser).Error
+	return db.Table("user").Create(&newUser).Error
 }
 
-func ReadAllUsers(pagination db.Pagination) ([]User, int64, error) {
+func ReadAllUsers(db *gorm.DB, pagination db.Pagination) ([]User, int64, error) {
 	var users []User
 	var totalRecords int64
 
-	db.GORM.Table("user").Count(&totalRecords)
-	err := db.GORM.Table("user").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("User_id asc").Find(&users).Error
+	db.Table("user").Count(&totalRecords)
+	err := db.Table("user").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("User_id asc").Find(&users).Error
 	return users, totalRecords, err
 }
 
-func ReadOneUserById(userID int64) (*User, error) {
+func ReadOneUserById(db *gorm.DB, userID int64) (*User, error) {
 	var user User
-	err := db.GORM.Table("user").First(&user, userID).Error
+	err := db.Table("user").First(&user, userID).Error
 	return &user, err
 }
 
-func ReadOneUserByEmail(userEmail string) (User, error) {
+func ReadOneUserByEmail(db *gorm.DB, userEmail string) (User, error) {
 	var user User
-	err := db.GORM.Table("user").Where("email = ?", userEmail).First(&user).Error
+	err := db.Table("user").Where("email = ?", userEmail).First(&user).Error
 	return user, err
 }
 
-func UpdateOneUser(user User) error {
-	return db.GORM.Table("user").Omit("User_id").Updates(user).Error
+func UpdateOneUser(db *gorm.DB, user User) error {
+	return db.Table("user").Omit("User_id").Updates(user).Error
 }
 
-func DeleteOneUser(user User) error {
-	return db.GORM.Delete(&user).Error
+func DeleteOneUser(db *gorm.DB, user User) error {
+	return db.Delete(&user).Error
 }
