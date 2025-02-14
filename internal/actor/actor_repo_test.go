@@ -119,3 +119,30 @@ func Test_ReadOneActorFilms(t *testing.T) {
 		t.Errorf("Unfulfilled expectations: %v", err)
 	}
 }
+
+func Test_UpdateOneActor(t *testing.T) {
+	fixedTime := time.Now()
+
+	actor := &Actor{
+		ActorID:    1,
+		FirstName:  "John",
+		LastName:   "Doe",
+		LastUpdate: fixedTime,
+		DeletedAt:  gorm.DeletedAt{Valid: false},
+	}
+
+	mock.ExpectBegin()
+	mock.ExpectExec(`UPDATE "actor" SET .+`).
+		WithArgs(actor.FirstName, actor.LastName, sqlmock.AnyArg(), actor.ActorID).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectCommit()
+
+	err := UpdateOneActor(gormDB, *actor)
+
+	assert.NoError(t, err)
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Unfulfilled expectations: %v", err)
+	}
+
+}
