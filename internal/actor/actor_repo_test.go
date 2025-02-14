@@ -84,23 +84,24 @@ func Test_ReadOneActor(t *testing.T) {
 func Test_ReadOneActorFilms(t *testing.T) {
 	fixedTime := time.Date(2025, time.February, 14, 9, 56, 28, 693128929, time.UTC)
 
-	expectedActor := Actor{
-		ActorID:   1,
-		FirstName: "John",
-		LastName:  "Doe",
-		ActorFilms: []film_actor.FilmActor{
-			{ActorID: 1, FilmID: 1, LastUpdate: fixedTime},
-		},
-		LastUpdate: fixedTime,
-		DeletedAt:  gorm.DeletedAt{Valid: false},
-	}
-
 	expectedFilmActor := &film_actor.FilmActor{
 		ActorID:    1,
 		FilmID:     1,
 		LastUpdate: fixedTime,
 		DeletedAt:  gorm.DeletedAt{Valid: false},
 	}
+
+	expectedActor := Actor{
+		ActorID:   1,
+		FirstName: "John",
+		LastName:  "Doe",
+		ActorFilms: []film_actor.FilmActor{
+			*expectedFilmActor,
+		},
+		LastUpdate: fixedTime,
+		DeletedAt:  gorm.DeletedAt{Valid: false},
+	}
+
 	mock.ExpectQuery(`SELECT \* FROM "actor" WHERE actor.actor_id = \$1 AND "actor"."deleted_at" IS NULL ORDER BY "actor"."actor_id" LIMIT \$2`).
 		WithArgs(expectedActor.ActorID, 1).
 		WillReturnRows(sqlmock.NewRows([]string{"actor_id", "first_name", "last_name", "film_actor.actor_id", "film_actor.film_id", "film_actor.last_update", "film_actor.deleted_at", "last_update", "deleted_at"}).
