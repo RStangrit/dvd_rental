@@ -22,7 +22,7 @@ func PostFilmHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateFilm(&newFilm); err != nil {
+	if err = CreateFilm(db.GORM, &newFilm); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -48,7 +48,7 @@ func PostFilmsHandler(context *gin.Context) {
 			continue
 		}
 
-		if err = CreateFilm(&newFilm); err != nil {
+		if err = CreateFilm(db.GORM, &newFilm); err != nil {
 			context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -83,7 +83,7 @@ func GetFilmshandler(context *gin.Context) {
 		return
 	}
 
-	films, totalRecords, err := ReadAllFilms(pagination, filters)
+	films, totalRecords, err := ReadAllFilms(db.GORM, pagination, filters)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -99,7 +99,7 @@ func GetFilmHandler(context *gin.Context) {
 		return
 	}
 
-	film, err := ReadOneFilm(filmId)
+	film, err := ReadOneFilm(db.GORM, filmId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -115,7 +115,7 @@ func GetFilmActorsHandler(context *gin.Context) {
 		return
 	}
 
-	filmActors, err := ReadOneFilmActors(filmId)
+	filmActors, err := ReadOneFilmActors(db.GORM, filmId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -131,7 +131,7 @@ func PutFilmHandler(context *gin.Context) {
 		return
 	}
 
-	film, err := ReadOneFilm(filmId)
+	film, err := ReadOneFilm(db.GORM, filmId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -151,7 +151,7 @@ func PutFilmHandler(context *gin.Context) {
 
 	updatedFilm.FilmID = int(film.FilmID)
 
-	err = UpdateOneFilm(updatedFilm)
+	err = UpdateOneFilm(db.GORM, updatedFilm)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update film"})
 		return
@@ -167,13 +167,13 @@ func DeleteFilmHandler(context *gin.Context) {
 		return
 	}
 
-	film, err := ReadOneFilm(filmId)
+	film, err := ReadOneFilm(db.GORM, filmId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneFilm(*film)
+	err = DeleteOneFilm(db.GORM, *film)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete film"})
 		return
@@ -212,7 +212,7 @@ func PostFilmDiscountHandler(context *gin.Context) {
 		return
 	}
 
-	film, err := ReadOneFilm(filmId)
+	film, err := ReadOneFilm(db.GORM, filmId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -223,7 +223,7 @@ func PostFilmDiscountHandler(context *gin.Context) {
 		return
 	}
 
-	if err := DiscountOneFilm(*film, discount); err != nil {
+	if err := DiscountOneFilm(db.GORM, *film, discount); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to set film discount " + err.Error()})
 		return
 	}
