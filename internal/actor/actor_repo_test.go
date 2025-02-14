@@ -1,6 +1,7 @@
 package actor
 
 import (
+	"main/internal/film_actor"
 	"main/pkg/db"
 	"testing"
 	"time"
@@ -28,7 +29,7 @@ func Test_CreateActor(t *testing.T) {
 	assert.NoError(t, err)
 
 	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Fatalf("Something went wrong: %v", err)
+		t.Errorf("Unfulfilled expectations: %v", err)
 	}
 }
 
@@ -68,13 +69,47 @@ func Test_ReadOneActor(t *testing.T) {
 		LastUpdate: time.Now(),
 		DeletedAt:  gorm.DeletedAt{Valid: false},
 	}
-
 	mock.ExpectQuery(`SELECT \* FROM "actor" WHERE "actor"."actor_id" = \$1 AND "actor"."deleted_at" IS NULL ORDER BY "actor"."actor_id" LIMIT \$2`).
 		WithArgs(expectedActor.ActorID, 1).
 		WillReturnRows(sqlmock.NewRows([]string{"actor_id", "first_name", "last_name", "last_update", "deleted_at"}).
 			AddRow(expectedActor.ActorID, expectedActor.FirstName, expectedActor.LastName, expectedActor.LastUpdate, expectedActor.DeletedAt))
-
 	actor, err := ReadOneActor(gormDB, int64(expectedActor.ActorID))
+	assert.NoError(t, err)
+	assert.Equal(t, expectedActor, actor)
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Unfulfilled expectations: %v", err)
+	}
+}
+
+func Test_ReadOneActorFilms(t *testing.T) {
+	fixedTime := time.Date(2025, time.February, 14, 9, 56, 28, 693128929, time.UTC)
+
+	expectedActor := Actor{
+		ActorID:   1,
+		FirstName: "John",
+		LastName:  "Doe",
+		ActorFilms: []film_actor.FilmActor{
+			{ActorID: 1, FilmID: 1, LastUpdate: fixedTime},
+		},
+		LastUpdate: fixedTime,
+		DeletedAt:  gorm.DeletedAt{Valid: false},
+	}
+
+	expectedFilmActor := &film_actor.FilmActor{
+		ActorID:    1,
+		FilmID:     1,
+		LastUpdate: fixedTime,
+		DeletedAt:  gorm.DeletedAt{Valid: false},
+	}
+	mock.ExpectQuery(`SELECT \* FROM "actor" WHERE actor.actor_id = \$1 AND "actor"."deleted_at" IS NULL ORDER BY "actor"."actor_id" LIMIT \$2`).
+		WithArgs(expectedActor.ActorID, 1).
+		WillReturnRows(sqlmock.NewRows([]string{"actor_id", "first_name", "last_name", "film_actor.actor_id", "film_actor.film_id", "film_actor.last_update", "film_actor.deleted_at", "last_update", "deleted_at"}).
+			AddRow(expectedActor.ActorID, expectedActor.FirstName, expectedActor.LastName, expectedFilmActor.ActorID, expectedFilmActor.FilmID, expectedFilmActor.LastUpdate, expectedFilmActor.DeletedAt, expectedActor.LastUpdate, expectedActor.DeletedAt))
+
+	mock.ExpectQuery(`SELECT \* FROM "film_actor" WHERE "film_actor"."actor_id" = \$1 AND "film_actor"."deleted_at" IS NULL`).
+		WillReturnRows(sqlmock.NewRows([]string{"actor_id", "film_id", "last_update", "deleted_at"}).AddRow(expectedFilmActor.ActorID, expectedFilmActor.FilmID, expectedFilmActor.LastUpdate, expectedFilmActor.DeletedAt))
+
+	actor, err := ReadOneActorFilms(gormDB, int64(expectedActor.ActorID))
 
 	assert.NoError(t, err)
 	assert.Equal(t, expectedActor, actor)
