@@ -22,7 +22,7 @@ func PostCategoryHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateCategory(&newCategory); err != nil {
+	if err = CreateCategory(db.GORM, &newCategory); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -39,7 +39,7 @@ func GetCategoriesHandler(context *gin.Context) {
 		return
 	}
 
-	categories, totalRecords, err := ReadAllCategories(pagination)
+	categories, totalRecords, err := ReadAllCategories(db.GORM, pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -55,7 +55,7 @@ func GetCategoryHandler(context *gin.Context) {
 		return
 	}
 
-	category, err := ReadOneCategory(categoryId)
+	category, err := ReadOneCategory(db.GORM, categoryId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -71,7 +71,7 @@ func PutCategoryHandler(context *gin.Context) {
 		return
 	}
 
-	category, err := ReadOneCategory(categoryId)
+	category, err := ReadOneCategory(db.GORM, categoryId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -91,7 +91,7 @@ func PutCategoryHandler(context *gin.Context) {
 
 	updatedCategory.CategoryID = int(category.CategoryID)
 
-	err = UpdateOneCategory(updatedCategory)
+	err = UpdateOneCategory(db.GORM, updatedCategory)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update category"})
 		return
@@ -107,13 +107,13 @@ func DeleteCategoryHandler(context *gin.Context) {
 		return
 	}
 
-	category, err := ReadOneCategory(categoryId)
+	category, err := ReadOneCategory(db.GORM, categoryId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneCategory(*category)
+	err = DeleteOneCategory(db.GORM, *category)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete category"})
 		return
