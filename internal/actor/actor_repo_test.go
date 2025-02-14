@@ -3,6 +3,7 @@ package actor
 import (
 	"main/pkg/db"
 	"testing"
+	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
@@ -53,6 +54,30 @@ func Test_ReadAllActors(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, int64(2), total)
 	assert.Equal(t, expectedActors, actors)
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Unfulfilled expectations: %v", err)
+	}
+}
+
+func Test_ReadOneActor(t *testing.T) {
+	expectedActor := &Actor{
+		ActorID:    1,
+		FirstName:  "John",
+		LastName:   "Doe",
+		LastUpdate: time.Now(),
+		DeletedAt:  gorm.DeletedAt{Valid: false},
+	}
+
+	mock.ExpectQuery(`SELECT \* FROM "actor" WHERE "actor"."actor_id" = \$1 AND "actor"."deleted_at" IS NULL ORDER BY "actor"."actor_id" LIMIT \$2`).
+		WithArgs(expectedActor.ActorID, 1).
+		WillReturnRows(sqlmock.NewRows([]string{"actor_id", "first_name", "last_name", "last_update", "deleted_at"}).
+			AddRow(expectedActor.ActorID, expectedActor.FirstName, expectedActor.LastName, expectedActor.LastUpdate, expectedActor.DeletedAt))
+
+	actor, err := ReadOneActor(gormDB, int64(expectedActor.ActorID))
+
+	assert.NoError(t, err)
+	assert.Equal(t, expectedActor, actor)
 
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Errorf("Unfulfilled expectations: %v", err)
