@@ -17,7 +17,7 @@ func PostStoreHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateStore(&newStore); err != nil {
+	if err = CreateStore(db.GORM, &newStore); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -34,7 +34,7 @@ func GetStoresHandler(context *gin.Context) {
 		return
 	}
 
-	stores, totalRecords, err := ReadAllStores(pagination)
+	stores, totalRecords, err := ReadAllStores(db.GORM, pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -50,7 +50,7 @@ func GetStoreHandler(context *gin.Context) {
 		return
 	}
 
-	store, err := ReadOneStore(storeID)
+	store, err := ReadOneStore(db.GORM, storeID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -66,7 +66,7 @@ func PutStoreHandler(context *gin.Context) {
 		return
 	}
 
-	store, err := ReadOneStore(storeID)
+	store, err := ReadOneStore(db.GORM, storeID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -81,7 +81,7 @@ func PutStoreHandler(context *gin.Context) {
 
 	updatedStore.StoreID = store.StoreID
 
-	err = UpdateOneStore(updatedStore)
+	err = UpdateOneStore(db.GORM, updatedStore)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update store"})
 		return
@@ -97,13 +97,13 @@ func DeleteStoreHandler(context *gin.Context) {
 		return
 	}
 
-	store, err := ReadOneStore(storeID)
+	store, err := ReadOneStore(db.GORM, storeID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Store not found"})
 		return
 	}
 
-	err = DeleteOneStore(*store)
+	err = DeleteOneStore(db.GORM, *store)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete store"})
 		return
