@@ -17,7 +17,7 @@ func PostFilmCategoryHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateFilmCategory(&newFilmCategory); err != nil {
+	if err = CreateFilmCategory(db.GORM, &newFilmCategory); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -38,7 +38,7 @@ func GetFilmCategoriesHandler(context *gin.Context) {
 	order := context.DefaultQuery("order", "asc")
 	sortParams := utils.JoinStrings(field, order)
 
-	filmCategories, totalRecords, err := ReadAllFilmCategories(pagination, sortParams)
+	filmCategories, totalRecords, err := ReadAllFilmCategories(db.GORM, pagination, sortParams)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -60,7 +60,7 @@ func GetFilmCategoryHandler(context *gin.Context) {
 		return
 	}
 
-	filmCategory, err := ReadOneFilmCategory(filmID, categoryID)
+	filmCategory, err := ReadOneFilmCategory(db.GORM, filmID, categoryID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -82,7 +82,7 @@ func PutFilmCategoryHandler(context *gin.Context) {
 		return
 	}
 
-	_, err = ReadOneFilmCategory(filmID, categoryID)
+	_, err = ReadOneFilmCategory(db.GORM, filmID, categoryID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -95,7 +95,7 @@ func PutFilmCategoryHandler(context *gin.Context) {
 		return
 	}
 
-	err = UpdateOneFilmCategory(updatedFilmCategory)
+	err = UpdateOneFilmCategory(db.GORM, updatedFilmCategory)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update film_category"})
 		return
@@ -117,13 +117,13 @@ func DeleteFilmCategoryHandler(context *gin.Context) {
 		return
 	}
 
-	filmCategory, err := ReadOneFilmCategory(filmID, categoryID)
+	filmCategory, err := ReadOneFilmCategory(db.GORM, filmID, categoryID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneFilmCategory(*filmCategory)
+	err = DeleteOneFilmCategory(db.GORM, *filmCategory)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete film_category"})
 		return
