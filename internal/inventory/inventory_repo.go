@@ -2,17 +2,19 @@ package inventory
 
 import (
 	"main/pkg/db"
+
+	"gorm.io/gorm"
 )
 
-func CreateInventory(inventory *Inventory) error {
-	return db.GORM.Table("inventory").Create(&inventory).Error
+func CreateInventory(db *gorm.DB, inventory *Inventory) error {
+	return db.Table("inventory").Create(&inventory).Error
 }
 
-func ReadAllInventories(pagination db.Pagination) ([]Inventory, int64, error) {
+func ReadAllInventories(db *gorm.DB, pagination db.Pagination) ([]Inventory, int64, error) {
 	var inventories []Inventory
 	var totalRecords int64
 
-	query := db.GORM.Model(&Inventory{})
+	query := db.Model(&Inventory{})
 	query.Count(&totalRecords)
 
 	offset := (pagination.Page - 1) * pagination.Limit
@@ -20,16 +22,16 @@ func ReadAllInventories(pagination db.Pagination) ([]Inventory, int64, error) {
 	return inventories, totalRecords, err
 }
 
-func ReadOneInventory(inventoryID int64) (*Inventory, error) {
+func ReadOneInventory(db *gorm.DB, inventoryID int64) (*Inventory, error) {
 	var inventory Inventory
-	err := db.GORM.First(&inventory, inventoryID).Error
+	err := db.First(&inventory, inventoryID).Error
 	return &inventory, err
 }
 
-func UpdateOneInventory(inventory Inventory) error {
-	return db.GORM.Save(&inventory).Error
+func UpdateOneInventory(db *gorm.DB, inventory Inventory) error {
+	return db.Save(&inventory).Error
 }
 
-func DeleteOneInventory(inventory Inventory) error {
-	return db.GORM.Delete(&inventory).Error
+func DeleteOneInventory(db *gorm.DB, inventory Inventory) error {
+	return db.Delete(&inventory).Error
 }

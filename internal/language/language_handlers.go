@@ -22,7 +22,7 @@ func PostLanguageHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateLanguage(&newLanguage); err != nil {
+	if err = CreateLanguage(db.GORM, &newLanguage); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -48,7 +48,7 @@ func PostLanguagesHandler(context *gin.Context) {
 			continue
 		}
 
-		if err = CreateLanguage(&newLanguage); err != nil {
+		if err = CreateLanguage(db.GORM, &newLanguage); err != nil {
 			context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -83,7 +83,7 @@ func GetLanguagesHandler(context *gin.Context) {
 		filters["name"] = name
 	}
 
-	languages, totalRecords, err := ReadAllLanguages(pagination, filters)
+	languages, totalRecords, err := ReadAllLanguages(db.GORM, pagination, filters)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -99,7 +99,7 @@ func GetLanguageHandler(context *gin.Context) {
 		return
 	}
 
-	language, err := ReadOneLanguage(languageId)
+	language, err := ReadOneLanguage(db.GORM, languageId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -115,7 +115,7 @@ func GetLanguageAssociatedFilmsHandler(context *gin.Context) {
 		return
 	}
 
-	language, err := ReadOneLanguage(languageId)
+	language, err := ReadOneLanguage(db.GORM, languageId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -137,7 +137,7 @@ func PutLanguageHandler(context *gin.Context) {
 		return
 	}
 
-	language, err := ReadOneLanguage(languageId)
+	language, err := ReadOneLanguage(db.GORM, languageId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -157,7 +157,7 @@ func PutLanguageHandler(context *gin.Context) {
 
 	updatedLanguage.LanguageID = int(language.LanguageID)
 
-	err = UpdateOneLanguage(updatedLanguage)
+	err = UpdateOneLanguage(db.GORM, updatedLanguage)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update language"})
 		return
@@ -173,13 +173,13 @@ func DeleteLanguageHandler(context *gin.Context) {
 		return
 	}
 
-	language, err := ReadOneLanguage(languageId)
+	language, err := ReadOneLanguage(db.GORM, languageId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneLanguage(*language)
+	err = DeleteOneLanguage(db.GORM, *language)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete language"})
 		return
