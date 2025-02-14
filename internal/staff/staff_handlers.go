@@ -22,7 +22,7 @@ func PostStaffHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateStaff(&newStaff); err != nil {
+	if err = CreateStaff(db.GORM, &newStaff); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -39,7 +39,7 @@ func GetStaffsHandler(context *gin.Context) {
 		return
 	}
 
-	staffs, totalRecords, err := ReadAllStaff(pagination)
+	staffs, totalRecords, err := ReadAllStaff(db.GORM, pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -55,7 +55,7 @@ func GetStaffHandler(context *gin.Context) {
 		return
 	}
 
-	staff, err := ReadOneStaff(staffId)
+	staff, err := ReadOneStaff(db.GORM, staffId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -71,7 +71,7 @@ func PutStaffHandler(context *gin.Context) {
 		return
 	}
 
-	staff, err := ReadOneStaff(staffId)
+	staff, err := ReadOneStaff(db.GORM, staffId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -86,7 +86,7 @@ func PutStaffHandler(context *gin.Context) {
 
 	updatedStaff.StaffID = int(staff.StaffID)
 
-	err = UpdateOneStaff(updatedStaff)
+	err = UpdateOneStaff(db.GORM, updatedStaff)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update staff"})
 		return
@@ -102,13 +102,13 @@ func DeleteStaffHandler(context *gin.Context) {
 		return
 	}
 
-	staff, err := ReadOneStaff(staffId)
+	staff, err := ReadOneStaff(db.GORM, staffId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Staff not found"})
 		return
 	}
 
-	err = DeleteOneStaff(*staff)
+	err = DeleteOneStaff(db.GORM, *staff)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete staff"})
 		return
