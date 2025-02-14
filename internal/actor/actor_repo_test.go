@@ -146,3 +146,30 @@ func Test_UpdateOneActor(t *testing.T) {
 	}
 
 }
+
+func Test_DeleteOneActor(t *testing.T) {
+	// return db.Delete(&actor).Error
+	fixedTime := time.Now()
+
+	actor := &Actor{
+		ActorID:    1,
+		FirstName:  "John",
+		LastName:   "Doe",
+		LastUpdate: fixedTime,
+		DeletedAt:  gorm.DeletedAt{Valid: false},
+	}
+
+	mock.ExpectBegin()
+	mock.ExpectExec(`UPDATE "actor" SET .+`).
+		WithArgs(sqlmock.AnyArg(), actor.ActorID).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+	mock.ExpectCommit()
+
+	err := DeleteOneActor(gormDB, *actor)
+
+	assert.NoError(t, err)
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Unfulfilled expectations: %v", err)
+	}
+}
