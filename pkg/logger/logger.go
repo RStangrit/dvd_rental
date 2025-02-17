@@ -21,10 +21,3 @@ func init() {
 	WarningLogger = log.New(file, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
 	ErrorLogger = log.New(file, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
 }
-
-func main() {
-	InfoLogger.Println("Starting the application...")
-	InfoLogger.Println("Something that requires your attention happened")
-	WarningLogger.Println("There is something you should know about")
-	ErrorLogger.Println("Something went wrong")
-}
