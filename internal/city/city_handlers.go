@@ -22,7 +22,7 @@ func PostCityHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateCity(&newCity); err != nil {
+	if err = CreateCity(db.GORM, &newCity); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -39,7 +39,7 @@ func GetCitiesHandler(context *gin.Context) {
 		return
 	}
 
-	cities, totalRecords, err := ReadAllCities(pagination)
+	cities, totalRecords, err := ReadAllCities(db.GORM, pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -55,7 +55,7 @@ func GetCityHandler(context *gin.Context) {
 		return
 	}
 
-	city, err := ReadOneCity(cityId)
+	city, err := ReadOneCity(db.GORM, cityId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -71,7 +71,7 @@ func PutCityHandler(context *gin.Context) {
 		return
 	}
 
-	city, err := ReadOneCity(cityId)
+	city, err := ReadOneCity(db.GORM, cityId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -91,7 +91,7 @@ func PutCityHandler(context *gin.Context) {
 
 	updatedCity.CityID = int(city.CityID)
 
-	err = UpdateOneCity(updatedCity)
+	err = UpdateOneCity(db.GORM, updatedCity)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update city"})
 		return
@@ -107,13 +107,13 @@ func DeleteCityHandler(context *gin.Context) {
 		return
 	}
 
-	city, err := ReadOneCity(cityId)
+	city, err := ReadOneCity(db.GORM, cityId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneCity(*city)
+	err = DeleteOneCity(db.GORM, *city)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete city"})
 		return

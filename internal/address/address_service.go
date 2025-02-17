@@ -2,9 +2,61 @@ package address
 
 import (
 	"errors"
+	"fmt"
+	"main/pkg/db"
 )
 
-func ValidateAddress(address *Address) error {
+type AddressService struct {
+	repo *AddressRepository
+}
+
+func NewAddressService(repo *AddressRepository) *AddressService {
+	return &AddressService{repo: repo}
+}
+
+func (service *AddressService) CreateAddress(newAddress *Address) error {
+	err := service.ValidateAddress(newAddress)
+	if err != nil {
+		return err
+	} else {
+		return service.repo.InsertAddress(newAddress)
+	}
+}
+
+func (service *AddressService) ReadAllAddresses(pagination db.Pagination) ([]Address, int64, error) {
+	addresses, totalRecords, err := service.repo.SelectAllAddresses(service.repo.db, pagination)
+	if err != nil {
+		return nil, 0, err
+	}
+	return addresses, totalRecords, nil
+}
+
+func (service *AddressService) ReadOneAddress(addressId int64) (*Address, error) {
+	address, err := service.repo.SelectOneAddress(service.repo.db, addressId)
+	if err != nil {
+		return nil, err
+	}
+	if address == nil {
+		return nil, fmt.Errorf("address not found")
+	}
+	return address, nil
+}
+
+func (service *AddressService) UpdateOneAddress(address *Address) error {
+	err := service.ValidateAddress(address)
+	if err != nil {
+		return err
+	} else {
+		return service.repo.UpdateOneAddress(service.repo.db, *address)
+	}
+
+}
+
+func (service *AddressService) DeleteOneAddress(address *Address) error {
+	return service.repo.DeleteOneAddress(service.repo.db, *address)
+}
+
+func (service *AddressService) ValidateAddress(address *Address) error {
 	if address.Address == "" {
 		return errors.New("address is required")
 	}

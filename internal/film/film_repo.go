@@ -6,44 +6,44 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateFilm(newFilm *Film) error {
-	return db.GORM.Table("film").Create(&newFilm).Error
+func CreateFilm(db *gorm.DB, newFilm *Film) error {
+	return db.Table("film").Create(&newFilm).Error
 }
 
-func ReadAllFilms(pagination db.Pagination, filters FilmFilter) ([]Film, int64, error) {
+func ReadAllFilms(db *gorm.DB, pagination db.Pagination, filters FilmFilter) ([]Film, int64, error) {
 	var films []Film
 	var totalRecords int64
 
-	db.GORM.Table("film").Count(&totalRecords)
-	err := db.GORM.Table("film").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("film_id asc").Where(filters).Find(&films).Error
+	db.Table("film").Count(&totalRecords)
+	err := db.Table("film").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("film_id asc").Where(filters).Find(&films).Error
 	return films, totalRecords, err
 }
 
-func ReadOneFilm(filmId int64) (*Film, error) {
+func ReadOneFilm(db *gorm.DB, filmId int64) (*Film, error) {
 	var film Film
-	err := db.GORM.Table("film").First(&film, filmId).Error
+	err := db.Table("film").First(&film, filmId).Error
 	return &film, err
 }
 
-func ReadOneFilmActors(filmId int64) (Film, error) {
+func ReadOneFilmActors(db *gorm.DB, filmId int64) (Film, error) {
 	var film Film
-	err := db.GORM.Preload("FilmActors").First(&film, filmId).Error
+	err := db.Preload("FilmActors").First(&film, filmId).Error
 	if err != nil {
 		return Film{}, err
 	}
 	return film, err
 }
 
-func UpdateOneFilm(film Film) error {
-	return db.GORM.Table("film").Omit("id").Updates(film).Error
+func UpdateOneFilm(db *gorm.DB, film Film) error {
+	return db.Table("film").Omit("id").Updates(film).Error
 }
 
-func DeleteOneFilm(film Film) error {
-	return db.GORM.Delete(&film).Error
+func DeleteOneFilm(db *gorm.DB, film Film) error {
+	return db.Delete(&film).Error
 }
 
-func DiscountOneFilm(film Film, discount float64) error {
-	return db.GORM.Table("film").
+func DiscountOneFilm(db *gorm.DB, film Film, discount float64) error {
+	return db.Table("film").
 		Where("film_id = ?", &film.FilmID).
 		Updates(map[string]interface{}{
 			"rental_rate": gorm.Expr("rental_rate * (1 - CAST(? AS FLOAT) / 100)", discount),

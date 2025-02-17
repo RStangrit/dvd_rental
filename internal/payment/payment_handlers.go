@@ -17,7 +17,7 @@ func PostPaymentHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreatePayment(&newPayment); err != nil {
+	if err = CreatePayment(db.GORM, &newPayment); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -34,7 +34,7 @@ func GetPaymentsHandler(context *gin.Context) {
 		return
 	}
 
-	payments, totalRecords, err := ReadAllPayments(pagination)
+	payments, totalRecords, err := ReadAllPayments(db.GORM, pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -50,7 +50,7 @@ func GetPaymentHandler(context *gin.Context) {
 		return
 	}
 
-	payment, err := ReadOnePayment(paymentID)
+	payment, err := ReadOnePayment(db.GORM, paymentID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -66,7 +66,7 @@ func PutPaymentHandler(context *gin.Context) {
 		return
 	}
 
-	payment, err := ReadOnePayment(paymentID)
+	payment, err := ReadOnePayment(db.GORM, paymentID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -81,7 +81,7 @@ func PutPaymentHandler(context *gin.Context) {
 
 	updatedPayment.PaymentID = payment.PaymentID
 
-	err = UpdateOnePayment(updatedPayment)
+	err = UpdateOnePayment(db.GORM, updatedPayment)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update payment"})
 		return
@@ -97,13 +97,13 @@ func DeletePaymentHandler(context *gin.Context) {
 		return
 	}
 
-	payment, err := ReadOnePayment(paymentID)
+	payment, err := ReadOnePayment(db.GORM, paymentID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Payment not found"})
 		return
 	}
 
-	err = DeleteOnePayment(*payment)
+	err = DeleteOnePayment(db.GORM, *payment)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete payment"})
 		return

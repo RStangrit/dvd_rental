@@ -25,7 +25,7 @@ func PostInventoryHandler(context *gin.Context) {
 
 	newInventory.LastUpdate = time.Now()
 
-	if err = CreateInventory(&newInventory); err != nil {
+	if err = CreateInventory(db.GORM, &newInventory); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -42,7 +42,7 @@ func GetInventoriesHandler(context *gin.Context) {
 		return
 	}
 
-	inventories, totalRecords, err := ReadAllInventories(pagination)
+	inventories, totalRecords, err := ReadAllInventories(db.GORM, pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -58,7 +58,7 @@ func GetInventoryHandler(context *gin.Context) {
 		return
 	}
 
-	inventory, err := ReadOneInventory(inventoryId)
+	inventory, err := ReadOneInventory(db.GORM, inventoryId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -74,7 +74,7 @@ func PutInventoryHandler(context *gin.Context) {
 		return
 	}
 
-	inventory, err := ReadOneInventory(inventoryId)
+	inventory, err := ReadOneInventory(db.GORM, inventoryId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -95,7 +95,7 @@ func PutInventoryHandler(context *gin.Context) {
 	updatedInventory.InventoryID = inventory.InventoryID
 	updatedInventory.LastUpdate = time.Now()
 
-	err = UpdateOneInventory(updatedInventory)
+	err = UpdateOneInventory(db.GORM, updatedInventory)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update inventory"})
 		return
@@ -111,13 +111,13 @@ func DeleteInventoryHandler(context *gin.Context) {
 		return
 	}
 
-	inventory, err := ReadOneInventory(inventoryId)
+	inventory, err := ReadOneInventory(db.GORM, inventoryId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneInventory(*inventory)
+	err = DeleteOneInventory(db.GORM, *inventory)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete inventory"})
 		return

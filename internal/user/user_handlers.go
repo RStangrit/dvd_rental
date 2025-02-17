@@ -3,7 +3,6 @@ package user
 import (
 	"main/pkg/auth"
 	"main/pkg/db"
-	"main/pkg/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -23,7 +22,7 @@ func PostUserHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateUser(&newUser); err != nil {
+	if err = CreateUser(db.GORM, &newUser); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -44,7 +43,7 @@ func GetUsersHandler(context *gin.Context) {
 		return
 	}
 
-	users, totalRecords, err := ReadAllUsers(pagination)
+	users, totalRecords, err := ReadAllUsers(db.GORM, pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -70,13 +69,13 @@ func LoginUserHandler(context *gin.Context) {
 		return
 	}
 
-	user, err := ReadOneUserByEmail(inputUser.Email)
+	user, err := ReadOneUserByEmail(db.GORM, inputUser.Email)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = utils.CompareHashAndPassword(user.Password, inputUser.Password)
+	err = auth.CompareHashAndPassword(user.Password, inputUser.Password)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

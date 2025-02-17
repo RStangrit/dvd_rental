@@ -17,7 +17,7 @@ func PostFilmActorHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateFilmActor(&newFilmActor); err != nil {
+	if err = CreateFilmActor(db.GORM, &newFilmActor); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -34,7 +34,7 @@ func GetFilmsActorsHandler(context *gin.Context) {
 		return
 	}
 
-	filmActors, totalRecords, err := ReadAllFilmActors(pagination)
+	filmActors, totalRecords, err := ReadAllFilmActors(db.GORM, pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -56,7 +56,7 @@ func GetFilmActorHandler(context *gin.Context) {
 		return
 	}
 
-	filmActor, err := ReadOneFilmActor(actorID, filmID)
+	filmActor, err := ReadOneFilmActor(db.GORM, actorID, filmID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -78,7 +78,7 @@ func PutFilmActorHandler(context *gin.Context) {
 		return
 	}
 
-	_, err = ReadOneFilmActor(actorID, filmID)
+	_, err = ReadOneFilmActor(db.GORM, actorID, filmID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -91,7 +91,7 @@ func PutFilmActorHandler(context *gin.Context) {
 		return
 	}
 
-	err = UpdateOneFilmActor(updatedFilmActor)
+	err = UpdateOneFilmActor(db.GORM, updatedFilmActor)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update film_actor"})
 		return
@@ -113,13 +113,13 @@ func DeleteFilmActorHandler(context *gin.Context) {
 		return
 	}
 
-	filmActor, err := ReadOneFilmActor(actorID, filmID)
+	filmActor, err := ReadOneFilmActor(db.GORM, actorID, filmID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneFilmActor(*filmActor)
+	err = DeleteOneFilmActor(db.GORM, *filmActor)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete film_actor"})
 		return

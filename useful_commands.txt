@@ -1,0 +1,6 @@
+go test ./...
+go test ./... -coverprofile=coverage.out 
+go tool cover -html=coverage.out
+go test ./... -coverprofile=coverage.out && go tool cover -html=coverage.out
+go test -v ./internal/actor -run Test_RegisterActorRoutes
+go test -v ./internal/actor -run Test_PostActorHandler_Success

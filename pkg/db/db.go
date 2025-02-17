@@ -16,7 +16,7 @@ var (
 	GORM *gorm.DB
 )
 
-func InitDb() error {
+func InitDb() (*gorm.DB, error) {
 	params := config.LoadConfig()
 	dsn := params.DSN
 	newLogger := logger.New(
@@ -38,7 +38,7 @@ func InitDb() error {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("connection to the database has been successfully established")
+	log.Println("connection to the database has been successfully established")
 
 	pool, err := GORM.DB()
 	if err != nil {
@@ -49,11 +49,11 @@ func InitDb() error {
 	pool.SetMaxIdleConns(2)
 	pool.SetConnMaxLifetime(30 * time.Minute)
 	pool.SetConnMaxIdleTime(10 * time.Minute)
-	fmt.Println("database has been successfully configured")
+	log.Println("database has been successfully configured")
 
 	trackQueryTime()
 
-	return nil
+	return GORM, nil
 }
 
 func trackQueryTime() {

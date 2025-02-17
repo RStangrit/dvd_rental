@@ -46,3 +46,21 @@ func getOrder(model any) int {
 	}
 	return 999
 }
+
+func IsModelRegistered(model any) bool {
+	modelType := reflect.TypeOf(model)
+	if modelType.Kind() == reflect.Ptr {
+		modelType = modelType.Elem()
+	}
+
+	for _, registered := range ModelRegistry {
+		registeredType := reflect.TypeOf(registered)
+		if registeredType.Kind() == reflect.Ptr {
+			registeredType = registeredType.Elem()
+		}
+		if registeredType == modelType {
+			return true
+		}
+	}
+	return false
+}

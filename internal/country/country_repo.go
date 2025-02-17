@@ -2,31 +2,33 @@ package country
 
 import (
 	"main/pkg/db"
+
+	"gorm.io/gorm"
 )
 
-func CreateCountry(newCountry *Country) error {
-	return db.GORM.Table("country").Create(&newCountry).Error
+func CreateCountry(db *gorm.DB, newCountry *Country) error {
+	return db.Table("country").Create(&newCountry).Error
 }
 
-func ReadAllCountries(pagination db.Pagination) ([]Country, int64, error) {
+func ReadAllCountries(db *gorm.DB, pagination db.Pagination) ([]Country, int64, error) {
 	var countries []Country
 	var totalRecords int64
 
-	db.GORM.Table("country").Count(&totalRecords)
-	err := db.GORM.Table("country").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("country_id asc").Find(&countries).Error
+	db.Table("country").Count(&totalRecords)
+	err := db.Table("country").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("country_id asc").Find(&countries).Error
 	return countries, totalRecords, err
 }
 
-func ReadOneCountry(countryId int64) (*Country, error) {
+func ReadOneCountry(db *gorm.DB, countryId int64) (*Country, error) {
 	var country Country
-	err := db.GORM.Table("country").First(&country, countryId).Error
+	err := db.Table("country").First(&country, countryId).Error
 	return &country, err
 }
 
-func UpdateOneCountry(country Country) error {
-	return db.GORM.Table("country").Omit("country_id").Updates(country).Error
+func UpdateOneCountry(db *gorm.DB, country Country) error {
+	return db.Table("country").Omit("country_id").Updates(country).Error
 }
 
-func DeleteOneCountry(country Country) error {
-	return db.GORM.Delete(&country).Error
+func DeleteOneCountry(db *gorm.DB, country Country) error {
+	return db.Delete(&country).Error
 }

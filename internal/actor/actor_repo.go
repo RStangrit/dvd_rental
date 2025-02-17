@@ -2,43 +2,42 @@ package actor
 
 import (
 	"main/pkg/db"
+
+	"gorm.io/gorm"
 )
 
-func CreateActor(newActor *Actor) error {
-	return db.GORM.Table("actor").Create(&newActor).Error
+func CreateActor(db *gorm.DB, newActor *Actor) error {
+	return db.Table("actor").Create(&newActor).Error
 }
 
-func ReadAllActors(pagination db.Pagination) ([]Actor, int64, error) {
-	var actors []Actor
+func ReadAllActors(db *gorm.DB, pagination db.Pagination) ([]*Actor, int64, error) {
+	var actors []*Actor
 	var totalRecords int64
 
-	db.GORM.Table("actor").Count(&totalRecords)
-	err := db.GORM.Table("actor").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("actor_id asc").Find(&actors).Error
+	db.Table("actor").Count(&totalRecords)
+	err := db.Table("actor").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("actor_id asc").Find(&actors).Error
 	return actors, totalRecords, err
 }
 
-func ReadOneActor(actorId int64) (*Actor, error) {
+func ReadOneActor(db *gorm.DB, actorId int64) (*Actor, error) {
 	var actor Actor
-	err := db.GORM.Table("actor").First(&actor, actorId).Error
+	err := db.Table("actor").First(&actor, actorId).Error
 	return &actor, err
 }
 
-func ReadOneActorFilms(actorId int64) (Actor, error) {
+func ReadOneActorFilms(db *gorm.DB, actorId int64) (*Actor, error) {
 	var actor Actor
-	err := db.GORM.Preload("ActorFilms").
+	err := db.Preload("ActorFilms").
 		Where("actor.actor_id = ?", actorId).
 		First(&actor).Error
 
-	if err != nil {
-		return Actor{}, err
-	}
-	return actor, err
+	return &actor, err
 }
 
-func UpdateOneActor(actor Actor) error {
-	return db.GORM.Table("actor").Omit("actor_id").Updates(actor).Error
+func UpdateOneActor(db *gorm.DB, actor Actor) error {
+	return db.Table("actor").Omit("actor_id").Updates(actor).Error
 }
 
-func DeleteOneActor(actor Actor) error {
-	return db.GORM.Delete(&actor).Error
+func DeleteOneActor(db *gorm.DB, actor Actor) error {
+	return db.Delete(&actor).Error
 }

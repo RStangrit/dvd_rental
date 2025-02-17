@@ -17,7 +17,7 @@ func PostRentalHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateRental(&newRental); err != nil {
+	if err = CreateRental(db.GORM, &newRental); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -34,7 +34,7 @@ func GetRentalsHandler(context *gin.Context) {
 		return
 	}
 
-	rentals, totalRecords, err := ReadAllRentals(pagination)
+	rentals, totalRecords, err := ReadAllRentals(db.GORM, pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -50,7 +50,7 @@ func GetRentalHandler(context *gin.Context) {
 		return
 	}
 
-	rental, err := ReadOneRental(rentalID)
+	rental, err := ReadOneRental(db.GORM, rentalID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -66,7 +66,7 @@ func PutRentalHandler(context *gin.Context) {
 		return
 	}
 
-	rental, err := ReadOneRental(rentalID)
+	rental, err := ReadOneRental(db.GORM, rentalID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -81,7 +81,7 @@ func PutRentalHandler(context *gin.Context) {
 
 	updatedRental.RentalID = rental.RentalID
 
-	err = UpdateOneRental(updatedRental)
+	err = UpdateOneRental(db.GORM, updatedRental)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update rental"})
 		return
@@ -97,13 +97,13 @@ func DeleteRentalHandler(context *gin.Context) {
 		return
 	}
 
-	rental, err := ReadOneRental(rentalID)
+	rental, err := ReadOneRental(db.GORM, rentalID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Rental not found"})
 		return
 	}
 
-	err = DeleteOneRental(*rental)
+	err = DeleteOneRental(db.GORM, *rental)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete rental"})
 		return

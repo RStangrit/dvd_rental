@@ -22,7 +22,7 @@ func PostCountryHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateCountry(&newCountry); err != nil {
+	if err = CreateCountry(db.GORM, &newCountry); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -39,7 +39,7 @@ func GetCountriesHandler(context *gin.Context) {
 		return
 	}
 
-	countries, totalRecords, err := ReadAllCountries(pagination)
+	countries, totalRecords, err := ReadAllCountries(db.GORM, pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -55,7 +55,7 @@ func GetCountryHandler(context *gin.Context) {
 		return
 	}
 
-	country, err := ReadOneCountry(countryId)
+	country, err := ReadOneCountry(db.GORM, countryId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -71,7 +71,7 @@ func PutCountryHandler(context *gin.Context) {
 		return
 	}
 
-	country, err := ReadOneCountry(countryId)
+	country, err := ReadOneCountry(db.GORM, countryId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -91,7 +91,7 @@ func PutCountryHandler(context *gin.Context) {
 
 	updatedCountry.CountryID = country.CountryID
 
-	err = UpdateOneCountry(updatedCountry)
+	err = UpdateOneCountry(db.GORM, updatedCountry)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update country"})
 		return
@@ -107,13 +107,13 @@ func DeleteCountryHandler(context *gin.Context) {
 		return
 	}
 
-	country, err := ReadOneCountry(countryId)
+	country, err := ReadOneCountry(db.GORM, countryId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneCountry(*country)
+	err = DeleteOneCountry(db.GORM, *country)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete country"})
 		return

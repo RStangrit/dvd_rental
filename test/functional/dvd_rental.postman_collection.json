@@ -403,7 +403,7 @@
 									"    pm.expect(pm.response.json().data.language_id).to.exist;",
 									"    pm.globals.set(\"languageId\", pm.response.json().data.language_id);",
 									"});",
-									"// Test to check if the response contains the fields actor_id, first_name, and last_name with the correct data types",
+									"",
 									"pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
 									"    var responseData = pm.response.json().data;",
 									"",
@@ -1810,7 +1810,6 @@
 									"}",
 									"",
 									"categoryObject = generateCategory()",
-									"console.log(categoryObject)",
 									"pm.globals.set(\"categoryObject\", JSON.stringify(categoryObject));",
 									""
 								],
@@ -1834,6 +1833,8 @@
 									"    pm.expect(jsonData.data).to.have.property(\"name\").that.is.a(\"string\");",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
 									"    pm.expect(jsonData.data).to.have.property(\"deleted_at\").that.is.null;",
+									"",
+									"    pm.globals.set(\"categoryId\", pm.response.json().data.category_id);",
 									"});",
 									""
 								],
@@ -1869,7 +1870,308 @@
 			]
 		},
 		{
-			"name": "user",
+			"name": "film_category",
+			"item": [
+				{
+					"name": "POST /category",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateCategory(id = null) {",
+									"    return {",
+									"        category_id: id ?? Math.floor(Math.random() * 1000),",
+									"        name: `Category_${Math.random().toString(36).substring(7)}`,",
+									"        last_update: new Date().toISOString(),",
+									"        deleted_at: null",
+									"    };",
+									"}",
+									"",
+									"categoryObject = generateCategory()",
+									"pm.globals.set(\"categoryObject\", JSON.stringify(categoryObject));",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check status\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Check response data\", function () {",
+									"    let jsonData = pm.response.json();",
+									"",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"    pm.expect(jsonData.data).to.have.property(\"category_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"deleted_at\").that.is.null;",
+									"",
+									"    pm.globals.set(\"categoryId\", pm.response.json().data.category_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{categoryObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/category",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /film",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomFilm() {",
+									"    const ratings = [\"G\", \"PG\", \"PG-13\", \"R\", \"NC-17\"];",
+									"    const specialFeaturesList = [\"Trailers\", \"Deleted Scenes\", \"Behind the Scenes\", \"Commentaries\"];",
+									"    ",
+									"    return {",
+									"        title: `Title ${Math.floor(Math.random() * 1000)}`,",
+									"        description: `Description ${Math.random().toString(36).substring(7)}`,",
+									"        release_year: Math.floor(Math.random() * (2025 - 1900 + 1)) + 1901,",
+									"        language_id: Math.floor(Math.random() * 6) + 1,",
+									"        rental_duration: Math.floor(Math.random() * 30) + 1,",
+									"        rental_rate: parseFloat((Math.random() * (10 - 1) + 1).toFixed(2)),",
+									"        length: Math.floor(Math.random() * (240 - 60 + 1)) + 60,",
+									"        replacement_cost: parseFloat((Math.random() * (20 - 1) + 1).toFixed(2)),",
+									"        rating: ratings[Math.floor(Math.random() * ratings.length)],",
+									"        special_features: Array.from({ length: Math.floor(Math.random() * specialFeaturesList.length) + 1 }, () =>",
+									"            specialFeaturesList[Math.floor(Math.random() * specialFeaturesList.length)]",
+									"        ),",
+									"        fulltext: `Lorem ipsum ${Math.random().toString(36).substring(7)}`,",
+									"    };",
+									"}",
+									"",
+									"filmObject = generateRandomFilm()",
+									"pm.globals.set(\"filmObject\", JSON.stringify(filmObject));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"var responseJSON = pm.response.json();",
+									"",
+									"pm.test(\"Response body structure is valid\", function () {",
+									"    pm.expect(responseJSON).to.be.an('object').that.has.property('data');",
+									"});",
+									"",
+									"pm.test(\"Film object structure is valid\", function () {",
+									"    pm.expect(responseJSON.data).has.property('film_id').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('title').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('description').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('release_year').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('language_id').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('rental_duration').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('rental_rate').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('length').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('replacement_cost').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('rating').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('last_update').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('special_features').that.is.an('array');",
+									"    pm.expect(responseJSON.data).has.property('fulltext').that.is.a('string');",
+									"    pm.globals.set(\"filmId\", pm.response.json().data.film_id);",
+									"    pm.globals.set(\"filmTitle\", pm.response.json().data.title);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{filmObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/film",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"film"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /film-category",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateFilmCategory(filmId, categoryId) {",
+									"    return {",
+									"        film_id: filmId,",
+									"        category_id: categoryId,",
+									"        last_update: new Date().toISOString(),",
+									"        deleted_at: null",
+									"    };",
+									"}",
+									"",
+									"filmId = pm.globals.get(\"filmId\");",
+									"categoryId = pm.globals.get(\"categoryId\");",
+									"",
+									"const filmCategoryObject = generateFilmCategory(filmId, categoryId);",
+									"pm.globals.set(\"filmCategoryObject\", JSON.stringify(filmCategoryObject));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response has correct structure\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"    pm.expect(jsonData.data).to.have.property('film_id').that.is.a('number');",
+									"    pm.expect(jsonData.data).to.have.property('category_id').that.is.a('number');",
+									"    pm.expect(jsonData.data).to.have.property('last_update').that.is.a('string');",
+									"    pm.expect(jsonData.data).to.have.property('deleted_at').that.is.null;",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{filmCategoryObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/film-category",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"film-category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /film-categories",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has correct structure\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"    jsonData.data.forEach(film_category => {",
+									"        pm.expect(film_category).to.have.property('film_id').that.is.a('number');",
+									"        pm.expect(film_category).to.have.property('category_id').that.is.a('number');",
+									"        pm.expect(film_category).to.have.property('last_update').that.is.a('string');",
+									"        pm.expect(film_category).to.have.property('deleted_at').that.is.null;",
+									"    })",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/film-categories?order=desc&field=category_id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"film-categories"
+							],
+							"query": [
+								{
+									"key": "order",
+									"value": "desc"
+								},
+								{
+									"key": "field",
+									"value": "category_id"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "address",
 			"item": [
 				{
 					"name": "GET /ping",
@@ -1917,6 +2219,151 @@
 					"response": []
 				},
 				{
+					"name": "POST /address",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"// pm.test(\"Body matches string\", function () {",
+									"//     pm.expect(pm.response.text()).to.include(\"language_id\");",
+									"//     pm.expect(pm.response.json().data.language_id).to.exist;",
+									"//     pm.globals.set(\"languageId\", pm.response.json().data.language_id);",
+									"//     pm.globals.set(\"languageName\", pm.response.json().data.name);",
+									"// });",
+									"",
+									"// pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
+									"//     var responseData = pm.response.json().data;",
+									"",
+									"//     pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
+									"//     pm.expect(responseData).to.have.property('name').that.is.a('string');",
+									"//     pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"// });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomString(length) {",
+									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    let result = '';",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+									"    }",
+									"    return result;",
+									"}",
+									"",
+									"function generateTestAddress() {",
+									"    return {",
+									"        address: generateRandomString(50),",
+									"        address2: generateRandomString(50),",
+									"        district: generateRandomString(20),",
+									"        // city_id: Math.floor(Math.random() * 100),",
+									"        city_id: 6,",
+									"        postal_code: generateRandomString(10),",
+									"        phone: `+1-${Math.floor(Math.random() * 10000000000)}`,",
+									"        deleted_at: null,",
+									"        customer: null,",
+									"        staff: null,",
+									"        store: null",
+									"    };",
+									"}",
+									"",
+									"const addressObject = generateTestAddress();",
+									"pm.globals.set(\"addressObject\", JSON.stringify(addressObject));",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{addressObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/address",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"address"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "GET /ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {",
+									"    pm.expect(pm.response.code).to.be.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains the message 'pong'\", function () {",
+									"    pm.expect(pm.response.json().message).to.equal('pong');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/ping",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "POST /user",
 					"event": [
 						{
@@ -1934,8 +2381,35 @@
 									"}",
 									"",
 									"userObject = generateUser()",
-									"",
+									"console.log(userObject)",
 									"pm.globals.set(\"userObject\", JSON.stringify(userObject));",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response data is existing\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Fields types matches expected ones\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"user_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"email\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"password\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"deleted_at\");",
+									"});",
 									""
 								],
 								"type": "text/javascript",
@@ -1962,6 +2436,111 @@
 							],
 							"path": [
 								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"userObject = pm.globals.get(\"userObject\");",
+									"userObject = JSON.parse(userObject)",
+									"pm.globals.set(\"userObject.email\", userObject.email);",
+									"pm.globals.set(\"userObject.password\", userObject.password);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.equal(\"successfully authorized\");",
+									"    pm.expect(jsonData.token).to.be.a(\"string\");",
+									"    pm.globals.set(\"authToken\", jsonData.token);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{userObject.email}}\",\n    \"password\": \"{{userObject.password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/login",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /users",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "headerPrefix",
+									"value": "",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/users?page=1&limit=10",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
 							]
 						}
 					},
@@ -1997,6 +2576,61 @@
 							"path": [
 								"files",
 								"{{filepath}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cors",
+			"item": [
+				{
+					"name": "GET /ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {",
+									"    pm.expect(pm.response.code).to.be.equal(403);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "http://localhost:3001",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api_url}}/ping",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ping"
 							]
 						}
 					},

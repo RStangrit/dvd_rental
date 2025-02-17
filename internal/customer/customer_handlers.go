@@ -22,7 +22,7 @@ func PostCustomerHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateCustomer(&newCustomer); err != nil {
+	if err = CreateCustomer(db.GORM, &newCustomer); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -39,7 +39,7 @@ func GetCustomersHandler(context *gin.Context) {
 		return
 	}
 
-	customers, totalRecords, err := ReadAllCustomers(pagination)
+	customers, totalRecords, err := ReadAllCustomers(db.GORM, pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -55,7 +55,7 @@ func GetCustomerHandler(context *gin.Context) {
 		return
 	}
 
-	customer, err := ReadOneCustomer(customerId)
+	customer, err := ReadOneCustomer(db.GORM, customerId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -71,7 +71,7 @@ func PutCustomerHandler(context *gin.Context) {
 		return
 	}
 
-	customer, err := ReadOneCustomer(customerId)
+	customer, err := ReadOneCustomer(db.GORM, customerId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -86,7 +86,7 @@ func PutCustomerHandler(context *gin.Context) {
 
 	updatedCustomer.CustomerID = int(customer.CustomerID)
 
-	err = UpdateOneCustomer(updatedCustomer)
+	err = UpdateOneCustomer(db.GORM, updatedCustomer)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update customer"})
 		return
@@ -102,13 +102,13 @@ func DeleteCustomerHandler(context *gin.Context) {
 		return
 	}
 
-	customer, err := ReadOneCustomer(customerId)
+	customer, err := ReadOneCustomer(db.GORM, customerId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Customer not found"})
 		return
 	}
 
-	err = DeleteOneCustomer(*customer)
+	err = DeleteOneCustomer(db.GORM, *customer)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete customer"})
 		return
