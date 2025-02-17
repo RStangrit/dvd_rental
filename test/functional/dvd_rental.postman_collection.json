@@ -1873,7 +1873,7 @@
 			"name": "film_category",
 			"item": [
 				{
-					"name": "POST /category Copy",
+					"name": "POST /category",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1947,7 +1947,7 @@
 					"response": []
 				},
 				{
-					"name": "POST /film Copy",
+					"name": "POST /film",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2163,6 +2163,148 @@
 									"key": "field",
 									"value": "category_id"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "address",
+			"item": [
+				{
+					"name": "GET /ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {",
+									"    pm.expect(pm.response.code).to.be.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains the message 'pong'\", function () {",
+									"    pm.expect(pm.response.json().message).to.equal('pong');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/ping",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /address",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"// pm.test(\"Body matches string\", function () {",
+									"//     pm.expect(pm.response.text()).to.include(\"language_id\");",
+									"//     pm.expect(pm.response.json().data.language_id).to.exist;",
+									"//     pm.globals.set(\"languageId\", pm.response.json().data.language_id);",
+									"//     pm.globals.set(\"languageName\", pm.response.json().data.name);",
+									"// });",
+									"",
+									"// pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
+									"//     var responseData = pm.response.json().data;",
+									"",
+									"//     pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
+									"//     pm.expect(responseData).to.have.property('name').that.is.a('string');",
+									"//     pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"// });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomString(length) {",
+									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    let result = '';",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+									"    }",
+									"    return result;",
+									"}",
+									"",
+									"function generateTestAddress() {",
+									"    return {",
+									"        address: generateRandomString(50),",
+									"        address2: generateRandomString(50),",
+									"        district: generateRandomString(20),",
+									"        // city_id: Math.floor(Math.random() * 100),",
+									"        city_id: 6,",
+									"        postal_code: generateRandomString(10),",
+									"        phone: `+1-${Math.floor(Math.random() * 10000000000)}`,",
+									"        deleted_at: null,",
+									"        customer: null,",
+									"        staff: null,",
+									"        store: null",
+									"    };",
+									"}",
+									"",
+									"const addressObject = generateTestAddress();",
+									"pm.globals.set(\"addressObject\", JSON.stringify(addressObject));",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{addressObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/address",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"address"
 							]
 						}
 					},

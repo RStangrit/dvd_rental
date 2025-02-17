@@ -16,7 +16,7 @@ var (
 	GORM *gorm.DB
 )
 
-func InitDb() error {
+func InitDb() (*gorm.DB, error) {
 	params := config.LoadConfig()
 	dsn := params.DSN
 	newLogger := logger.New(
@@ -53,7 +53,7 @@ func InitDb() error {
 
 	trackQueryTime()
 
-	return nil
+	return GORM, nil
 }
 
 func trackQueryTime() {

@@ -6,16 +6,20 @@ import (
 	"main/pkg/db"
 	"main/pkg/db/migrations"
 	"main/pkg/utils/seeds"
+
+	"gorm.io/gorm"
 )
 
 func main() {
-	initialize()
-	server.InitServer()
+	db := initialize()
+	server.InitServer(db)
 }
 
-func initialize() {
+func initialize() *gorm.DB {
 	log.Println("Initializing database...")
-	if err := db.InitDb(); err != nil {
+
+	database, err := db.InitDb()
+	if err != nil {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}
 
@@ -28,4 +32,6 @@ func initialize() {
 	if err := seeds.SeedLanguageData(); err != nil {
 		log.Fatalf("Failed to seed language data: %v", err)
 	}
+
+	return database
 }

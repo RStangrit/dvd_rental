@@ -26,13 +26,14 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-func InitServer() {
+func InitServer(db *gorm.DB) {
 	params := config.LoadConfig()
 	server := setupServer()
 
-	registerRoutes(server)
+	registerRoutes(server, db)
 
 	port := getPort(params.Port)
 	log.Printf("Server is running on port %s", port)
@@ -64,8 +65,14 @@ func getPort(configPort string) string {
 	return "8080"
 }
 
-func registerRoutes(server *gin.Engine) {
+func registerRoutes(server *gin.Engine, db *gorm.DB) {
+	//registration method for MVC
+	addressRoutes := address.NewAddressRoutes(db)
+	addressRoutes.RegisterAddressRoutes(server)
+
 	routes := []func(*gin.Engine){
+
+		//old registration method
 		language.RegisterLanguageRoutes,
 		actor.RegisterActorRoutes,
 		film.RegisterFilmRoutes,
@@ -75,7 +82,6 @@ func registerRoutes(server *gin.Engine) {
 		film_category.RegisterFilmCategoryRoutes,
 		country.RegisterCountryRoutes,
 		city.RegisterCityRoutes,
-		address.RegisterAddressRoutes,
 		customer.RegisterCustomerRoutes,
 		staff.RegisterStaffRoutes,
 		store.RegisterStoreRoutes,

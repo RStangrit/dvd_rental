@@ -6,11 +6,19 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateAddress(db *gorm.DB, newAddress *Address) error {
-	return db.Table("address").Create(&newAddress).Error
+type AddressRepository struct {
+	db *gorm.DB
 }
 
-func ReadAllAddresses(db *gorm.DB, pagination db.Pagination) ([]Address, int64, error) {
+func NewAddressRepository(db *gorm.DB) *AddressRepository {
+	return &AddressRepository{db: db}
+}
+
+func (repo *AddressRepository) InsertAddress(newAddress *Address) error {
+	return repo.db.Table("address").Create(&newAddress).Error
+}
+
+func (repo *AddressRepository) SelectAllAddresses(db *gorm.DB, pagination db.Pagination) ([]Address, int64, error) {
 	var addresses []Address
 	var totalRecords int64
 
@@ -19,16 +27,16 @@ func ReadAllAddresses(db *gorm.DB, pagination db.Pagination) ([]Address, int64, 
 	return addresses, totalRecords, err
 }
 
-func ReadOneAddress(db *gorm.DB, addressId int64) (*Address, error) {
+func (repo *AddressRepository) SelectOneAddress(db *gorm.DB, addressId int64) (*Address, error) {
 	var address Address
 	err := db.Table("address").First(&address, addressId).Error
 	return &address, err
 }
 
-func UpdateOneAddress(db *gorm.DB, address Address) error {
+func (repo *AddressRepository) UpdateOneAddress(db *gorm.DB, address Address) error {
 	return db.Table("address").Omit("address_id").Updates(address).Error
 }
 
-func DeleteOneAddress(db *gorm.DB, address Address) error {
+func (repo *AddressRepository) DeleteOneAddress(db *gorm.DB, address Address) error {
 	return db.Delete(&address).Error
 }
