@@ -11,20 +11,20 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-var mockDb *sql.DB
+var mockDB *sql.DB
 var gormDB *gorm.DB
-var mock sqlmock.Sqlmock
+var sqlMock sqlmock.Sqlmock
 
 func TestMain(m *testing.M) {
 	var err error
 
-	mockDb, mock, err = sqlmock.New()
+	mockDB, sqlMock, err = sqlmock.New()
 	if err != nil {
 		panic("Error creating sqlmock DB: " + err.Error())
 	}
 
 	gormDB, err = gorm.Open(postgres.New(postgres.Config{
-		Conn: mockDb,
+		Conn: mockDB,
 	}), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
@@ -34,7 +34,7 @@ func TestMain(m *testing.M) {
 
 	code := m.Run()
 
-	mockDb.Close()
+	mockDB.Close()
 
 	os.Exit(code)
 }

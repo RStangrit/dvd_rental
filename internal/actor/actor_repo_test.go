@@ -18,17 +18,17 @@ func Test_CreateActor(t *testing.T) {
 		DeletedAt: gorm.DeletedAt{Valid: false},
 	}
 
-	mock.ExpectBegin()
-	mock.ExpectQuery(`INSERT INTO "actor" (.+) RETURNING`).
+	sqlMock.ExpectBegin()
+	sqlMock.ExpectQuery(`INSERT INTO "actor" (.+) RETURNING`).
 		WithArgs(newActor.FirstName, newActor.LastName, sqlmock.AnyArg()).
 		WillReturnRows(sqlmock.NewRows([]string{"actor_id"}).AddRow(1))
-	mock.ExpectCommit()
+	sqlMock.ExpectCommit()
 
 	err := CreateActor(gormDB, newActor)
 
 	assert.NoError(t, err)
 
-	if err := mock.ExpectationsWereMet(); err != nil {
+	if err := sqlMock.ExpectationsWereMet(); err != nil {
 		t.Errorf("Unfulfilled expectations: %v", err)
 	}
 }
@@ -39,10 +39,10 @@ func Test_ReadAllActors(t *testing.T) {
 		{ActorID: 2, FirstName: "Jane", LastName: "Smith"},
 	}
 
-	mock.ExpectQuery(`SELECT count\(\*\) FROM "actor"`).
+	sqlMock.ExpectQuery(`SELECT count\(\*\) FROM "actor"`).
 		WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(2))
 
-	mock.ExpectQuery(`SELECT \* FROM "actor" WHERE "actor"."deleted_at" IS NULL ORDER BY actor_id asc LIMIT \$1`).
+	sqlMock.ExpectQuery(`SELECT \* FROM "actor" WHERE "actor"."deleted_at" IS NULL ORDER BY actor_id asc LIMIT \$1`).
 		WithArgs(10). // Pagination: limit=10
 		WillReturnRows(sqlmock.NewRows([]string{"actor_id", "first_name", "last_name"}).
 			AddRow(expectedActors[0].ActorID, expectedActors[0].FirstName, expectedActors[0].LastName).
@@ -56,7 +56,7 @@ func Test_ReadAllActors(t *testing.T) {
 	assert.Equal(t, int64(2), total)
 	assert.Equal(t, expectedActors, actors)
 
-	if err := mock.ExpectationsWereMet(); err != nil {
+	if err := sqlMock.ExpectationsWereMet(); err != nil {
 		t.Errorf("Unfulfilled expectations: %v", err)
 	}
 }
@@ -69,14 +69,14 @@ func Test_ReadOneActor(t *testing.T) {
 		LastUpdate: time.Now(),
 		DeletedAt:  gorm.DeletedAt{Valid: false},
 	}
-	mock.ExpectQuery(`SELECT \* FROM "actor" WHERE "actor"."actor_id" = \$1 AND "actor"."deleted_at" IS NULL ORDER BY "actor"."actor_id" LIMIT \$2`).
+	sqlMock.ExpectQuery(`SELECT \* FROM "actor" WHERE "actor"."actor_id" = \$1 AND "actor"."deleted_at" IS NULL ORDER BY "actor"."actor_id" LIMIT \$2`).
 		WithArgs(expectedActor.ActorID, 1).
 		WillReturnRows(sqlmock.NewRows([]string{"actor_id", "first_name", "last_name", "last_update", "deleted_at"}).
 			AddRow(expectedActor.ActorID, expectedActor.FirstName, expectedActor.LastName, expectedActor.LastUpdate, expectedActor.DeletedAt))
 	actor, err := ReadOneActor(gormDB, int64(expectedActor.ActorID))
 	assert.NoError(t, err)
 	assert.Equal(t, expectedActor, actor)
-	if err := mock.ExpectationsWereMet(); err != nil {
+	if err := sqlMock.ExpectationsWereMet(); err != nil {
 		t.Errorf("Unfulfilled expectations: %v", err)
 	}
 }
@@ -102,12 +102,12 @@ func Test_ReadOneActorFilms(t *testing.T) {
 		DeletedAt:  gorm.DeletedAt{Valid: false},
 	}
 
-	mock.ExpectQuery(`SELECT \* FROM "actor" WHERE actor.actor_id = \$1 AND "actor"."deleted_at" IS NULL ORDER BY "actor"."actor_id" LIMIT \$2`).
+	sqlMock.ExpectQuery(`SELECT \* FROM "actor" WHERE actor.actor_id = \$1 AND "actor"."deleted_at" IS NULL ORDER BY "actor"."actor_id" LIMIT \$2`).
 		WithArgs(expectedActor.ActorID, 1).
 		WillReturnRows(sqlmock.NewRows([]string{"actor_id", "first_name", "last_name", "film_actor.actor_id", "film_actor.film_id", "film_actor.last_update", "film_actor.deleted_at", "last_update", "deleted_at"}).
 			AddRow(expectedActor.ActorID, expectedActor.FirstName, expectedActor.LastName, expectedFilmActor.ActorID, expectedFilmActor.FilmID, expectedFilmActor.LastUpdate, expectedFilmActor.DeletedAt, expectedActor.LastUpdate, expectedActor.DeletedAt))
 
-	mock.ExpectQuery(`SELECT \* FROM "film_actor" WHERE "film_actor"."actor_id" = \$1 AND "film_actor"."deleted_at" IS NULL`).
+	sqlMock.ExpectQuery(`SELECT \* FROM "film_actor" WHERE "film_actor"."actor_id" = \$1 AND "film_actor"."deleted_at" IS NULL`).
 		WillReturnRows(sqlmock.NewRows([]string{"actor_id", "film_id", "last_update", "deleted_at"}).AddRow(expectedFilmActor.ActorID, expectedFilmActor.FilmID, expectedFilmActor.LastUpdate, expectedFilmActor.DeletedAt))
 
 	actor, err := ReadOneActorFilms(gormDB, int64(expectedActor.ActorID))
@@ -115,7 +115,7 @@ func Test_ReadOneActorFilms(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, expectedActor, actor)
 
-	if err := mock.ExpectationsWereMet(); err != nil {
+	if err := sqlMock.ExpectationsWereMet(); err != nil {
 		t.Errorf("Unfulfilled expectations: %v", err)
 	}
 }
@@ -131,17 +131,17 @@ func Test_UpdateOneActor(t *testing.T) {
 		DeletedAt:  gorm.DeletedAt{Valid: false},
 	}
 
-	mock.ExpectBegin()
-	mock.ExpectExec(`UPDATE "actor" SET .+`).
+	sqlMock.ExpectBegin()
+	sqlMock.ExpectExec(`UPDATE "actor" SET .+`).
 		WithArgs(actor.FirstName, actor.LastName, sqlmock.AnyArg(), actor.ActorID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectCommit()
+	sqlMock.ExpectCommit()
 
 	err := UpdateOneActor(gormDB, *actor)
 
 	assert.NoError(t, err)
 
-	if err := mock.ExpectationsWereMet(); err != nil {
+	if err := sqlMock.ExpectationsWereMet(); err != nil {
 		t.Errorf("Unfulfilled expectations: %v", err)
 	}
 
@@ -159,17 +159,17 @@ func Test_DeleteOneActor(t *testing.T) {
 		DeletedAt:  gorm.DeletedAt{Valid: false},
 	}
 
-	mock.ExpectBegin()
-	mock.ExpectExec(`UPDATE "actor" SET .+`).
+	sqlMock.ExpectBegin()
+	sqlMock.ExpectExec(`UPDATE "actor" SET .+`).
 		WithArgs(sqlmock.AnyArg(), actor.ActorID).
 		WillReturnResult(sqlmock.NewResult(0, 1))
-	mock.ExpectCommit()
+	sqlMock.ExpectCommit()
 
 	err := DeleteOneActor(gormDB, *actor)
 
 	assert.NoError(t, err)
 
-	if err := mock.ExpectationsWereMet(); err != nil {
+	if err := sqlMock.ExpectationsWereMet(); err != nil {
 		t.Errorf("Unfulfilled expectations: %v", err)
 	}
 }
