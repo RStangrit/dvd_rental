@@ -19,6 +19,7 @@ func init() {
 
 func melodyWebsocketHandler(context *gin.Context) {
 	m.Upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	defer m.Close()
 
 	m.HandleRequest(context.Writer, context.Request)
 }
