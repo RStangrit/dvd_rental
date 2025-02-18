@@ -22,6 +22,7 @@ import (
 	"main/internal/store"
 	user "main/internal/user"
 	"main/middleware"
+	"main/pkg/websocket"
 	"net/http"
 	"os"
 
@@ -90,6 +91,7 @@ func registerRoutes(server *gin.Engine, db *gorm.DB) {
 		user.RegisterUserRoutes,
 		file.RegisterFileRoutes,
 		development.RegisterDevelopmentRoutes,
+		websocket.RegisterWSRoutes,
 	}
 
 	for _, register := range routes {
