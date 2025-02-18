@@ -20,7 +20,7 @@ var (
 	startOnce sync.Once // broadcaster() will be launched only once
 )
 
-func websocketHandler(context *gin.Context) {
+func gorillaWebsocketHandler(context *gin.Context) {
 
 	startOnce.Do(func() {
 		go broadcaster()
