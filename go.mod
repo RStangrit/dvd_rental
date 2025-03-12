@@ -14,7 +14,6 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/olahol/melody v1.2.1
 	github.com/rs/zerolog v1.33.0
-	github.com/stretchr/testify v1.10.0
 	golang.org/x/crypto v0.33.0
 	gorm.io/driver/postgres v1.5.11
 	gorm.io/gorm v1.25.12
@@ -28,7 +27,6 @@ require (
 	github.com/centrifugal/protocol v0.14.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cloudwego/base64x v0.1.5 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dolthub/maphash v0.1.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/gammazero/deque v0.2.1 // indirect
@@ -60,7 +58,6 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/planetscale/vtprotobuf v0.6.0 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.20.5 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.55.0 // indirect

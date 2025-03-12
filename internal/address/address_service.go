@@ -49,7 +49,6 @@ func (service *AddressService) UpdateOneAddress(address *Address) error {
 	} else {
 		return service.repo.UpdateOneAddress(service.repo.db, *address)
 	}
-
 }
 
 func (service *AddressService) DeleteOneAddress(address *Address) error {

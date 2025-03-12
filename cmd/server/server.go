@@ -70,12 +70,13 @@ func registerRoutes(server *gin.Engine, db *gorm.DB) {
 	//registration method for MVC
 	addressRoutes := address.NewAddressRoutes(db)
 	addressRoutes.RegisterAddressRoutes(server)
+	actorRoutes := actor.NewActorRoutes(db)
+	actorRoutes.RegisterActorRoutes(server)
 
 	routes := []func(*gin.Engine){
 
 		//old registration method
 		language.RegisterLanguageRoutes,
-		actor.RegisterActorRoutes,
 		film.RegisterFilmRoutes,
 		category.RegisterCategoryRoutes,
 		film_actor.RegisterFilmActorRoutes,
