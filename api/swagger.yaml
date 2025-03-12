@@ -1,0 +1,101 @@
+openapi: 3.1.0
+
+info:
+  title: Dvd Rental API
+  summary: Backend application for managing DVD rental service
+  description: |
+    This is an API for working with the public database **dvd_rental**. Supports CRUD operations on movies, actors, rentals, etc.  
+    **Technologies:**  Go (Gin) + PostgreSQL  
+    **Database:** dvd_rental  
+    **Main features:** - Get a list of movies - Search for actors - Make a rental
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080
+    description: Local server
+
+paths:
+  /ping: 
+    get:
+      description: Checks if the service is in the active state
+      summary:
+        Pings the server
+      operationId: pingTheServer
+      responses:
+        '200':
+          description: Successful response from working service
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/pingResponse200"
+        'default':
+          description: In case if server is not working
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/pingResponseError"
+      tags:
+        - Service commands
+  /test:
+    get:
+      description: Route to run any functions for testing purposes
+      summary:
+        Runs function in corresponding handler
+      operationId: runTestRoute
+      responses:
+        '200':
+          description: Successful launch of desired function
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/testResponse200"
+        'default':
+          description: In case if server is not working
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/testResponseError"
+      tags:
+        - Service commands
+
+components:
+  schemas:
+    pingResponse200:
+      type: object
+      required:
+        - name
+        - status
+      properties:
+        message:
+          type: string
+          examples:
+            - pong
+    pingResponseError:
+      type: object
+      required:
+        - name
+        - status
+      properties:
+        message:
+          type: string
+          examples:
+            - Could not send request
+    testResponse200:
+      type: object
+      required:
+        - name
+        - status
+      properties:
+        message:
+          type: string
+          examples:
+            - Launched successfully!
+    testResponseError:
+      type: object
+      required:
+        - name
+        - status
+      properties:
+        message:
+          type: string
+          examples:
+            - Something went wrong!
