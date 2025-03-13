@@ -11,7 +11,7 @@ type User struct {
 	UserID     int64          `json:"user_id" gorm:"type: integer; primaryKey;autoIncrement;not null"`
 	Email      string         `json:"email" gorm:"type: varchar(45);not null"`
 	Password   string         `json:"password" gorm:"type: varchar(60);not null"`
-	LastUpdate time.Time      `json:"last_update" gorm:"type: timestamp;not null; autoUpdateTime;default:now()"`
+	LastUpdate time.Time      `json:"last_update" gorm:"type:timestamp;not null;autoUpdateTime"`
 	DeletedAt  gorm.DeletedAt `json:"-"`
 }
 

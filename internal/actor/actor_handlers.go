@@ -42,7 +42,7 @@ func (handler *ActorHandler) PostActorsHandler(context *gin.Context) {
 		return
 	}
 
-	validationErrors, createdActors, err := handler.service.CreateActors(newActors)
+	validationErrors, createdActors, _ := handler.service.CreateActors(newActors)
 
 	if len(validationErrors) > 0 {
 		context.JSON(http.StatusBadRequest, gin.H{
