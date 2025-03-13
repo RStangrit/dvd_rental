@@ -8,7 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PostCountryHandler(context *gin.Context) {
+type CountryHandler struct {
+	service *CountryService
+}
+
+func NewCountryHandler(service *CountryService) *CountryHandler {
+	return &CountryHandler{service: service}
+}
+
+func (handler *CountryHandler) PostCountryHandler(context *gin.Context) {
 	var newCountry Country
 	var err error
 
@@ -17,12 +25,7 @@ func PostCountryHandler(context *gin.Context) {
 		return
 	}
 
-	if err = ValidateCountry(&newCountry); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err = CreateCountry(db.GORM, &newCountry); err != nil {
+	if err = handler.service.CreateCountry(&newCountry); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -30,7 +33,7 @@ func PostCountryHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newCountry})
 }
 
-func GetCountriesHandler(context *gin.Context) {
+func (handler *CountryHandler) GetCountriesHandler(context *gin.Context) {
 	var pagination db.Pagination
 	var err error
 
@@ -39,7 +42,7 @@ func GetCountriesHandler(context *gin.Context) {
 		return
 	}
 
-	countries, totalRecords, err := ReadAllCountries(db.GORM, pagination)
+	countries, totalRecords, err := handler.service.ReadAllCountries(pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -48,14 +51,14 @@ func GetCountriesHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": countries, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
-func GetCountryHandler(context *gin.Context) {
+func (handler *CountryHandler) GetCountryHandler(context *gin.Context) {
 	countryId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid country ID format"})
 		return
 	}
 
-	country, err := ReadOneCountry(db.GORM, countryId)
+	country, err := handler.service.ReadOneCountry(countryId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -64,34 +67,29 @@ func GetCountryHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": country})
 }
 
-func PutCountryHandler(context *gin.Context) {
+func (handler *CountryHandler) PutCountryHandler(context *gin.Context) {
 	countryId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid country ID format"})
 		return
 	}
 
-	country, err := ReadOneCountry(db.GORM, countryId)
+	country, err := handler.service.ReadOneCountry(countryId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	var updatedCountry Country
+	var updatedCountry *Country
 	err = context.ShouldBindJSON(&updatedCountry)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid country data format"})
 		return
 	}
 
-	if err = ValidateCountry(&updatedCountry); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	updatedCountry.CountryID = country.CountryID
 
-	err = UpdateOneCountry(db.GORM, updatedCountry)
+	err = handler.service.UpdateOneCountry(updatedCountry)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update country"})
 		return
@@ -100,20 +98,20 @@ func PutCountryHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": updatedCountry})
 }
 
-func DeleteCountryHandler(context *gin.Context) {
+func (handler *CountryHandler) DeleteCountryHandler(context *gin.Context) {
 	countryId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid country ID format"})
 		return
 	}
 
-	country, err := ReadOneCountry(db.GORM, countryId)
+	country, err := handler.service.ReadOneCountry(countryId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneCountry(db.GORM, *country)
+	err = handler.service.DeleteOneCountry(country)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete country"})
 		return
