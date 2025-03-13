@@ -2,40 +2,133 @@ package film
 
 import (
 	"errors"
+	"fmt"
+	"main/pkg/db"
 	"math"
 	"time"
 )
 
-func ValidateFilm(film *Film) error {
+type FilmService struct {
+	repo *FilmRepository
+}
+
+func NewFilmService(repo *FilmRepository) *FilmService {
+	return &FilmService{repo: repo}
+}
+
+func (service *FilmService) CreateFilm(newFilm *Film) error {
+	if err := service.ValidateFilm(newFilm); err != nil {
+		return err
+	}
+	return service.repo.InsertFilm(newFilm)
+}
+
+func (service *FilmService) CreateFilms(newFilms []*Film) ([]string, []Film, error) {
+	var validationErrors []string
+	var createdFilms []Film
+
+	for _, newFilm := range newFilms {
+		if err := service.ValidateFilm(newFilm); err != nil {
+			validationErrors = append(validationErrors, err.Error())
+			continue
+		}
+
+		if err := service.repo.InsertFilm(newFilm); err != nil {
+			return validationErrors, createdFilms, err
+		}
+
+		createdFilms = append(createdFilms, *newFilm)
+	}
+	return validationErrors, createdFilms, nil
+}
+
+func (service *FilmService) ReadAllFilms(pagination db.Pagination, filters FilmFilter) ([]Film, int64, error) {
+	films, totalRecords, err := service.repo.SelectAllFilms(pagination, filters)
+	if err != nil {
+		return nil, 0, err
+	}
+	return films, totalRecords, nil
+}
+
+func (service *FilmService) ReadOneFilm(filmId int64) (*Film, error) {
+	film, err := service.repo.SelectOneFilm(filmId)
+	if err != nil {
+		return nil, err
+	}
+	if film == nil {
+		return nil, fmt.Errorf("Film not found")
+	}
+	return film, nil
+}
+
+func (service *FilmService) ReadOneFilmActors(filmId int64) (*Film, error) {
+	film, err := service.repo.SelectOneFilmActors(filmId)
+	if err != nil {
+		return nil, err
+	}
+	if film == nil {
+		return nil, fmt.Errorf("Film not found")
+	}
+	return film, nil
+}
+
+func (service *FilmService) UpdateOneFilm(film *Film) error {
+	if err := service.ValidateFilm(film); err != nil {
+		return err
+	}
+	return service.repo.UpdateOneFilm(*film)
+}
+
+func (service *FilmService) DeleteOneFilm(film *Film) error {
+	return service.repo.DeleteOneFilm(*film)
+}
+
+func (service *FilmService) DiscountOneFilm(filmId int64, discount float64) error {
+	if err := service.ValidateDiscountPercentage(discount); err != nil {
+		return err
+	}
+	return service.repo.DiscountOneFilm(filmId, discount)
+}
+
+var ErrInvalidTitle = errors.New("title is required and must be less than 255 characters")
+var ErrInvalidReleaseYear = errors.New("release year is invalid")
+var ErrInvalidLanguageID = errors.New("language ID must be a positive number")
+var ErrInvalidRentalDuration = errors.New("rental duration must be a positive number")
+var ErrInvalidRentalRate = errors.New("rental rate is invalid")
+var ErrInvalidLength = errors.New("length must be a positive number")
+var ErrInvalidReplacementCost = errors.New("replacement cost is invalid")
+var ErrInvalidRating = errors.New("invalid rating")
+var ErrInvalidFeature = errors.New("invalid special feature")
+var ErrInvalidDiscount = errors.New("discount percentage must be a whole number and between 1 and 99")
+
+func (service *FilmService) ValidateFilm(film *Film) error {
 	if film.Title == "" || len(film.Title) > 255 {
-		return errors.New("title is required and must be less than 255 characters")
+		return ErrInvalidTitle
 	}
 	if film.ReleaseYear < 1900 || film.ReleaseYear > time.Now().Year()+5 {
-		return errors.New("release year is invalid")
+		return ErrInvalidReleaseYear
 	}
 	if film.LanguageID <= 0 {
-		return errors.New("language ID must be a positive number")
+		return ErrInvalidLanguageID
 	}
 	if film.RentalDuration <= 0 {
-		return errors.New("rental duration must be a positive number")
+		return ErrInvalidRentalDuration
 	}
 	if film.RentalRate <= 0 || film.RentalRate > 99.99 {
-		return errors.New("rental rate is invalid")
+		return ErrInvalidRentalRate
 	}
 	if film.Length <= 0 {
-		return errors.New("length must be a positive number")
+		return ErrInvalidLength
 	}
 	if film.ReplacementCost <= 0 || film.ReplacementCost > 999.99 {
-		return errors.New("replacement cost is invalid")
+		return ErrInvalidReplacementCost
 	}
 	if !isValidRating(film.Rating) {
-		return errors.New("invalid rating")
+		return ErrInvalidRating
 	}
-	if len(film.SpecialFeatures) > 0 {
-		for _, feature := range film.SpecialFeatures {
-			if !isValidFeature(feature) {
-				return errors.New("invalid special feature")
-			}
+	for _, feature := range film.SpecialFeatures {
+		if !isValidFeature(feature) {
+			return ErrInvalidFeature
 		}
 	}
 	return nil
@@ -53,16 +146,13 @@ func isValidFeature(feature string) bool {
 	return exists
 }
 
-func ValidateDiscountPercentage(discount float64) error {
+func (service *FilmService) ValidateDiscountPercentage(discount float64) error {
 	if discount != math.Trunc(discount) {
-		return errors.New("discount percentage must be a whole number")
+		return ErrInvalidDiscount
 	}
-
 	d := int(discount)
-
 	if d < 1 || d > 99 {
-		return errors.New("discount percentage must be between 1 and 99")
+		return ErrInvalidDiscount
 	}
-
 	return nil
 }
