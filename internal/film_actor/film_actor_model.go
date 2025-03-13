@@ -10,7 +10,7 @@ import (
 type FilmActor struct {
 	ActorID    int            `json:"actor_id" gorm:"primaryKey;not null;foreignKey:ActorID;index"`
 	FilmID     int            `json:"film_id" gorm:"primaryKey;not null;foreignKey:FilmID;index"`
-	LastUpdate time.Time      `json:"last_update" gorm:"type:timestamp;not null;autoUpdateTime;default:now()"`
+	LastUpdate time.Time      `json:"last_update" gorm:"type:timestamp;not null;autoUpdateTime"`
 	DeletedAt  gorm.DeletedAt `json:"-"`
 }
 

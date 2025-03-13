@@ -76,13 +76,14 @@ func registerRoutes(server *gin.Engine, db *gorm.DB) {
 	categoryRoutes.RegisterCategoryRoutes(server)
 	cityRoutes := city.NewCityRoutes(db)
 	cityRoutes.RegisterCityRoutes(server)
+	filmActorRoutes := film_actor.NewFilmActorRoutes(db)
+	filmActorRoutes.RegisterFilmActorRoutes(server)
 
 	routes := []func(*gin.Engine){
 
 		//old registration method
 		language.RegisterLanguageRoutes,
 		film.RegisterFilmRoutes,
-		film_actor.RegisterFilmActorRoutes,
 		inventory.RegisterInventoryRoutes,
 		film_category.RegisterFilmCategoryRoutes,
 		country.RegisterCountryRoutes,

@@ -14,7 +14,7 @@ func ReadAllStaff(db *gorm.DB, pagination db.Pagination) ([]Staff, int64, error)
 	var staffList []Staff
 	var totalRecords int64
 
-	db.Table("staff").Count(&totalRecords)
+	db.Table("staff").Where("deleted_at IS NULL").Count(&totalRecords)
 	err := db.Table("staff").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("staff_id asc").Find(&staffList).Error
 	return staffList, totalRecords, err
 }

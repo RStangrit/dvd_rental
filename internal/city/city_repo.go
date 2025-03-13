@@ -22,7 +22,7 @@ func (repo *CityRepository) SelectAllCities(pagination db.Pagination) ([]City, i
 	var cities []City
 	var totalRecords int64
 
-	repo.db.Table("city").Count(&totalRecords)
+	repo.db.Table("city").Where("deleted_at IS NULL").Count(&totalRecords)
 	err := repo.db.Table("city").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("city_id asc").Find(&cities).Error
 	return cities, totalRecords, err
 }

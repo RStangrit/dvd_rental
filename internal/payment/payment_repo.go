@@ -14,7 +14,7 @@ func ReadAllPayments(db *gorm.DB, pagination db.Pagination) ([]Payment, int64, e
 	var payments []Payment
 	var totalRecords int64
 
-	db.Table("payment").Count(&totalRecords)
+	db.Table("payment").Where("deleted_at IS NULL").Count(&totalRecords)
 	err := db.Table("payment").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("payment_id asc").Find(&payments).Error
 	return payments, totalRecords, err
 }

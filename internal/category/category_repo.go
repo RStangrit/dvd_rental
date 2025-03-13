@@ -22,7 +22,7 @@ func (repo *CategoryRepository) SelectAllCategories(pagination db.Pagination) ([
 	var categories []Category
 	var totalRecords int64
 
-	repo.db.Table("category").Count(&totalRecords)
+	repo.db.Table("category").Where("deleted_at IS NULL").Count(&totalRecords)
 	err := repo.db.Table("category").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("category_id asc").Find(&categories).Error
 	return categories, totalRecords, err
 }

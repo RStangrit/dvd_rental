@@ -14,7 +14,7 @@ func ReadAllCountries(db *gorm.DB, pagination db.Pagination) ([]Country, int64, 
 	var countries []Country
 	var totalRecords int64
 
-	db.Table("country").Count(&totalRecords)
+	db.Table("country").Where("deleted_at IS NULL").Count(&totalRecords)
 	err := db.Table("country").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("country_id asc").Find(&countries).Error
 	return countries, totalRecords, err
 }

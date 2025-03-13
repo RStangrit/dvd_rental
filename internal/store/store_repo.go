@@ -14,7 +14,7 @@ func ReadAllStores(db *gorm.DB, pagination db.Pagination) ([]Store, int64, error
 	var stores []Store
 	var totalRecords int64
 
-	db.Table("store").Count(&totalRecords)
+	db.Table("store").Where("deleted_at IS NULL").Count(&totalRecords)
 	err := db.Table("store").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("store_id asc").Find(&stores).Error
 	return stores, totalRecords, err
 }

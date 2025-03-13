@@ -15,7 +15,7 @@ func ReadAllInventories(db *gorm.DB, pagination db.Pagination) ([]Inventory, int
 	var totalRecords int64
 
 	query := db.Model(&Inventory{})
-	query.Count(&totalRecords)
+	query.Where("deleted_at IS NULL").Count(&totalRecords)
 
 	offset := (pagination.Page - 1) * pagination.Limit
 	err := query.Limit(pagination.Limit).Offset(offset).Find(&inventories).Error

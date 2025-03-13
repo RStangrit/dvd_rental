@@ -22,7 +22,7 @@ func (repo *AddressRepository) SelectAllAddresses(pagination db.Pagination) ([]A
 	var addresses []Address
 	var totalRecords int64
 
-	repo.db.Table("address").Count(&totalRecords)
+	repo.db.Table("address").Where("deleted_at IS NULL").Count(&totalRecords)
 	err := repo.db.Table("address").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("address_id asc").Find(&addresses).Error
 	return addresses, totalRecords, err
 }

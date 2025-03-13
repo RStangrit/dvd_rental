@@ -8,7 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PostFilmActorHandler(context *gin.Context) {
+type FilmActorHandler struct {
+	service *FilmActorService
+}
+
+func NewFilmActorHandler(service *FilmActorService) *FilmActorHandler {
+	return &FilmActorHandler{service: service}
+}
+
+func (handler *FilmActorHandler) PostFilmActorHandler(context *gin.Context) {
 	var newFilmActor FilmActor
 	var err error
 
@@ -17,7 +25,7 @@ func PostFilmActorHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateFilmActor(db.GORM, &newFilmActor); err != nil {
+	if err = handler.service.CreateFilmActor(&newFilmActor); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -25,7 +33,7 @@ func PostFilmActorHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newFilmActor})
 }
 
-func GetFilmsActorsHandler(context *gin.Context) {
+func (handler *FilmActorHandler) GetFilmsActorsHandler(context *gin.Context) {
 	var pagination db.Pagination
 	var err error
 
@@ -34,7 +42,7 @@ func GetFilmsActorsHandler(context *gin.Context) {
 		return
 	}
 
-	filmActors, totalRecords, err := ReadAllFilmActors(db.GORM, pagination)
+	filmActors, totalRecords, err := handler.service.ReadAllFilmActors(pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -43,7 +51,7 @@ func GetFilmsActorsHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": filmActors, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
-func GetFilmActorHandler(context *gin.Context) {
+func (handler *FilmActorHandler) GetFilmActorHandler(context *gin.Context) {
 	actorID, err := utils.GetIntParam(context, "actor_id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid actor_id ID format"})
@@ -56,7 +64,7 @@ func GetFilmActorHandler(context *gin.Context) {
 		return
 	}
 
-	filmActor, err := ReadOneFilmActor(db.GORM, actorID, filmID)
+	filmActor, err := handler.service.ReadOneFilmActor(actorID, filmID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -65,7 +73,7 @@ func GetFilmActorHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": filmActor})
 }
 
-func PutFilmActorHandler(context *gin.Context) {
+func (handler *FilmActorHandler) PutFilmActorHandler(context *gin.Context) {
 	actorID, err := utils.GetIntParam(context, "actor_id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid actor_id ID format"})
@@ -78,7 +86,7 @@ func PutFilmActorHandler(context *gin.Context) {
 		return
 	}
 
-	_, err = ReadOneFilmActor(db.GORM, actorID, filmID)
+	_, err = handler.service.ReadOneFilmActor(actorID, filmID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -91,7 +99,7 @@ func PutFilmActorHandler(context *gin.Context) {
 		return
 	}
 
-	err = UpdateOneFilmActor(db.GORM, updatedFilmActor)
+	err = handler.service.UpdateOneFilmActor(int(actorID), int(filmID), &updatedFilmActor)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update film_actor"})
 		return
@@ -100,7 +108,7 @@ func PutFilmActorHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": updatedFilmActor})
 }
 
-func DeleteFilmActorHandler(context *gin.Context) {
+func (handler *FilmActorHandler) DeleteFilmActorHandler(context *gin.Context) {
 	actorID, err := utils.GetIntParam(context, "actor_id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid actor_id ID format"})
@@ -113,13 +121,13 @@ func DeleteFilmActorHandler(context *gin.Context) {
 		return
 	}
 
-	filmActor, err := ReadOneFilmActor(db.GORM, actorID, filmID)
+	filmActor, err := handler.service.ReadOneFilmActor(actorID, filmID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneFilmActor(db.GORM, *filmActor)
+	err = handler.service.DeleteOneFilmActor(filmActor)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete film_actor"})
 		return

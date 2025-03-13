@@ -14,7 +14,7 @@ func ReadAllFilms(db *gorm.DB, pagination db.Pagination, filters FilmFilter) ([]
 	var films []Film
 	var totalRecords int64
 
-	db.Table("film").Count(&totalRecords)
+	db.Table("film").Where("deleted_at IS NULL").Count(&totalRecords)
 	err := db.Table("film").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("film_id asc").Where(filters).Find(&films).Error
 	return films, totalRecords, err
 }

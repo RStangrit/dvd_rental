@@ -14,7 +14,7 @@ func ReadAllRentals(db *gorm.DB, pagination db.Pagination) ([]Rental, int64, err
 	var rentals []Rental
 	var totalRecords int64
 
-	db.Table("rental").Count(&totalRecords)
+	db.Table("rental").Where("deleted_at IS NULL").Count(&totalRecords)
 	err := db.Table("rental").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("rental_id asc").Find(&rentals).Error
 	return rentals, totalRecords, err
 }

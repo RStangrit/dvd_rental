@@ -22,7 +22,7 @@ func (repo *ActorRepository) SelectAllActors(pagination db.Pagination) ([]Actor,
 	var actors []Actor
 	var totalRecords int64
 
-	repo.db.Table("actor").Count(&totalRecords)
+	repo.db.Table("actor").Where("deleted_at IS NULL").Count(&totalRecords)
 	err := repo.db.Table("actor").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("actor_id asc").Find(&actors).Error
 	return actors, totalRecords, err
 }
