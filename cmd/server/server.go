@@ -74,6 +74,8 @@ func registerRoutes(server *gin.Engine, db *gorm.DB) {
 	actorRoutes.RegisterActorRoutes(server)
 	categoryRoutes := category.NewCategoryRoutes(db)
 	categoryRoutes.RegisterCategoryRoutes(server)
+	cityRoutes := city.NewCityRoutes(db)
+	cityRoutes.RegisterCityRoutes(server)
 
 	routes := []func(*gin.Engine){
 
@@ -84,7 +86,6 @@ func registerRoutes(server *gin.Engine, db *gorm.DB) {
 		inventory.RegisterInventoryRoutes,
 		film_category.RegisterFilmCategoryRoutes,
 		country.RegisterCountryRoutes,
-		city.RegisterCityRoutes,
 		customer.RegisterCustomerRoutes,
 		staff.RegisterStaffRoutes,
 		store.RegisterStoreRoutes,

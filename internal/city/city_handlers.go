@@ -8,7 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PostCityHandler(context *gin.Context) {
+type CityHandler struct {
+	service *CityService
+}
+
+func NewCityHandler(service *CityService) *CityHandler {
+	return &CityHandler{service: service}
+}
+
+func (handler *CityHandler) PostCityHandler(context *gin.Context) {
 	var newCity City
 	var err error
 
@@ -17,12 +25,7 @@ func PostCityHandler(context *gin.Context) {
 		return
 	}
 
-	if err = ValidateCity(&newCity); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err = CreateCity(db.GORM, &newCity); err != nil {
+	if err = handler.service.CreateCity(&newCity); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -30,7 +33,7 @@ func PostCityHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newCity})
 }
 
-func GetCitiesHandler(context *gin.Context) {
+func (handler *CityHandler) GetCitiesHandler(context *gin.Context) {
 	var pagination db.Pagination
 	var err error
 
@@ -39,7 +42,7 @@ func GetCitiesHandler(context *gin.Context) {
 		return
 	}
 
-	cities, totalRecords, err := ReadAllCities(db.GORM, pagination)
+	cities, totalRecords, err := handler.service.ReadAllCities(pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -48,14 +51,14 @@ func GetCitiesHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": cities, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
-func GetCityHandler(context *gin.Context) {
+func (handler *CityHandler) GetCityHandler(context *gin.Context) {
 	cityId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid city ID format"})
 		return
 	}
 
-	city, err := ReadOneCity(db.GORM, cityId)
+	city, err := handler.service.ReadOneCity(cityId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -64,34 +67,29 @@ func GetCityHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": city})
 }
 
-func PutCityHandler(context *gin.Context) {
+func (handler *CityHandler) PutCityHandler(context *gin.Context) {
 	cityId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid city ID format"})
 		return
 	}
 
-	city, err := ReadOneCity(db.GORM, cityId)
+	city, err := handler.service.ReadOneCity(cityId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	var updatedCity City
+	var updatedCity *City
 	err = context.ShouldBindJSON(&updatedCity)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid city data format"})
 		return
 	}
 
-	if err = ValidateCity(&updatedCity); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	updatedCity.CityID = int(city.CityID)
 
-	err = UpdateOneCity(db.GORM, updatedCity)
+	err = handler.service.UpdateOneCity(updatedCity)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update city"})
 		return
@@ -100,20 +98,20 @@ func PutCityHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": updatedCity})
 }
 
-func DeleteCityHandler(context *gin.Context) {
+func (handler *CityHandler) DeleteCityHandler(context *gin.Context) {
 	cityId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid city ID format"})
 		return
 	}
 
-	city, err := ReadOneCity(db.GORM, cityId)
+	city, err := handler.service.ReadOneCity(cityId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneCity(db.GORM, *city)
+	err = handler.service.DeleteOneCity(city)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete city"})
 		return

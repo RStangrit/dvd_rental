@@ -43,7 +43,7 @@ func (service *ActorService) CreateActors(newActors []*Actor) ([]string, []Actor
 }
 
 func (service *ActorService) ReadAllActors(pagination db.Pagination) ([]Actor, int64, error) {
-	actors, totalRecords, err := service.repo.SelectAllActors(service.repo.db, pagination)
+	actors, totalRecords, err := service.repo.SelectAllActors(pagination)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -51,7 +51,7 @@ func (service *ActorService) ReadAllActors(pagination db.Pagination) ([]Actor, i
 }
 
 func (service *ActorService) ReadOneActor(actorId int64) (*Actor, error) {
-	actor, err := service.repo.SelectOneActor(service.repo.db, actorId)
+	actor, err := service.repo.SelectOneActor(actorId)
 	if err != nil {
 		return nil, err
 	}
@@ -77,12 +77,12 @@ func (service *ActorService) UpdateOneActor(actor *Actor) error {
 	if err != nil {
 		return err
 	} else {
-		return service.repo.UpdateOneActor(service.repo.db, *actor)
+		return service.repo.UpdateOneActor(*actor)
 	}
 }
 
 func (service *ActorService) DeleteOneActor(actor *Actor) error {
-	return service.repo.DeleteOneActor(service.repo.db, *actor)
+	return service.repo.DeleteOneActor(*actor)
 }
 
 var ErrMissingName = errors.New("first name and last name are required")
