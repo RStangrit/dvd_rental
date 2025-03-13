@@ -2,12 +2,25 @@ package category
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-func RegisterCategoryRoutes(server *gin.Engine) {
-	server.POST("/category", PostCategoryHandler)
-	server.GET("/categories", GetCategoriesHandler)
-	server.GET("/category/:id", GetCategoryHandler)
-	server.PUT("/category/:id", PutCategoryHandler)
-	server.DELETE("/category/:id", DeleteCategoryHandler)
+type CategoryRoutes struct {
+	handler *CategoryHandler
+}
+
+func NewCategoryRoutes(db *gorm.DB) *CategoryRoutes {
+	repo := NewCategoryRepository(db)
+	service := NewCategoryService(repo)
+	handler := NewCategoryHandler(service)
+
+	return &CategoryRoutes{handler: handler}
+}
+
+func (route *CategoryRoutes) RegisterCategoryRoutes(server *gin.Engine) {
+	server.POST("/category", route.handler.PostCategoryHandler)
+	server.GET("/categories", route.handler.GetCategoriesHandler)
+	server.GET("/category/:id", route.handler.GetCategoryHandler)
+	server.PUT("/category/:id", route.handler.PutCategoryHandler)
+	server.DELETE("/category/:id", route.handler.DeleteCategoryHandler)
 }

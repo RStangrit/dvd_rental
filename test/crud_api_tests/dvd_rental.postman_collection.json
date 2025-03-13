@@ -1832,7 +1832,6 @@
 									"    pm.expect(jsonData.data).to.have.property(\"category_id\").that.is.a(\"number\");",
 									"    pm.expect(jsonData.data).to.have.property(\"name\").that.is.a(\"string\");",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
-									"    pm.expect(jsonData.data).to.have.property(\"deleted_at\").that.is.null;",
 									"",
 									"    pm.globals.set(\"categoryId\", pm.response.json().data.category_id);",
 									"});",
@@ -1862,6 +1861,195 @@
 							],
 							"path": [
 								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /categories",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response should be valid and contain required fields\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('data').that.is.an('array');",
+									"    jsonData.data.forEach(category => {",
+									"        pm.expect(category).to.have.property('category_id').that.is.a('number');",
+									"        pm.expect(category).to.have.property('name').that.is.a('string');",
+									"        pm.expect(category).to.have.property('last_update').that.is.a('string');",
+									"    });",
+									"    ",
+									"    pm.expect(jsonData).to.have.property('limit').that.is.a('number');",
+									"    pm.expect(jsonData).to.have.property('page').that.is.a('number');",
+									"    pm.expect(jsonData).to.have.property('total').that.is.a('number');    ",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/categories",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /category/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response should be valid and contain required fields for a single category\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('data').that.is.an('object');",
+									"    let category = jsonData.data;",
+									"    pm.expect(category).to.have.property('category_id').that.is.a('number');",
+									"    pm.expect(category).to.have.property('name').that.is.a('string');",
+									"    pm.expect(category).to.have.property('last_update').that.is.a('string');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/category/{{categoryId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"category",
+								"{{categoryId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /category/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomCategory() {",
+									"    return {",
+									"        name: `Name ${Math.floor(Math.random() * 1000)}`,",
+									"    };",
+									"}",
+									"",
+									"categoryObject = generateRandomCategory()",
+									"pm.globals.set(\"updatedCategoryObject\", JSON.stringify(categoryObject));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Check response data\", function () {",
+									"    let jsonData = pm.response.json();",
+									"",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"    pm.expect(jsonData.data).to.have.property(\"category_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"",
+									"    pm.globals.set(\"categoryId\", pm.response.json().data.category_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{updatedCategoryObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/category/{{categoryId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"category",
+								"{{categoryId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /category/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has correct body\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.deleted.category_id).to.be.a(\"number\");",
+									"    pm.expect(jsonData.deleted.name).to.be.a(\"string\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/category/{{categoryId}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"category",
+								"{{categoryId}}"
 							]
 						}
 					},
@@ -1911,7 +2099,6 @@
 									"    pm.expect(jsonData.data).to.have.property(\"category_id\").that.is.a(\"number\");",
 									"    pm.expect(jsonData.data).to.have.property(\"name\").that.is.a(\"string\");",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
-									"    pm.expect(jsonData.data).to.have.property(\"deleted_at\").that.is.null;",
 									"",
 									"    pm.globals.set(\"categoryId\", pm.response.json().data.category_id);",
 									"});",
@@ -2082,7 +2269,6 @@
 									"    pm.expect(jsonData.data).to.have.property('film_id').that.is.a('number');",
 									"    pm.expect(jsonData.data).to.have.property('category_id').that.is.a('number');",
 									"    pm.expect(jsonData.data).to.have.property('last_update').that.is.a('string');",
-									"    pm.expect(jsonData.data).to.have.property('deleted_at').that.is.null;",
 									"});",
 									""
 								],
@@ -2133,7 +2319,6 @@
 									"        pm.expect(film_category).to.have.property('film_id').that.is.a('number');",
 									"        pm.expect(film_category).to.have.property('category_id').that.is.a('number');",
 									"        pm.expect(film_category).to.have.property('last_update').that.is.a('string');",
-									"        pm.expect(film_category).to.have.property('deleted_at').that.is.null;",
 									"    })",
 									"});",
 									""
@@ -2266,7 +2451,7 @@
 									"        address: generateRandomString(50),",
 									"        address2: generateRandomString(50),",
 									"        district: generateRandomString(20),",
-									"        // city_id: Math.floor(Math.random() * 100),",
+									"        city_id: Math.floor(Math.random() * 100),",
 									"        city_id: 6,",
 									"        postal_code: generateRandomString(10),",
 									"        phone: `+1-${Math.floor(Math.random() * 10000000000)}`,",
@@ -2408,7 +2593,6 @@
 									"    pm.expect(jsonData.data).to.have.property(\"email\").that.is.a(\"string\");",
 									"    pm.expect(jsonData.data).to.have.property(\"password\").that.is.a(\"string\");",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
-									"    pm.expect(jsonData.data).to.have.property(\"deleted_at\");",
 									"});",
 									""
 								],

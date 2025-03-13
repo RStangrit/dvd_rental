@@ -14,7 +14,7 @@ type Actor struct {
 	LastName   string                 `json:"last_name" gorm:"type: varchar(45);not null"`
 	LastUpdate time.Time              `json:"last_update" gorm:"type: timestamp;not null; autoUpdateTime;default:now()"`
 	ActorFilms []film_actor.FilmActor `json:"actor_films" gorm:"foreignKey:ActorID"`
-	DeletedAt  gorm.DeletedAt         `json:"deleted_at"`
+	DeletedAt  gorm.DeletedAt         `json:"-"`
 }
 
 var tableName = "actor"

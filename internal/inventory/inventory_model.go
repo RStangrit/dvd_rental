@@ -13,7 +13,7 @@ type Inventory struct {
 	FilmID      int16          `json:"film_id" gorm:"type:int2;not null;foreignKey:FilmID"`
 	StoreID     int16          `json:"store_id" gorm:"type:int2;not null"`
 	LastUpdate  time.Time      `json:"last_update" gorm:"type:timestamp;not null;default:now()"`
-	DeletedAt   gorm.DeletedAt `json:"deleted_at"`
+	DeletedAt   gorm.DeletedAt `json:"-"`
 	Rental      rental.Rental  `json:"-" gorm:"foreignKey:InventoryID"`
 }
 

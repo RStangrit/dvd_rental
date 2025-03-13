@@ -12,7 +12,7 @@ type User struct {
 	Email      string         `json:"email" gorm:"type: varchar(45);not null"`
 	Password   string         `json:"password" gorm:"type: varchar(60);not null"`
 	LastUpdate time.Time      `json:"last_update" gorm:"type: timestamp;not null; autoUpdateTime;default:now()"`
-	DeletedAt  gorm.DeletedAt `json:"deleted_at"`
+	DeletedAt  gorm.DeletedAt `json:"-"`
 }
 
 func (User) TableName() string {

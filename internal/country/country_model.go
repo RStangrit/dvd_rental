@@ -12,7 +12,7 @@ type Country struct {
 	CountryID  int            `json:"country_id" gorm:"type: integer;primaryKey;autoIncrement; not null"`
 	Country    string         `json:"country" gorm:"type: varchar(50);not null"`
 	LastUpdate time.Time      `json:"last_update" gorm:"type:timestamp;not null;autoUpdateTime;default:now()"`
-	DeletedAt  gorm.DeletedAt `json:"deleted_at"`
+	DeletedAt  gorm.DeletedAt `json:"-"`
 	Cities     []city.City    `json:"-" gorm:"foreignKey:CountryID"`
 }
 
