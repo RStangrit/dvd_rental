@@ -8,7 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PostCustomerHandler(context *gin.Context) {
+type CustomerHandler struct {
+	service *CustomerService
+}
+
+func NewCustomerHandler(service *CustomerService) *CustomerHandler {
+	return &CustomerHandler{service: service}
+}
+
+func (handler *CustomerHandler) PostCustomerHandler(context *gin.Context) {
 	var newCustomer Customer
 	var err error
 
@@ -17,12 +25,7 @@ func PostCustomerHandler(context *gin.Context) {
 		return
 	}
 
-	if err = ValidateCustomer(&newCustomer); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err = CreateCustomer(db.GORM, &newCustomer); err != nil {
+	if err = handler.service.CreateCustomer(&newCustomer); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -30,7 +33,7 @@ func PostCustomerHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newCustomer})
 }
 
-func GetCustomersHandler(context *gin.Context) {
+func (handler *CustomerHandler) GetCustomersHandler(context *gin.Context) {
 	var pagination db.Pagination
 	var err error
 
@@ -39,7 +42,7 @@ func GetCustomersHandler(context *gin.Context) {
 		return
 	}
 
-	customers, totalRecords, err := ReadAllCustomers(db.GORM, pagination)
+	customers, totalRecords, err := handler.service.ReadAllCustomers(pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -48,14 +51,14 @@ func GetCustomersHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": customers, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
-func GetCustomerHandler(context *gin.Context) {
+func (handler *CustomerHandler) GetCustomerHandler(context *gin.Context) {
 	customerId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer ID format"})
 		return
 	}
 
-	customer, err := ReadOneCustomer(db.GORM, customerId)
+	customer, err := handler.service.ReadOneCustomer(customerId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -64,29 +67,29 @@ func GetCustomerHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": customer})
 }
 
-func PutCustomerHandler(context *gin.Context) {
+func (handler *CustomerHandler) PutCustomerHandler(context *gin.Context) {
 	customerId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer ID format"})
 		return
 	}
 
-	customer, err := ReadOneCustomer(db.GORM, customerId)
+	customer, err := handler.service.ReadOneCustomer(customerId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	var updatedCustomer Customer
+	var updatedCustomer *Customer
 	err = context.ShouldBindJSON(&updatedCustomer)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer data format"})
 		return
 	}
 
-	updatedCustomer.CustomerID = int(customer.CustomerID)
+	updatedCustomer.CustomerID = customer.CustomerID
 
-	err = UpdateOneCustomer(db.GORM, updatedCustomer)
+	err = handler.service.UpdateOneCustomer(updatedCustomer)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update customer"})
 		return
@@ -95,20 +98,20 @@ func PutCustomerHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": updatedCustomer})
 }
 
-func DeleteCustomerHandler(context *gin.Context) {
+func (handler *CustomerHandler) DeleteCustomerHandler(context *gin.Context) {
 	customerId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer ID format"})
 		return
 	}
 
-	customer, err := ReadOneCustomer(db.GORM, customerId)
+	customer, err := handler.service.ReadOneCustomer(customerId)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": "Customer not found"})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneCustomer(db.GORM, *customer)
+	err = handler.service.DeleteOneCustomer(customer)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete customer"})
 		return
