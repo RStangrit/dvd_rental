@@ -98,11 +98,12 @@ func registerRoutes(server *gin.Engine, db *gorm.DB) {
 	rentalRoutes.RegisterRentalRoutes(server)
 	paymentRoutes := payment.NewPaymentRoutes(db)
 	paymentRoutes.RegisterPaymentRoutes(server)
+	userRoutes := user.NewUserRoutes(db)
+	userRoutes.RegisterUserRoutes(server)
 
 	routes := []func(*gin.Engine){
 
 		//old registration method
-		user.RegisterUserRoutes,
 		file.RegisterFileRoutes,
 		development.RegisterDevelopmentRoutes,
 		websocket.RegisterWSRoutes,
