@@ -67,7 +67,6 @@ func getPort(configPort string) string {
 }
 
 func registerRoutes(server *gin.Engine, db *gorm.DB) {
-	//registration method for Clean Arch
 	addressRoutes := address.NewAddressRoutes(db)
 	addressRoutes.RegisterAddressRoutes(server)
 	actorRoutes := actor.NewActorRoutes(db)
