@@ -1,32 +1,34 @@
 package development
 
 import (
-	"main/pkg/db"
-	"net/http"
+	"main/internal/city"
+	"main/internal/country"
 
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-var countryObject = NewCountry(generateRandomString(51))
-var cityObject = NewCity("1")
+type DevelopmentRepository struct {
+	db      *gorm.DB
+	country *country.Country
+	city    *city.City
+}
 
-func makeTransaction(context *gin.Context) {
-	db.GORM.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&countryObject).Error; err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+func NewDevelopmentRepository(db *gorm.DB) *DevelopmentRepository {
+	return &DevelopmentRepository{db: db}
+}
+
+func (repo *DevelopmentRepository) MakeTransaction(country *country.Country, city *city.City) error {
+	return repo.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&country).Error; err != nil {
 			return err
 		}
 
-		cityObject.CountryID = int16(countryObject.CountryID)
+		city.CountryID = int16(country.CountryID)
 
-		if err := tx.Create(&cityObject).Error; err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		if err := tx.Create(&city).Error; err != nil {
 			return err
 		}
 
 		return nil
 	})
-
-	context.JSON(http.StatusOK, gin.H{"message": "the test function has been executed"})
 }
