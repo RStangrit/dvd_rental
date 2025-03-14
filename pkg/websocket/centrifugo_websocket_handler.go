@@ -7,27 +7,41 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var node *centrifuge.Node
-
-func init() {
-	var err error
-	node, err = centrifuge.New(centrifuge.Config{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	go func() {
-		if err := node.Run(); err != nil {
-			log.Fatal(err)
-		}
-	}()
+type CentrifugeWebSocketHandler struct {
+	node *centrifuge.Node
 }
 
-func centrifugoWebsocketHandler(context *gin.Context) {
-	if node == nil {
-		context.JSON(500, gin.H{"error": "Centrifuge server is not running"})
-		return
+func NewCentrifugeWebSocketHandler() (*CentrifugeWebSocketHandler, error) {
+	node, err := centrifuge.New(centrifuge.Config{})
+	if err != nil {
+		return nil, err
 	}
 
-	wsHandler := centrifuge.NewWebsocketHandler(node, centrifuge.WebsocketConfig{})
-	wsHandler.ServeHTTP(context.Writer, context.Request)
+	go func() {
+		if err := node.Run(); err != nil {
+			log.Fatal("Centrifuge error:", err)
+		}
+	}()
+
+	return &CentrifugeWebSocketHandler{node: node}, nil
+}
+
+func (h *CentrifugeWebSocketHandler) Handle() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		if h.node == nil {
+			log.Println("Centrifuge server is not running")
+			context.JSON(500, gin.H{"error": "Centrifuge server is not running"})
+			return
+		}
+
+		wsHandler := centrifuge.NewWebsocketHandler(h.node, centrifuge.WebsocketConfig{})
+		wsHandler.ServeHTTP(context.Writer, context.Request)
+	}
+}
+
+func (h *CentrifugeWebSocketHandler) Shutdown(context *gin.Context) {
+	if h.node != nil {
+		h.node.Shutdown(context)
+		log.Println("Centrifuge server stopped")
+	}
 }

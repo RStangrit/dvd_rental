@@ -7,19 +7,23 @@ import (
 	"github.com/olahol/melody"
 )
 
-var (
-	m = melody.New()
-)
+type MelodyWebSocketHandler struct {
+	m *melody.Melody
+}
 
-func init() {
+func NewMelodyWebSocketHandler() *MelodyWebSocketHandler {
+	m := melody.New()
+
 	m.HandleMessage(func(s *melody.Session, msg []byte) {
 		m.BroadcastOthers(msg, s)
 	})
+
+	return &MelodyWebSocketHandler{m: m}
 }
 
-func melodyWebsocketHandler(context *gin.Context) {
-	m.Upgrader.CheckOrigin = func(r *http.Request) bool { return true }
-	defer m.Close()
-
-	m.HandleRequest(context.Writer, context.Request)
+func (h *MelodyWebSocketHandler) Handle() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		h.m.Upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+		h.m.HandleRequest(c.Writer, c.Request)
+	}
 }

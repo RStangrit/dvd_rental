@@ -102,16 +102,8 @@ func registerRoutes(server *gin.Engine, db *gorm.DB) {
 	userRoutes.RegisterUserRoutes(server)
 	fileRoutes := file.NewFileRoutes(db)
 	fileRoutes.RegisterFileRoutes(server)
-	developmenRoutes := development.NewDevelopmentRoutes(db)
-	developmenRoutes.RegisterDevelopmentRoutes(server)
-
-	routes := []func(*gin.Engine){
-
-		//old registration method
-		websocket.RegisterWSRoutes,
-	}
-
-	for _, register := range routes {
-		register(server)
-	}
+	developmentRoutes := development.NewDevelopmentRoutes(db)
+	developmentRoutes.RegisterDevelopmentRoutes(server)
+	websocketRoutes, _ := websocket.NewWebSocketRoutes()
+	websocketRoutes.RegisterWSRoutes(server)
 }

@@ -9,55 +9,67 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// Upgrader is needed to upgrade the HTTP connection to WebSocket
-var upgrader = websocket.Upgrader{
-	CheckOrigin: func(r *http.Request) bool { return true }, //Allow any connections
+type GorillaWebSocketHandler struct {
+	upgrader  websocket.Upgrader
+	clients   map[*websocket.Conn]bool
+	broadcast chan []byte
+	startOnce sync.Once
+	mu        sync.Mutex
 }
 
-var (
-	clients   = make(map[*websocket.Conn]bool)
-	broadcast = make(chan []byte)
-	startOnce sync.Once // broadcaster() will be launched only once
-)
-
-func gorillaWebsocketHandler(context *gin.Context) {
-
-	startOnce.Do(func() {
-		go broadcaster()
-	})
-
-	// Updating the connection to WebSocket
-	conn, err := upgrader.Upgrade(context.Writer, context.Request, nil)
-	if err != nil {
-		log.Println("Upgrade error:", err)
-		return
+func NewGorillaWebSocketHandler() *GorillaWebSocketHandler {
+	return &GorillaWebSocketHandler{
+		upgrader: websocket.Upgrader{
+			CheckOrigin: func(r *http.Request) bool { return true },
+		},
+		clients:   make(map[*websocket.Conn]bool),
+		broadcast: make(chan []byte),
 	}
-	defer conn.Close()
+}
 
-	clients[conn] = true
+func (handler *GorillaWebSocketHandler) Handle() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		handler.startOnce.Do(func() {
+			go handler.broadcaster()
+		})
 
-	log.Println("Connection has been established")
-
-	for {
-		_, msg, err := conn.ReadMessage()
+		conn, err := handler.upgrader.Upgrade(context.Writer, context.Request, nil)
 		if err != nil {
-			log.Println("Reading error:", err)
-			delete(clients, conn)
-			break
+			log.Println("Upgrade error:", err)
+			return
 		}
-		broadcast <- msg
+		defer conn.Close()
+
+		handler.mu.Lock()
+		handler.clients[conn] = true
+		handler.mu.Unlock()
+
+		log.Println("Connection has been established")
+
+		for {
+			_, msg, err := conn.ReadMessage()
+			if err != nil {
+				log.Println("Reading error:", err)
+				handler.mu.Lock()
+				delete(handler.clients, conn)
+				handler.mu.Unlock()
+				break
+			}
+			handler.broadcast <- msg
+		}
 	}
 }
 
-func broadcaster() {
-	for {
-		msg := <-broadcast
-		for client := range clients {
+func (handler *GorillaWebSocketHandler) broadcaster() {
+	for msg := range handler.broadcast {
+		handler.mu.Lock()
+		for client := range handler.clients {
 			err := client.WriteMessage(websocket.TextMessage, msg)
 			if err != nil {
 				client.Close()
-				delete(clients, client)
+				delete(handler.clients, client)
 			}
 		}
+		handler.mu.Unlock()
 	}
 }
