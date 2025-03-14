@@ -6,29 +6,42 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateStore(db *gorm.DB, newStore *Store) error {
-	return db.Table("store").Create(&newStore).Error
+type StoreRepository struct {
+	db *gorm.DB
 }
 
-func ReadAllStores(db *gorm.DB, pagination db.Pagination) ([]Store, int64, error) {
+func NewStoreRepository(db *gorm.DB) *StoreRepository {
+	return &StoreRepository{db: db}
+}
+
+func (repo *StoreRepository) InsertStore(newStore *Store) error {
+	return repo.db.Table("store").Create(&newStore).Error
+}
+
+func (repo *StoreRepository) SelectAllStores(pagination db.Pagination) ([]Store, int64, error) {
 	var stores []Store
 	var totalRecords int64
 
-	db.Table("store").Where("deleted_at IS NULL").Count(&totalRecords)
-	err := db.Table("store").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("store_id asc").Find(&stores).Error
+	repo.db.Table("store").Where("deleted_at IS NULL").Count(&totalRecords)
+	err := repo.db.Table("store").
+		Offset(pagination.GetOffset()).
+		Limit(pagination.GetLimit()).
+		Order("store_id asc").
+		Find(&stores).Error
+
 	return stores, totalRecords, err
 }
 
-func ReadOneStore(db *gorm.DB, storeID int64) (*Store, error) {
+func (repo *StoreRepository) SelectOneStore(storeID int64) (*Store, error) {
 	var store Store
-	err := db.Table("store").First(&store, storeID).Error
+	err := repo.db.Table("store").First(&store, storeID).Error
 	return &store, err
 }
 
-func UpdateOneStore(db *gorm.DB, store Store) error {
-	return db.Table("store").Where("store_id = ?", store.StoreID).Updates(store).Error
+func (repo *StoreRepository) UpdateOneStore(store Store) error {
+	return repo.db.Table("store").Where("store_id = ?", store.StoreID).Updates(store).Error
 }
 
-func DeleteOneStore(db *gorm.DB, store Store) error {
-	return db.Table("store").Where("store_id = ?", store.StoreID).Delete(&store).Error
+func (repo *StoreRepository) DeleteOneStore(store Store) error {
+	return repo.db.Table("store").Where("store_id = ?", store.StoreID).Delete(&store).Error
 }
