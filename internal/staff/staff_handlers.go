@@ -8,7 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PostStaffHandler(context *gin.Context) {
+type StaffHandler struct {
+	service *StaffService
+}
+
+func NewStaffHandler(service *StaffService) *StaffHandler {
+	return &StaffHandler{service: service}
+}
+
+func (handler *StaffHandler) PostStaffHandler(context *gin.Context) {
 	var newStaff Staff
 	var err error
 
@@ -17,12 +25,7 @@ func PostStaffHandler(context *gin.Context) {
 		return
 	}
 
-	if err = ValidateStaff(&newStaff); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err = CreateStaff(db.GORM, &newStaff); err != nil {
+	if err = handler.service.CreateStaff(&newStaff); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -30,7 +33,7 @@ func PostStaffHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newStaff})
 }
 
-func GetStaffsHandler(context *gin.Context) {
+func (handler *StaffHandler) GetStaffsHandler(context *gin.Context) {
 	var pagination db.Pagination
 	var err error
 
@@ -39,7 +42,7 @@ func GetStaffsHandler(context *gin.Context) {
 		return
 	}
 
-	staffs, totalRecords, err := ReadAllStaff(db.GORM, pagination)
+	staffs, totalRecords, err := handler.service.ReadAllStaff(pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -48,14 +51,14 @@ func GetStaffsHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": staffs, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
-func GetStaffHandler(context *gin.Context) {
+func (handler *StaffHandler) GetStaffHandler(context *gin.Context) {
 	staffId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid staff ID format"})
 		return
 	}
 
-	staff, err := ReadOneStaff(db.GORM, staffId)
+	staff, err := handler.service.ReadOneStaff(staffId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -64,29 +67,29 @@ func GetStaffHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": staff})
 }
 
-func PutStaffHandler(context *gin.Context) {
+func (handler *StaffHandler) PutStaffHandler(context *gin.Context) {
 	staffId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid staff ID format"})
 		return
 	}
 
-	staff, err := ReadOneStaff(db.GORM, staffId)
+	staff, err := handler.service.ReadOneStaff(staffId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	var updatedStaff Staff
+	var updatedStaff *Staff
 	err = context.ShouldBindJSON(&updatedStaff)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid staff data format"})
 		return
 	}
 
-	updatedStaff.StaffID = int(staff.StaffID)
+	updatedStaff.StaffID = staff.StaffID
 
-	err = UpdateOneStaff(db.GORM, updatedStaff)
+	err = handler.service.UpdateOneStaff(updatedStaff)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update staff"})
 		return
@@ -95,20 +98,20 @@ func PutStaffHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": updatedStaff})
 }
 
-func DeleteStaffHandler(context *gin.Context) {
+func (handler *StaffHandler) DeleteStaffHandler(context *gin.Context) {
 	staffId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid staff ID format"})
 		return
 	}
 
-	staff, err := ReadOneStaff(db.GORM, staffId)
+	staff, err := handler.service.ReadOneStaff(staffId)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": "Staff not found"})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneStaff(db.GORM, *staff)
+	err = handler.service.DeleteOneStaff(staff)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete staff"})
 		return
