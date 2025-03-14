@@ -7,10 +7,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetFileHandler(context *gin.Context) {
+type FileHandler struct {
+	service *FileService
+}
+
+func NewFileHandler(service *FileService) *FileHandler {
+	return &FileHandler{service: service}
+}
+
+func (handler *FileHandler) GetFileHandler(context *gin.Context) {
 	filepath := context.Param("filepath")
 
-	err := isValidFilePath(filepath)
+	err := handler.service.IsValidFilePath(filepath)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -22,7 +30,7 @@ func GetFileHandler(context *gin.Context) {
 		return
 	}
 
-	fileFound, err := isFileExists(currentDir + filepath)
+	fileFound, err := handler.service.IsFileExists(currentDir + filepath)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
