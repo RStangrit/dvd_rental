@@ -67,7 +67,7 @@ func getPort(configPort string) string {
 }
 
 func registerRoutes(server *gin.Engine, db *gorm.DB) {
-	//registration method for MVC
+	//registration method for Clean Arch
 	addressRoutes := address.NewAddressRoutes(db)
 	addressRoutes.RegisterAddressRoutes(server)
 	actorRoutes := actor.NewActorRoutes(db)
@@ -94,11 +94,12 @@ func registerRoutes(server *gin.Engine, db *gorm.DB) {
 	staffRoutes.RegisterStaffRoutes(server)
 	storeRoutes := store.NewStoreRoutes(db)
 	storeRoutes.RegisterStoreRoutes(server)
+	rentalRoutes := rental.NewRentalRoutes(db)
+	rentalRoutes.RegisterRentalRoutes(server)
 
 	routes := []func(*gin.Engine){
 
 		//old registration method
-		rental.RegisterRentalRoutes,
 		payment.RegisterPaymentRoutes,
 		user.RegisterUserRoutes,
 		file.RegisterFileRoutes,
