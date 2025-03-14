@@ -8,7 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PostRentalHandler(context *gin.Context) {
+type RentalHandler struct {
+	service *RentalService
+}
+
+func NewRentalHandler(service *RentalService) *RentalHandler {
+	return &RentalHandler{service: service}
+}
+
+func (handler *RentalHandler) PostRentalHandler(context *gin.Context) {
 	var newRental Rental
 	var err error
 
@@ -17,7 +25,7 @@ func PostRentalHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateRental(db.GORM, &newRental); err != nil {
+	if err = handler.service.CreateOneRental(&newRental); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -25,7 +33,7 @@ func PostRentalHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newRental})
 }
 
-func GetRentalsHandler(context *gin.Context) {
+func (handler *RentalHandler) GetRentalsHandler(context *gin.Context) {
 	var pagination db.Pagination
 	var err error
 
@@ -34,7 +42,7 @@ func GetRentalsHandler(context *gin.Context) {
 		return
 	}
 
-	rentals, totalRecords, err := ReadAllRentals(db.GORM, pagination)
+	rentals, totalRecords, err := handler.service.ReadAllRentals(pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -43,14 +51,14 @@ func GetRentalsHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": rentals, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
-func GetRentalHandler(context *gin.Context) {
+func (handler *RentalHandler) GetRentalHandler(context *gin.Context) {
 	rentalID, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid rental ID format"})
 		return
 	}
 
-	rental, err := ReadOneRental(db.GORM, rentalID)
+	rental, err := handler.service.ReadOneRental(rentalID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -59,30 +67,28 @@ func GetRentalHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": rental})
 }
 
-func PutRentalHandler(context *gin.Context) {
+func (handler *RentalHandler) PutRentalHandler(context *gin.Context) {
 	rentalID, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid rental ID format"})
 		return
 	}
 
-	rental, err := ReadOneRental(db.GORM, rentalID)
+	rental, err := handler.service.ReadOneRental(rentalID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	var updatedRental Rental
-	err = context.ShouldBindJSON(&updatedRental)
-	if err != nil {
+	if err = context.ShouldBindJSON(&updatedRental); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid rental data format"})
 		return
 	}
 
 	updatedRental.RentalID = rental.RentalID
 
-	err = UpdateOneRental(db.GORM, updatedRental)
-	if err != nil {
+	if err = handler.service.UpdateOneRental(&updatedRental); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update rental"})
 		return
 	}
@@ -90,21 +96,20 @@ func PutRentalHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": updatedRental})
 }
 
-func DeleteRentalHandler(context *gin.Context) {
+func (handler *RentalHandler) DeleteRentalHandler(context *gin.Context) {
 	rentalID, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid rental ID format"})
 		return
 	}
 
-	rental, err := ReadOneRental(db.GORM, rentalID)
+	rental, err := handler.service.ReadOneRental(rentalID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Rental not found"})
 		return
 	}
 
-	err = DeleteOneRental(db.GORM, *rental)
-	if err != nil {
+	if err = handler.service.DeleteOneRental(rental); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete rental"})
 		return
 	}

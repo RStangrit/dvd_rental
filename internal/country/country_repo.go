@@ -6,29 +6,37 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateCountry(db *gorm.DB, newCountry *Country) error {
-	return db.Table("country").Create(&newCountry).Error
+type CountryRepository struct {
+	db *gorm.DB
 }
 
-func ReadAllCountries(db *gorm.DB, pagination db.Pagination) ([]Country, int64, error) {
+func NewCountryRepository(db *gorm.DB) *CountryRepository {
+	return &CountryRepository{db: db}
+}
+
+func (repo *CountryRepository) InsertCountry(newCountry *Country) error {
+	return repo.db.Table("country").Create(&newCountry).Error
+}
+
+func (repo *CountryRepository) SelectAllCountries(pagination db.Pagination) ([]Country, int64, error) {
 	var countries []Country
 	var totalRecords int64
 
-	db.Table("country").Count(&totalRecords)
-	err := db.Table("country").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("country_id asc").Find(&countries).Error
+	repo.db.Table("country").Where("deleted_at IS NULL").Count(&totalRecords)
+	err := repo.db.Table("country").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("country_id asc").Find(&countries).Error
 	return countries, totalRecords, err
 }
 
-func ReadOneCountry(db *gorm.DB, countryId int64) (*Country, error) {
+func (repo *CountryRepository) SelectOneCountry(countryId int64) (*Country, error) {
 	var country Country
-	err := db.Table("country").First(&country, countryId).Error
+	err := repo.db.Table("country").First(&country, countryId).Error
 	return &country, err
 }
 
-func UpdateOneCountry(db *gorm.DB, country Country) error {
-	return db.Table("country").Omit("country_id").Updates(country).Error
+func (repo *CountryRepository) UpdateOneCountry(country Country) error {
+	return repo.db.Table("country").Omit("country_id").Updates(country).Error
 }
 
-func DeleteOneCountry(db *gorm.DB, country Country) error {
-	return db.Delete(&country).Error
+func (repo *CountryRepository) DeleteOneCountry(country Country) error {
+	return repo.db.Delete(&country).Error
 }

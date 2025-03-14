@@ -18,8 +18,8 @@ type Customer struct {
 	AddressID  int16             `json:"address_id" gorm:"type:int2;not null;foreignKey:AddressID"`
 	Activebool bool              `json:"activebool" gorm:"type:boolean;not null;default:true"`
 	CreateDate time.Time         `json:"create_date" gorm:"type:date;not null;default:current_date"`
-	LastUpdate time.Time         `json:"last_update" gorm:"type:timestamp;not null;default:now()"`
-	DeletedAt  gorm.DeletedAt    `json:"deleted_at"`
+	LastUpdate time.Time         `json:"last_update" gorm:"type:timestamp;not null;autoUpdateTime"`
+	DeletedAt  gorm.DeletedAt    `json:"-"`
 	Active     int               `json:"active" gorm:"type:int4;not null"`
 	Rentals    []rental.Rental   `json:"-" gorm:"foreignKey:CustomerID"`
 	Payments   []payment.Payment `json:"-" gorm:"foreignKey:CustomerID"`

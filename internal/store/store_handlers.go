@@ -8,7 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PostStoreHandler(context *gin.Context) {
+type StoreHandler struct {
+	service *StoreService
+}
+
+func NewStoreHandler(service *StoreService) *StoreHandler {
+	return &StoreHandler{service: service}
+}
+
+func (handler *StoreHandler) PostStoreHandler(context *gin.Context) {
 	var newStore Store
 	var err error
 
@@ -17,7 +25,7 @@ func PostStoreHandler(context *gin.Context) {
 		return
 	}
 
-	if err = CreateStore(db.GORM, &newStore); err != nil {
+	if err = handler.service.CreateStore(&newStore); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -25,7 +33,7 @@ func PostStoreHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newStore})
 }
 
-func GetStoresHandler(context *gin.Context) {
+func (handler *StoreHandler) GetStoresHandler(context *gin.Context) {
 	var pagination db.Pagination
 	var err error
 
@@ -34,7 +42,7 @@ func GetStoresHandler(context *gin.Context) {
 		return
 	}
 
-	stores, totalRecords, err := ReadAllStores(db.GORM, pagination)
+	stores, totalRecords, err := handler.service.ReadAllStores(pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -43,14 +51,14 @@ func GetStoresHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": stores, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
-func GetStoreHandler(context *gin.Context) {
+func (handler *StoreHandler) GetStoreHandler(context *gin.Context) {
 	storeID, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid store ID format"})
 		return
 	}
 
-	store, err := ReadOneStore(db.GORM, storeID)
+	store, err := handler.service.ReadOneStore(storeID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -59,14 +67,14 @@ func GetStoreHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": store})
 }
 
-func PutStoreHandler(context *gin.Context) {
+func (handler *StoreHandler) PutStoreHandler(context *gin.Context) {
 	storeID, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid store ID format"})
 		return
 	}
 
-	store, err := ReadOneStore(db.GORM, storeID)
+	store, err := handler.service.ReadOneStore(storeID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -81,7 +89,7 @@ func PutStoreHandler(context *gin.Context) {
 
 	updatedStore.StoreID = store.StoreID
 
-	err = UpdateOneStore(db.GORM, updatedStore)
+	err = handler.service.UpdateOneStore(&updatedStore)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update store"})
 		return
@@ -90,20 +98,20 @@ func PutStoreHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": updatedStore})
 }
 
-func DeleteStoreHandler(context *gin.Context) {
+func (handler *StoreHandler) DeleteStoreHandler(context *gin.Context) {
 	storeID, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid store ID format"})
 		return
 	}
 
-	store, err := ReadOneStore(db.GORM, storeID)
+	store, err := handler.service.ReadOneStore(storeID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Store not found"})
 		return
 	}
 
-	err = DeleteOneStore(db.GORM, *store)
+	err = handler.service.DeleteOneStore(store)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete store"})
 		return

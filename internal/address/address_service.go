@@ -24,7 +24,7 @@ func (service *AddressService) CreateAddress(newAddress *Address) error {
 }
 
 func (service *AddressService) ReadAllAddresses(pagination db.Pagination) ([]Address, int64, error) {
-	addresses, totalRecords, err := service.repo.SelectAllAddresses(service.repo.db, pagination)
+	addresses, totalRecords, err := service.repo.SelectAllAddresses(pagination)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -32,7 +32,7 @@ func (service *AddressService) ReadAllAddresses(pagination db.Pagination) ([]Add
 }
 
 func (service *AddressService) ReadOneAddress(addressId int64) (*Address, error) {
-	address, err := service.repo.SelectOneAddress(service.repo.db, addressId)
+	address, err := service.repo.SelectOneAddress(addressId)
 	if err != nil {
 		return nil, err
 	}
@@ -47,13 +47,12 @@ func (service *AddressService) UpdateOneAddress(address *Address) error {
 	if err != nil {
 		return err
 	} else {
-		return service.repo.UpdateOneAddress(service.repo.db, *address)
+		return service.repo.UpdateOneAddress(*address)
 	}
-
 }
 
 func (service *AddressService) DeleteOneAddress(address *Address) error {
-	return service.repo.DeleteOneAddress(service.repo.db, *address)
+	return service.repo.DeleteOneAddress(*address)
 }
 
 func (service *AddressService) ValidateAddress(address *Address) error {

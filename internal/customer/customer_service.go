@@ -2,10 +2,57 @@ package customer
 
 import (
 	"errors"
+	"fmt"
+	"main/pkg/db"
 	"regexp"
 )
 
-func ValidateCustomer(customer *Customer) error {
+type CustomerService struct {
+	repo *CustomerRepository
+}
+
+func NewCustomerService(repo *CustomerRepository) *CustomerService {
+	return &CustomerService{repo: repo}
+}
+
+func (service *CustomerService) CreateCustomer(newCustomer *Customer) error {
+	if err := service.ValidateCustomer(newCustomer); err != nil {
+		return err
+	}
+	return service.repo.InsertCustomer(newCustomer)
+}
+
+func (service *CustomerService) ReadAllCustomers(pagination db.Pagination) ([]Customer, int64, error) {
+	customers, totalRecords, err := service.repo.SelectAllCustomers(pagination)
+	if err != nil {
+		return nil, 0, err
+	}
+	return customers, totalRecords, nil
+}
+
+func (service *CustomerService) ReadOneCustomer(customerId int64) (*Customer, error) {
+	customer, err := service.repo.SelectOneCustomer(customerId)
+	if err != nil {
+		return nil, err
+	}
+	if customer == nil {
+		return nil, fmt.Errorf("customer not found")
+	}
+	return customer, nil
+}
+
+func (service *CustomerService) UpdateOneCustomer(customer *Customer) error {
+	if err := service.ValidateCustomer(customer); err != nil {
+		return err
+	}
+	return service.repo.UpdateOneCustomer(*customer)
+}
+
+func (service *CustomerService) DeleteOneCustomer(customer *Customer) error {
+	return service.repo.DeleteOneCustomer(*customer)
+}
+
+func (service *CustomerService) ValidateCustomer(customer *Customer) error {
 	if customer.FirstName == "" || len(customer.FirstName) > 45 {
 		return errors.New("first name is required and must be less than 45 characters")
 	}

@@ -8,7 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PostActorHandler(context *gin.Context) {
+type ActorHandler struct {
+	service *ActorService
+}
+
+func NewActorHandler(service *ActorService) *ActorHandler {
+	return &ActorHandler{service: service}
+}
+
+func (handler *ActorHandler) PostActorHandler(context *gin.Context) {
 	var newActor Actor
 	var err error
 
@@ -17,12 +25,7 @@ func PostActorHandler(context *gin.Context) {
 		return
 	}
 
-	if err = ValidateActor(&newActor); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err = CreateActor(db.GORM, &newActor); err != nil {
+	if err = handler.service.CreateActor(&newActor); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -30,31 +33,16 @@ func PostActorHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newActor})
 }
 
-func PostActorsHandler(context *gin.Context) {
-	var newACtors []Actor
+func (handler *ActorHandler) PostActorsHandler(context *gin.Context) {
+	var newActors []*Actor
 	var err error
 
-	if err = context.ShouldBindJSON(&newACtors); err != nil {
+	if err = context.ShouldBindJSON(&newActors); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	var validationErrors []string
-	var createdActors []Actor
-
-	for _, newActor := range newACtors {
-		if err = ValidateActor(&newActor); err != nil {
-			validationErrors = append(validationErrors, err.Error())
-			continue
-		}
-
-		if err = CreateActor(db.GORM, &newActor); err != nil {
-			context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		createdActors = append(createdActors, newActor)
-	}
+	validationErrors, createdActors, _ := handler.service.CreateActors(newActors)
 
 	if len(validationErrors) > 0 {
 		context.JSON(http.StatusBadRequest, gin.H{
@@ -64,11 +52,10 @@ func PostActorsHandler(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusCreated, gin.H{"data": newACtors})
-
+	context.JSON(http.StatusCreated, gin.H{"data": newActors})
 }
 
-func GetActorsHandler(context *gin.Context) {
+func (handler *ActorHandler) GetActorsHandler(context *gin.Context) {
 	var pagination db.Pagination
 	var err error
 
@@ -77,7 +64,7 @@ func GetActorsHandler(context *gin.Context) {
 		return
 	}
 
-	actors, totalRecords, err := ReadAllActors(db.GORM, pagination)
+	actors, totalRecords, err := handler.service.ReadAllActors(pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -86,14 +73,14 @@ func GetActorsHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": actors, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
-func GetActorHandler(context *gin.Context) {
+func (handler *ActorHandler) GetActorHandler(context *gin.Context) {
 	actorId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid actor ID format"})
 		return
 	}
 
-	actor, err := ReadOneActor(db.GORM, actorId)
+	actor, err := handler.service.ReadOneActor(actorId)
 	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -102,14 +89,14 @@ func GetActorHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": actor})
 }
 
-func GetActorFilmsHandler(context *gin.Context) {
+func (handler *ActorHandler) GetActorFilmsHandler(context *gin.Context) {
 	actorId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid actor ID format"})
 		return
 	}
 
-	actorFilms, err := ReadOneActorFilms(db.GORM, actorId)
+	actorFilms, err := handler.service.ReadOneActorFilms(actorId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -118,20 +105,20 @@ func GetActorFilmsHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": actorFilms})
 }
 
-func PutActorHandler(context *gin.Context) {
+func (handler *ActorHandler) PutActorHandler(context *gin.Context) {
 	actorId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid actor ID format"})
 		return
 	}
 
-	actor, err := ReadOneActor(db.GORM, actorId)
+	actor, err := handler.service.ReadOneActor(actorId)
 	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
-	var updatedActor Actor
+	var updatedActor *Actor
 	err = context.ShouldBindJSON(&updatedActor)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid actor data format"})
@@ -140,7 +127,7 @@ func PutActorHandler(context *gin.Context) {
 
 	updatedActor.ActorID = int(actor.ActorID)
 
-	err = UpdateOneActor(db.GORM, updatedActor)
+	err = handler.service.UpdateOneActor(updatedActor)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update actor"})
 		return
@@ -149,20 +136,20 @@ func PutActorHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": updatedActor})
 }
 
-func DeleteActorHandler(context *gin.Context) {
+func (handler *ActorHandler) DeleteActorHandler(context *gin.Context) {
 	actorId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid actor ID format"})
 		return
 	}
 
-	actor, err := ReadOneActor(db.GORM, actorId)
+	actor, err := handler.service.ReadOneActor(actorId)
 	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"error": "Actor not found"})
 		return
 	}
 
-	err = DeleteOneActor(db.GORM, *actor)
+	err = handler.service.DeleteOneActor(actor)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete actor"})
 		return

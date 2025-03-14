@@ -6,32 +6,37 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateInventory(db *gorm.DB, inventory *Inventory) error {
-	return db.Table("inventory").Create(&inventory).Error
+type InventoryRepository struct {
+	db *gorm.DB
 }
 
-func ReadAllInventories(db *gorm.DB, pagination db.Pagination) ([]Inventory, int64, error) {
+func NewInventoryRepository(db *gorm.DB) *InventoryRepository {
+	return &InventoryRepository{db: db}
+}
+
+func (repo *InventoryRepository) InsertInventory(newInventory *Inventory) error {
+	return repo.db.Table("inventory").Create(&newInventory).Error
+}
+
+func (repo *InventoryRepository) SelectAllInventories(pagination db.Pagination) ([]Inventory, int64, error) {
 	var inventories []Inventory
 	var totalRecords int64
 
-	query := db.Model(&Inventory{})
-	query.Count(&totalRecords)
-
-	offset := (pagination.Page - 1) * pagination.Limit
-	err := query.Limit(pagination.Limit).Offset(offset).Find(&inventories).Error
+	repo.db.Table("inventory").Where("deleted_at IS NULL").Count(&totalRecords)
+	err := repo.db.Table("inventory").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("inventory_id asc").Find(&inventories).Error
 	return inventories, totalRecords, err
 }
 
-func ReadOneInventory(db *gorm.DB, inventoryID int64) (*Inventory, error) {
+func (repo *InventoryRepository) SelectOneInventory(inventoryID int64) (*Inventory, error) {
 	var inventory Inventory
-	err := db.First(&inventory, inventoryID).Error
+	err := repo.db.Table("inventory").First(&inventory, inventoryID).Error
 	return &inventory, err
 }
 
-func UpdateOneInventory(db *gorm.DB, inventory Inventory) error {
-	return db.Save(&inventory).Error
+func (repo *InventoryRepository) UpdateOneInventory(inventory Inventory) error {
+	return repo.db.Table("inventory").Omit("inventory_id").Updates(inventory).Error
 }
 
-func DeleteOneInventory(db *gorm.DB, inventory Inventory) error {
-	return db.Delete(&inventory).Error
+func (repo *InventoryRepository) DeleteOneInventory(inventory Inventory) error {
+	return repo.db.Delete(&inventory).Error
 }

@@ -14,7 +14,7 @@ type Payment struct {
 	RentalID    int32          `json:"rental_id" gorm:"type:int4;not null;foreignKey:RentalID"`
 	Amount      float64        `json:"amount" gorm:"type:numeric(5,2);not null"`
 	PaymentDate time.Time      `json:"payment_date" gorm:"type:timestamp;not null"`
-	DeletedAt   gorm.DeletedAt `json:"deleted_at"`
+	DeletedAt   gorm.DeletedAt `json:"-"`
 }
 
 func (Payment) TableName() string {

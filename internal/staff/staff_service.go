@@ -2,10 +2,57 @@ package staff
 
 import (
 	"errors"
+	"fmt"
+	"main/pkg/db"
 	"regexp"
 )
 
-func ValidateStaff(staff *Staff) error {
+type StaffService struct {
+	repo *StaffRepository
+}
+
+func NewStaffService(repo *StaffRepository) *StaffService {
+	return &StaffService{repo: repo}
+}
+
+func (service *StaffService) CreateStaff(newStaff *Staff) error {
+	if err := service.ValidateStaff(newStaff); err != nil {
+		return err
+	}
+	return service.repo.InsertStaff(newStaff)
+}
+
+func (service *StaffService) ReadAllStaff(pagination db.Pagination) ([]Staff, int64, error) {
+	staffs, totalRecords, err := service.repo.SelectAllStaffs(pagination)
+	if err != nil {
+		return nil, 0, err
+	}
+	return staffs, totalRecords, nil
+}
+
+func (service *StaffService) ReadOneStaff(staffId int64) (*Staff, error) {
+	staff, err := service.repo.SelectOneStaff(staffId)
+	if err != nil {
+		return nil, err
+	}
+	if staff == nil {
+		return nil, fmt.Errorf("staff not found")
+	}
+	return staff, nil
+}
+
+func (service *StaffService) UpdateOneStaff(staff *Staff) error {
+	if err := service.ValidateStaff(staff); err != nil {
+		return err
+	}
+	return service.repo.UpdateOneStaff(*staff)
+}
+
+func (service *StaffService) DeleteOneStaff(staff *Staff) error {
+	return service.repo.DeleteOneStaff(*staff)
+}
+
+func (service *StaffService) ValidateStaff(staff *Staff) error {
 	if staff.FirstName == "" || len(staff.FirstName) > 45 {
 		return errors.New("first name is required and must be less than 45 characters")
 	}
@@ -20,9 +67,6 @@ func ValidateStaff(staff *Staff) error {
 	}
 	if staff.StoreID <= 0 {
 		return errors.New("store ID must be a positive number")
-	}
-	if staff.Active != true && staff.Active != false {
-		return errors.New("active status must be true or false")
 	}
 	if staff.Username == "" || len(staff.Username) > 16 {
 		return errors.New("username is required and must be less than 16 characters")

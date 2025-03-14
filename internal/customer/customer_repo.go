@@ -6,29 +6,42 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateCustomer(db *gorm.DB, newCustomer *Customer) error {
-	return db.Table("customer").Create(&newCustomer).Error
+type CustomerRepository struct {
+	db *gorm.DB
 }
 
-func ReadAllCustomers(db *gorm.DB, pagination db.Pagination) ([]Customer, int64, error) {
+func NewCustomerRepository(db *gorm.DB) *CustomerRepository {
+	return &CustomerRepository{db: db}
+}
+
+func (repo *CustomerRepository) InsertCustomer(newCustomer *Customer) error {
+	return repo.db.Table("customer").Create(&newCustomer).Error
+}
+
+func (repo *CustomerRepository) SelectAllCustomers(pagination db.Pagination) ([]Customer, int64, error) {
 	var customers []Customer
 	var totalRecords int64
 
-	db.Table("customer").Count(&totalRecords)
-	err := db.Table("customer").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("customer_id asc").Find(&customers).Error
+	repo.db.Table("customer").Where("deleted_at IS NULL").Count(&totalRecords)
+	err := repo.db.Table("customer").
+		Offset(pagination.GetOffset()).
+		Limit(pagination.GetLimit()).
+		Order("customer_id asc").
+		Find(&customers).Error
+
 	return customers, totalRecords, err
 }
 
-func ReadOneCustomer(db *gorm.DB, customerId int64) (*Customer, error) {
+func (repo *CustomerRepository) SelectOneCustomer(customerId int64) (*Customer, error) {
 	var customer Customer
-	err := db.Table("customer").First(&customer, customerId).Error
+	err := repo.db.Table("customer").First(&customer, customerId).Error
 	return &customer, err
 }
 
-func UpdateOneCustomer(db *gorm.DB, customer Customer) error {
-	return db.Table("customer").Omit("customer_id").Updates(customer).Error
+func (repo *CustomerRepository) UpdateOneCustomer(customer Customer) error {
+	return repo.db.Table("customer").Omit("customer_id").Updates(customer).Error
 }
 
-func DeleteOneCustomer(db *gorm.DB, customer Customer) error {
-	return db.Delete(&customer).Error
+func (repo *CustomerRepository) DeleteOneCustomer(customer Customer) error {
+	return repo.db.Delete(&customer).Error
 }

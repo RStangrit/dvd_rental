@@ -6,29 +6,37 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateCity(db *gorm.DB, newCity *City) error {
-	return db.Table("city").Create(&newCity).Error
+type CityRepository struct {
+	db *gorm.DB
 }
 
-func ReadAllCities(db *gorm.DB, pagination db.Pagination) ([]City, int64, error) {
+func NewCityRepository(db *gorm.DB) *CityRepository {
+	return &CityRepository{db: db}
+}
+
+func (repo *CityRepository) InsertCity(newCity *City) error {
+	return repo.db.Table("city").Create(&newCity).Error
+}
+
+func (repo *CityRepository) SelectAllCities(pagination db.Pagination) ([]City, int64, error) {
 	var cities []City
 	var totalRecords int64
 
-	db.Table("city").Count(&totalRecords)
-	err := db.Table("city").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("city_id asc").Find(&cities).Error
+	repo.db.Table("city").Where("deleted_at IS NULL").Count(&totalRecords)
+	err := repo.db.Table("city").Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order("city_id asc").Find(&cities).Error
 	return cities, totalRecords, err
 }
 
-func ReadOneCity(db *gorm.DB, cityId int64) (*City, error) {
+func (repo *CityRepository) SelectOneCity(cityId int64) (*City, error) {
 	var city City
-	err := db.Table("city").First(&city, cityId).Error
+	err := repo.db.Table("city").First(&city, cityId).Error
 	return &city, err
 }
 
-func UpdateOneCity(db *gorm.DB, city City) error {
-	return db.Table("city").Omit("city_id").Updates(city).Error
+func (repo *CityRepository) UpdateOneCity(city City) error {
+	return repo.db.Table("city").Omit("city_id").Updates(city).Error
 }
 
-func DeleteOneCity(db *gorm.DB, city City) error {
-	return db.Delete(&city).Error
+func (repo *CityRepository) DeleteOneCity(city City) error {
+	return repo.db.Delete(&city).Error
 }

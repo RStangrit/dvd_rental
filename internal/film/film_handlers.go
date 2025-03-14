@@ -8,21 +8,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PostFilmHandler(context *gin.Context) {
+type FilmHandler struct {
+	service *FilmService
+}
+
+func NewFilmHandler(service *FilmService) *FilmHandler {
+	return &FilmHandler{service: service}
+}
+
+func (handler *FilmHandler) PostFilmHandler(context *gin.Context) {
 	var newFilm Film
-	var err error
 
-	if err = context.ShouldBindJSON(&newFilm); err != nil {
+	if err := context.ShouldBindJSON(&newFilm); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err = ValidateFilm(&newFilm); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err = CreateFilm(db.GORM, &newFilm); err != nil {
+	if err := handler.service.CreateFilm(&newFilm); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -30,60 +32,39 @@ func PostFilmHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newFilm})
 }
 
-func PostFilmsHandler(context *gin.Context) {
-	var newFilms []Film
-	var err error
+func (handler *FilmHandler) PostFilmsHandler(context *gin.Context) {
+	var newFilms []*Film
 
-	if err = context.ShouldBindJSON(&newFilms); err != nil {
+	if err := context.ShouldBindJSON(&newFilms); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	var validationErrors []string
-	var createdFilms []Film
-
-	for _, newFilm := range newFilms {
-		if err = ValidateFilm(&newFilm); err != nil {
-			validationErrors = append(validationErrors, err.Error())
-			continue
-		}
-
-		if err = CreateFilm(db.GORM, &newFilm); err != nil {
-			context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		createdFilms = append(createdFilms, newFilm)
-	}
+	validationErrors, createdFilms, _ := handler.service.CreateFilms(newFilms)
 
 	if len(validationErrors) > 0 {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"errors": validationErrors,
-			"data":   createdFilms,
-		})
+		context.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors, "data": createdFilms})
 		return
 	}
 
 	context.JSON(http.StatusCreated, gin.H{"data": createdFilms})
 }
 
-func GetFilmshandler(context *gin.Context) {
+func (handler *FilmHandler) GetFilmsHandler(context *gin.Context) {
 	var pagination db.Pagination
-	var err error
-	//struct filters, makes code more clear and works only with non-empty values
 	var filters FilmFilter
 
-	if err = context.ShouldBindQuery(&pagination); err != nil {
+	if err := context.ShouldBindQuery(&pagination); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid pagination parameters"})
 		return
 	}
 
-	if err = context.ShouldBindQuery(&filters); err != nil {
+	if err := context.ShouldBindQuery(&filters); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid query parameters"})
 		return
 	}
 
-	films, totalRecords, err := ReadAllFilms(db.GORM, pagination, filters)
+	films, totalRecords, err := handler.service.ReadAllFilms(pagination, filters)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -92,14 +73,14 @@ func GetFilmshandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": films, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
-func GetFilmHandler(context *gin.Context) {
+func (handler *FilmHandler) GetFilmHandler(context *gin.Context) {
 	filmId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film ID format"})
 		return
 	}
 
-	film, err := ReadOneFilm(db.GORM, filmId)
+	film, err := handler.service.ReadOneFilm(filmId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -108,14 +89,14 @@ func GetFilmHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": film})
 }
 
-func GetFilmActorsHandler(context *gin.Context) {
+func (handler *FilmHandler) GetFilmActorsHandler(context *gin.Context) {
 	filmId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film ID format"})
 		return
 	}
 
-	filmActors, err := ReadOneFilmActors(db.GORM, filmId)
+	filmActors, err := handler.service.ReadOneFilmActors(filmId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -124,35 +105,21 @@ func GetFilmActorsHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": filmActors})
 }
 
-func PutFilmHandler(context *gin.Context) {
+func (handler *FilmHandler) PutFilmHandler(context *gin.Context) {
 	filmId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film ID format"})
 		return
 	}
 
-	film, err := ReadOneFilm(db.GORM, filmId)
-	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
 	var updatedFilm Film
-	err = context.ShouldBindJSON(&updatedFilm)
-	if err != nil {
+	if err := context.ShouldBindJSON(&updatedFilm); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film data format"})
 		return
 	}
 
-	if err = ValidateFilm(&updatedFilm); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	updatedFilm.FilmID = int(film.FilmID)
-
-	err = UpdateOneFilm(db.GORM, updatedFilm)
-	if err != nil {
+	updatedFilm.FilmID = int(filmId)
+	if err := handler.service.UpdateOneFilm(&updatedFilm); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update film"})
 		return
 	}
@@ -160,21 +127,20 @@ func PutFilmHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": updatedFilm})
 }
 
-func DeleteFilmHandler(context *gin.Context) {
+func (handler *FilmHandler) DeleteFilmHandler(context *gin.Context) {
 	filmId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film ID format"})
 		return
 	}
 
-	film, err := ReadOneFilm(db.GORM, filmId)
+	film, err := handler.service.ReadOneFilm(filmId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = DeleteOneFilm(db.GORM, *film)
-	if err != nil {
+	if err := handler.service.DeleteOneFilm(film); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete film"})
 		return
 	}
@@ -182,12 +148,15 @@ func DeleteFilmHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"deleted": film})
 }
 
-func PostFilmDiscountHandler(context *gin.Context) {
+func (handler *FilmHandler) PostFilmDiscountHandler(context *gin.Context) {
 	filmId, err := utils.GetIntParam(context, "id")
+
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid film ID format"})
 		return
 	}
+
+	film, _ := handler.service.ReadOneFilm(filmId)
 
 	var body map[string]interface{}
 	if err := context.ShouldBindJSON(&body); err != nil {
@@ -207,24 +176,8 @@ func PostFilmDiscountHandler(context *gin.Context) {
 		return
 	}
 
-	if err := ValidateDiscountPercentage(discount); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	film, err := ReadOneFilm(db.GORM, filmId)
-	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	if film == nil {
-		context.JSON(http.StatusNotFound, gin.H{"error": "Film not found"})
-		return
-	}
-
-	if err := DiscountOneFilm(db.GORM, *film, discount); err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to set film discount " + err.Error()})
+	if err := handler.service.DiscountOneFilm(filmId, discount); err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to set film discount: " + err.Error()})
 		return
 	}
 

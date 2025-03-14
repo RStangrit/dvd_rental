@@ -22,6 +22,7 @@ import (
 	"main/internal/store"
 	user "main/internal/user"
 	"main/middleware"
+	"main/pkg/websocket"
 	"net/http"
 	"os"
 
@@ -66,33 +67,43 @@ func getPort(configPort string) string {
 }
 
 func registerRoutes(server *gin.Engine, db *gorm.DB) {
-	//registration method for MVC
+	//registration method for Clean Arch
 	addressRoutes := address.NewAddressRoutes(db)
 	addressRoutes.RegisterAddressRoutes(server)
-
-	routes := []func(*gin.Engine){
-
-		//old registration method
-		language.RegisterLanguageRoutes,
-		actor.RegisterActorRoutes,
-		film.RegisterFilmRoutes,
-		category.RegisterCategoryRoutes,
-		film_actor.RegisterFilmActorRoutes,
-		inventory.RegisterInventoryRoutes,
-		film_category.RegisterFilmCategoryRoutes,
-		country.RegisterCountryRoutes,
-		city.RegisterCityRoutes,
-		customer.RegisterCustomerRoutes,
-		staff.RegisterStaffRoutes,
-		store.RegisterStoreRoutes,
-		rental.RegisterRentalRoutes,
-		payment.RegisterPaymentRoutes,
-		user.RegisterUserRoutes,
-		file.RegisterFileRoutes,
-		development.RegisterDevelopmentRoutes,
-	}
-
-	for _, register := range routes {
-		register(server)
-	}
+	actorRoutes := actor.NewActorRoutes(db)
+	actorRoutes.RegisterActorRoutes(server)
+	categoryRoutes := category.NewCategoryRoutes(db)
+	categoryRoutes.RegisterCategoryRoutes(server)
+	cityRoutes := city.NewCityRoutes(db)
+	cityRoutes.RegisterCityRoutes(server)
+	filmActorRoutes := film_actor.NewFilmActorRoutes(db)
+	filmActorRoutes.RegisterFilmActorRoutes(server)
+	inventoryRoutes := inventory.NewInventoryRoutes(db)
+	inventoryRoutes.RegisterInventoryRoutes(server)
+	languageRoutes := language.NewLanguageRoutes(db)
+	languageRoutes.RegisterLanguageRoutes(server)
+	filmRoutes := film.NewFilmRoutes(db)
+	filmRoutes.RegisterFilmRoutes(server)
+	countryRoutes := country.NewCountryRoutes(db)
+	countryRoutes.RegisterCountryRoutes(server)
+	filmCategoryRoutes := film_category.NewFilmCategoryRoutes(db)
+	filmCategoryRoutes.RegisterFilmCategoryRoutes(server)
+	customerRoutes := customer.NewCustomerRoutes(db)
+	customerRoutes.RegisterCustomerRoutes(server)
+	staffRoutes := staff.NewStaffRoutes(db)
+	staffRoutes.RegisterStaffRoutes(server)
+	storeRoutes := store.NewStoreRoutes(db)
+	storeRoutes.RegisterStoreRoutes(server)
+	rentalRoutes := rental.NewRentalRoutes(db)
+	rentalRoutes.RegisterRentalRoutes(server)
+	paymentRoutes := payment.NewPaymentRoutes(db)
+	paymentRoutes.RegisterPaymentRoutes(server)
+	userRoutes := user.NewUserRoutes(db)
+	userRoutes.RegisterUserRoutes(server)
+	fileRoutes := file.NewFileRoutes(db)
+	fileRoutes.RegisterFileRoutes(server)
+	developmentRoutes := development.NewDevelopmentRoutes(db)
+	developmentRoutes.RegisterDevelopmentRoutes(server)
+	websocketRoutes, _ := websocket.NewWebSocketRoutes()
+	websocketRoutes.RegisterWSRoutes(server)
 }

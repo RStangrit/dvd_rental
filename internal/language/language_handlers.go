@@ -8,21 +8,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PostLanguageHandler(context *gin.Context) {
+type LanguageHandler struct {
+	service *LanguageService
+}
+
+func NewLanguageHandler(service *LanguageService) *LanguageHandler {
+	return &LanguageHandler{service: service}
+}
+
+func (handler *LanguageHandler) PostLanguageHandler(context *gin.Context) {
 	var newLanguage Language
-	var err error
 
-	if err = context.ShouldBindJSON(&newLanguage); err != nil {
+	if err := context.ShouldBindJSON(&newLanguage); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err = ValidateLanguage(&newLanguage); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err = CreateLanguage(db.GORM, &newLanguage); err != nil {
+	if err := handler.service.CreateLanguage(&newLanguage); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -30,31 +32,15 @@ func PostLanguageHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newLanguage})
 }
 
-func PostLanguagesHandler(context *gin.Context) {
-	var newLanguages []Language
-	var err error
+func (handler *LanguageHandler) PostLanguagesHandler(context *gin.Context) {
+	var newLanguages []*Language
 
-	if err = context.ShouldBindJSON(&newLanguages); err != nil {
+	if err := context.ShouldBindJSON(&newLanguages); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	var validationErrors []string
-	var createdLanguages []Language
-
-	for _, newLanguage := range newLanguages {
-		if err = ValidateLanguage(&newLanguage); err != nil {
-			validationErrors = append(validationErrors, err.Error())
-			continue
-		}
-
-		if err = CreateLanguage(db.GORM, &newLanguage); err != nil {
-			context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		createdLanguages = append(createdLanguages, newLanguage)
-	}
+	validationErrors, createdLanguages, _ := handler.service.CreateLanguages(newLanguages)
 
 	if len(validationErrors) > 0 {
 		context.JSON(http.StatusBadRequest, gin.H{
@@ -67,11 +53,10 @@ func PostLanguagesHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": createdLanguages})
 }
 
-func GetLanguagesHandler(context *gin.Context) {
+func (handler *LanguageHandler) GetLanguagesHandler(context *gin.Context) {
 	var pagination db.Pagination
-	var err error
 
-	if err = context.ShouldBindQuery(&pagination); err != nil {
+	if err := context.ShouldBindQuery(&pagination); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid pagination parameters"})
 		return
 	}
@@ -83,7 +68,7 @@ func GetLanguagesHandler(context *gin.Context) {
 		filters["name"] = name
 	}
 
-	languages, totalRecords, err := ReadAllLanguages(db.GORM, pagination, filters)
+	languages, totalRecords, err := handler.service.ReadAllLanguages(pagination, filters)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -92,73 +77,38 @@ func GetLanguagesHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": languages, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
-func GetLanguageHandler(context *gin.Context) {
+func (handler *LanguageHandler) GetLanguageHandler(context *gin.Context) {
 	languageId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid language ID format"})
 		return
 	}
 
-	language, err := ReadOneLanguage(db.GORM, languageId)
+	language, err := handler.service.ReadOneLanguage(languageId)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{"data": language})
 }
 
-func GetLanguageAssociatedFilmsHandler(context *gin.Context) {
+func (handler *LanguageHandler) PutLanguageHandler(context *gin.Context) {
 	languageId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid language ID format"})
-		return
-	}
-
-	language, err := ReadOneLanguage(db.GORM, languageId)
-	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	err = language.LoadFilms(db.GORM)
-	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	context.JSON(http.StatusOK, gin.H{"data": language})
-}
-
-func PutLanguageHandler(context *gin.Context) {
-	languageId, err := utils.GetIntParam(context, "id")
-	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid language ID format"})
-		return
-	}
-
-	language, err := ReadOneLanguage(db.GORM, languageId)
-	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	var updatedLanguage Language
-	err = context.ShouldBindJSON(&updatedLanguage)
-	if err != nil {
+	if err := context.ShouldBindJSON(&updatedLanguage); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid language data format"})
 		return
 	}
 
-	if err = ValidateLanguage(&updatedLanguage); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	updatedLanguage.LanguageID = int(languageId)
 
-	updatedLanguage.LanguageID = int(language.LanguageID)
-
-	err = UpdateOneLanguage(db.GORM, updatedLanguage)
-	if err != nil {
+	if err := handler.service.UpdateOneLanguage(&updatedLanguage); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update language"})
 		return
 	}
@@ -166,21 +116,20 @@ func PutLanguageHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": updatedLanguage})
 }
 
-func DeleteLanguageHandler(context *gin.Context) {
+func (handler *LanguageHandler) DeleteLanguageHandler(context *gin.Context) {
 	languageId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid language ID format"})
 		return
 	}
 
-	language, err := ReadOneLanguage(db.GORM, languageId)
+	language, err := handler.service.ReadOneLanguage(languageId)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		context.JSON(http.StatusNotFound, gin.H{"error": "Language not found"})
 		return
 	}
 
-	err = DeleteOneLanguage(db.GORM, *language)
-	if err != nil {
+	if err := handler.service.DeleteOneLanguage(language); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete language"})
 		return
 	}

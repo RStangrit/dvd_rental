@@ -1,6 +1,7 @@
 package inventory
 
 import (
+	"fmt"
 	"main/pkg/db"
 	"main/pkg/utils"
 	"net/http"
@@ -9,7 +10,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PostInventoryHandler(context *gin.Context) {
+type InventoryHandler struct {
+	service *InventoryService
+}
+
+func NewInventoryHandler(service *InventoryService) *InventoryHandler {
+	return &InventoryHandler{service: service}
+}
+
+func (handler *InventoryHandler) PostInventoryHandler(context *gin.Context) {
 	var newInventory Inventory
 	var err error
 
@@ -18,14 +27,8 @@ func PostInventoryHandler(context *gin.Context) {
 		return
 	}
 
-	if err = ValidateInventory(&newInventory); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	newInventory.LastUpdate = time.Now()
-
-	if err = CreateInventory(db.GORM, &newInventory); err != nil {
+	fmt.Println(newInventory)
+	if err = handler.service.CreateInventory(&newInventory); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -33,7 +36,7 @@ func PostInventoryHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newInventory})
 }
 
-func GetInventoriesHandler(context *gin.Context) {
+func (handler *InventoryHandler) GetInventoriesHandler(context *gin.Context) {
 	var pagination db.Pagination
 	var err error
 
@@ -42,7 +45,7 @@ func GetInventoriesHandler(context *gin.Context) {
 		return
 	}
 
-	inventories, totalRecords, err := ReadAllInventories(db.GORM, pagination)
+	inventories, totalRecords, err := handler.service.ReadAllInventories(pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -51,14 +54,14 @@ func GetInventoriesHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": inventories, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
-func GetInventoryHandler(context *gin.Context) {
+func (handler *InventoryHandler) GetInventoryHandler(context *gin.Context) {
 	inventoryId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid inventory ID format"})
 		return
 	}
 
-	inventory, err := ReadOneInventory(db.GORM, inventoryId)
+	inventory, err := handler.service.ReadOneInventory(inventoryId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -67,36 +70,23 @@ func GetInventoryHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": inventory})
 }
 
-func PutInventoryHandler(context *gin.Context) {
+func (handler *InventoryHandler) PutInventoryHandler(context *gin.Context) {
 	inventoryId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid inventory ID format"})
 		return
 	}
 
-	inventory, err := ReadOneInventory(db.GORM, inventoryId)
-	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
 	var updatedInventory Inventory
-	err = context.ShouldBindJSON(&updatedInventory)
-	if err != nil {
+	if err = context.ShouldBindJSON(&updatedInventory); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid inventory data format"})
 		return
 	}
 
-	if err = ValidateInventory(&updatedInventory); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	updatedInventory.InventoryID = inventory.InventoryID
+	updatedInventory.InventoryID = int(inventoryId)
 	updatedInventory.LastUpdate = time.Now()
 
-	err = UpdateOneInventory(db.GORM, updatedInventory)
-	if err != nil {
+	if err = handler.service.UpdateOneInventory(&updatedInventory); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update inventory"})
 		return
 	}
@@ -104,24 +94,20 @@ func PutInventoryHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": updatedInventory})
 }
 
-func DeleteInventoryHandler(context *gin.Context) {
+func (handler *InventoryHandler) DeleteInventoryHandler(context *gin.Context) {
 	inventoryId, err := utils.GetIntParam(context, "id")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid inventory ID format"})
 		return
 	}
 
-	inventory, err := ReadOneInventory(db.GORM, inventoryId)
-	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	var deletedInventory Inventory
+	deletedInventory.InventoryID = int(inventoryId)
 
-	err = DeleteOneInventory(db.GORM, *inventory)
-	if err != nil {
+	if err = handler.service.DeleteOneInventory(&deletedInventory); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete inventory"})
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"deleted": inventory})
+	context.JSON(http.StatusOK, gin.H{"deleted": inventoryId})
 }

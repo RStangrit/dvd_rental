@@ -19,9 +19,9 @@ type Staff struct {
 	Active     bool              `json:"active" gorm:"type:boolean;not null;default:true"`
 	Username   string            `json:"username" gorm:"type:varchar(16);not null"`
 	Password   string            `json:"password" gorm:"type:varchar(40);not null"`
-	LastUpdate time.Time         `json:"last_update" gorm:"type:timestamp;not null;default:now()"`
+	LastUpdate time.Time         `json:"last_update" gorm:"type:timestamp;not null;autoUpdateTime"`
 	Picture    []byte            `json:"picture" gorm:"type:bytea;not null"`
-	DeletedAt  gorm.DeletedAt    `json:"deleted_at"`
+	DeletedAt  gorm.DeletedAt    `json:"-"`
 	Rentals    []rental.Rental   `json:"-" gorm:"foreignKey:StaffID"`
 	Payments   []payment.Payment `json:"-" gorm:"foreignKey:StaffID"`
 }

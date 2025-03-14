@@ -3,12 +3,21 @@ package user
 import (
 	"main/pkg/auth"
 	"main/pkg/db"
+	"main/pkg/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func PostUserHandler(context *gin.Context) {
+type UserHandler struct {
+	service *UserService
+}
+
+func NewUserHandler(service *UserService) *UserHandler {
+	return &UserHandler{service: service}
+}
+
+func (handler *UserHandler) PostUserHandler(context *gin.Context) {
 	var newUser User
 	var err error
 
@@ -17,12 +26,12 @@ func PostUserHandler(context *gin.Context) {
 		return
 	}
 
-	if err = ValidateUser(&newUser); err != nil {
+	if err = handler.service.ValidateUser(&newUser); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err = CreateUser(db.GORM, &newUser); err != nil {
+	if err = handler.service.CreateUser(&newUser); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -30,11 +39,7 @@ func PostUserHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newUser})
 }
 
-func GetUserHandler(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{"data": "handler in development"})
-}
-
-func GetUsersHandler(context *gin.Context) {
+func (handler *UserHandler) GetUsersHandler(context *gin.Context) {
 	var pagination db.Pagination
 	var err error
 
@@ -43,7 +48,7 @@ func GetUsersHandler(context *gin.Context) {
 		return
 	}
 
-	users, totalRecords, err := ReadAllUsers(db.GORM, pagination)
+	users, totalRecords, err := handler.service.ReadAllUsers(pagination)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -52,15 +57,76 @@ func GetUsersHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": users, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
-func PutUserHandler(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{"data": "handler in development"})
+func (handler *UserHandler) GetUserHandler(context *gin.Context) {
+	userId, err := utils.GetIntParam(context, "id")
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID format"})
+		return
+	}
+
+	user, err := handler.service.ReadOneUserById(userId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": user})
 }
 
-func DeleteUserHandler(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{"data": "handler in development"})
+func (handler *UserHandler) PutUserHandler(context *gin.Context) {
+	userId, err := utils.GetIntParam(context, "id")
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID format"})
+		return
+	}
+
+	user, err := handler.service.ReadOneUserById(userId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var updatedUser *User
+	err = context.ShouldBindJSON(&updatedUser)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user data format"})
+		return
+	}
+
+	updatedUser.UserID = user.UserID
+
+	err = handler.service.UpdateOneUser(updatedUser)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": updatedUser})
 }
 
-func LoginUserHandler(context *gin.Context) {
+func (handler *UserHandler) DeleteUserHandler(context *gin.Context) {
+	userId, err := utils.GetIntParam(context, "id")
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID format"})
+		return
+	}
+
+	user, err := handler.service.ReadOneUserById(userId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = handler.service.DeleteOneUser(user)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete user"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"deleted": user})
+}
+
+func (handler *UserHandler) LoginUserHandler(context *gin.Context) {
 	var inputUser User
 	var err error
 
@@ -69,7 +135,7 @@ func LoginUserHandler(context *gin.Context) {
 		return
 	}
 
-	user, err := ReadOneUserByEmail(db.GORM, inputUser.Email)
+	user, err := handler.service.ReadOneUserByEmail(inputUser.Email)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -77,7 +143,7 @@ func LoginUserHandler(context *gin.Context) {
 
 	err = auth.CompareHashAndPassword(user.Password, inputUser.Password)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		context.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
 
