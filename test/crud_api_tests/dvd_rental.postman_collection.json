@@ -4006,30 +4006,190 @@
 					"response": []
 				},
 				{
+					"name": "POST /country",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									"",
+									"let countryName = generateRandomString(50)",
+									"pm.globals.set(\"countryName\", countryName);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Checking the data structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"country_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"country\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"country_id\", pm.response.json().data.country_id);",
+									"    pm.globals.set(\"country\", pm.response.json().data.country);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"country\": \"{{countryName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/country",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"country"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /city",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									"",
+									"let cityName = generateRandomString(50)",
+									"pm.globals.set(\"cityName\", cityName);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Checking the data structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"city_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"city\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"city_id\", pm.response.json().data.city_id);",
+									"    pm.globals.set(\"city\", pm.response.json().data.city);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"city\": \"{{cityName}}\",\n    \"country_id\": {{country_id}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/city",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"city"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "POST /address",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
-									"// pm.test(\"Body matches string\", function () {",
-									"//     pm.expect(pm.response.text()).to.include(\"language_id\");",
-									"//     pm.expect(pm.response.json().data.language_id).to.exist;",
-									"//     pm.globals.set(\"languageId\", pm.response.json().data.language_id);",
-									"//     pm.globals.set(\"languageName\", pm.response.json().data.name);",
-									"// });",
+									"pm.test(\"Response contains 'data' key\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
 									"",
-									"// pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
-									"//     var responseData = pm.response.json().data;",
+									"pm.test(\"Validate 'data' structure\", function () {",
+									"    var jsonData = pm.response.json();",
 									"",
-									"//     pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
-									"//     pm.expect(responseData).to.have.property('name').that.is.a('string');",
-									"//     pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
-									"// });"
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"address2\").that.is.a(\"string\"); // Can be empty",
+									"    pm.expect(jsonData.data).to.have.property(\"district\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"city_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"postal_code\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"phone\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"address_id\", pm.response.json().data.address_id);",
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -4048,24 +4208,16 @@
 									"    return result;",
 									"}",
 									"",
-									"function generateTestAddress() {",
-									"    return {",
-									"        address: generateRandomString(50),",
-									"        address2: generateRandomString(50),",
-									"        district: generateRandomString(20),",
-									"        city_id: Math.floor(Math.random() * 100),",
-									"        city_id: 6,",
-									"        postal_code: generateRandomString(10),",
-									"        phone: `+1-${Math.floor(Math.random() * 10000000000)}`,",
-									"        deleted_at: null,",
-									"        customer: null,",
-									"        staff: null,",
-									"        store: null",
-									"    };",
-									"}",
-									"",
-									"const addressObject = generateTestAddress();",
+									"const addressObject = generateRandomString(50);",
+									"const addressObject2 = generateRandomString(50);",
+									"const addressDistrictObject = generateRandomString(20);",
+									"const addressPostalCodeObject = generateRandomString(10);",
+									"const addressPhoneObject = generateRandomString(10);",
 									"pm.globals.set(\"addressObject\", JSON.stringify(addressObject));",
+									"pm.globals.set(\"addressObject2\", JSON.stringify(addressObject2));",
+									"pm.globals.set(\"addressDistrictObject\", JSON.stringify(addressDistrictObject));",
+									"pm.globals.set(\"addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
+									"pm.globals.set(\"addressPhoneObject\", JSON.stringify(addressPhoneObject));",
 									""
 								],
 								"type": "text/javascript",
@@ -4078,7 +4230,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{{addressObject}}",
+							"raw": "{\n    \"address\": {{addressObject}},\n    \"address2\": {{addressObject2}},\n    \"district\": {{addressDistrictObject}},\n    \"city_id\": {{city_id}},\n    \"postal_code\": {{addressPostalCodeObject}},\n    \"phone\": {{addressPhoneObject}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4092,6 +4244,268 @@
 							],
 							"path": [
 								"address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /addresses",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is an array containing objects with address_id, address, and last_update\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
+									"    responseData.forEach((address) => {",
+									"        pm.expect(address).to.have.property('address_id').that.is.a('number');",
+									"        pm.expect(address).to.have.property('address').that.is.a('string');",
+									"        pm.expect(address).to.have.property('address2').that.is.a('string');",
+									"        pm.expect(address).to.have.property('district').that.is.a('string');",
+									"        pm.expect(address).to.have.property('city_id').that.is.a('number');",
+									"        pm.expect(address).to.have.property('postal_code').that.is.a('string');",
+									"        pm.expect(address).to.have.property('phone').that.is.a('string');",
+									"        pm.expect(address).to.have.property('last_update').that.is.a('string');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/addresses",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /address/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is an array containing objects with address_id, address, and last_update\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"    pm.expect(responseData).to.be.an('object').that.is.not.empty;",
+									"    pm.expect(responseData).to.have.property('address_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('address').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/address/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"address",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{address_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /address",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains 'data' key\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Validate 'data' structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"",
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"address2\").that.is.a(\"string\"); // Can be empty",
+									"    pm.expect(jsonData.data).to.have.property(\"district\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"city_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"postal_code\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"phone\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"address_id\", pm.response.json().data.address_id);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomString(length) {",
+									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    let result = '';",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+									"    }",
+									"    return result;",
+									"}",
+									"",
+									"const addressObject = generateRandomString(50);",
+									"const addressObject2 = generateRandomString(50);",
+									"const addressDistrictObject = generateRandomString(20);",
+									"const addressPostalCodeObject = generateRandomString(10);",
+									"const addressPhoneObject = generateRandomString(10);",
+									"pm.globals.set(\"addressObject\", JSON.stringify(addressObject));",
+									"pm.globals.set(\"addressObject2\", JSON.stringify(addressObject2));",
+									"pm.globals.set(\"addressDistrictObject\", JSON.stringify(addressDistrictObject));",
+									"pm.globals.set(\"addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
+									"pm.globals.set(\"addressPhoneObject\", JSON.stringify(addressPhoneObject));",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": {{addressObject}},\n    \"address2\": {{addressObject2}},\n    \"district\": {{addressDistrictObject}},\n    \"city_id\": {{city_id}},\n    \"postal_code\": {{addressPostalCodeObject}},\n    \"phone\": {{addressPhoneObject}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/address/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"address",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{address_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /address/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is an array containing objects with address_id, address, and last_update\", function () {",
+									"    var responseData = pm.response.json().deleted;",
+									"    pm.expect(responseData).to.be.an('object').that.is.not.empty;",
+									"    pm.expect(responseData).to.have.property('address_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('address').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/address/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"address",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{address_id}}"
+								}
 							]
 						}
 					},
