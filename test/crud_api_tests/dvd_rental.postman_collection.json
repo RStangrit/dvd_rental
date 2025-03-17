@@ -32,6 +32,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.globals.clear();",
 									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
 								],
 								"type": "text/javascript",
@@ -542,6 +543,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.globals.clear();",
 									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
 								],
 								"type": "text/javascript",
@@ -1045,6 +1047,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.globals.clear();",
 									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
 								],
 								"type": "text/javascript",
@@ -1727,6 +1730,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.globals.clear();",
 									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
 								],
 								"type": "text/javascript",
@@ -1758,7 +1762,6 @@
 								"exec": [
 									"function generateCategory(id = null) {",
 									"    return {",
-									"        category_id: id ?? Math.floor(Math.random() * 1000),",
 									"        name: `Category_${Math.random().toString(36).substring(7)}`,",
 									"        last_update: new Date().toISOString(),",
 									"        deleted_at: null",
@@ -2040,6 +2043,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.globals.clear();",
 									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
 								],
 								"type": "text/javascript",
@@ -2220,7 +2224,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{{filmObject}}",
+							"raw": "{{film_actors_filmObject}}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2632,6 +2636,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.globals.clear();",
 									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
 								],
 								"type": "text/javascript",
@@ -2671,7 +2676,7 @@
 									"}",
 									"",
 									"categoryObject = generateCategory()",
-									"pm.globals.set(\"categoryObject\", JSON.stringify(categoryObject));",
+									"pm.globals.set(\"film_category_categoryObject\", JSON.stringify(categoryObject));",
 									""
 								],
 								"type": "text/javascript",
@@ -2708,7 +2713,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{{categoryObject}}",
+							"raw": "{{film_category_categoryObject}}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2756,7 +2761,7 @@
 									"}",
 									"",
 									"filmObject = generateRandomFilm()",
-									"pm.globals.set(\"filmObject\", JSON.stringify(filmObject));"
+									"pm.globals.set(\"film_category_filmObject\", JSON.stringify(filmObject));"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2803,7 +2808,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{{filmObject}}",
+							"raw": "{{film_category_filmObject}}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2829,6 +2834,11 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"filmId = pm.globals.get(\"film_category_filmId\");",
+									"categoryId = pm.globals.get(\"film_category_categoryId\");",
+									"",
+									"filmCategoryObject = generateFilmCategory(filmId, categoryId)",
+									"",
 									"function generateFilmCategory(filmId, categoryId) {",
 									"    return {",
 									"        film_id: filmId,",
@@ -2838,10 +2848,6 @@
 									"    };",
 									"}",
 									"",
-									"filmId = pm.globals.get(\"film_category_filmId\");",
-									"categoryId = pm.globals.get(\"categoryId\");",
-									"",
-									"const filmCategoryObject = generateFilmCategory(filmId, categoryId);",
 									"pm.globals.set(\"filmCategoryObject\", JSON.stringify(filmCategoryObject));"
 								],
 								"type": "text/javascript",
@@ -3027,6 +3033,11 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"filmId = pm.globals.get(\"film_category_filmId\");",
+									"categoryId = pm.globals.get(\"film_category_categoryId\");",
+									"",
+									"filmCategoryObject = generateFilmCategory(filmId, categoryId)",
+									"",
 									"function generateFilmCategory(filmId, categoryId) {",
 									"    return {",
 									"        film_id: filmId,",
@@ -3035,9 +3046,6 @@
 									"        deleted_at: null",
 									"    };",
 									"}",
-									"",
-									"filmId = pm.globals.get(\"film_category_filmId\");",
-									"categoryId = pm.globals.get(\"categoryId\");",
 									"",
 									"const updatedFilmCategoryObject = generateFilmCategory(filmId, categoryId);",
 									"pm.globals.set(\"updatedFilmCategoryObject\", JSON.stringify(updatedFilmCategoryObject));"
@@ -3174,6 +3182,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.globals.clear();",
 									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
 								],
 								"type": "text/javascript",
@@ -3543,6 +3552,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.globals.clear();",
 									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
 								],
 								"type": "text/javascript",
@@ -3702,7 +3712,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"city\": \"{{cityName}}\",\n    \"country_id\": {{countryId}}\n}",
+							"raw": "{\n    \"city\": \"{{cityName}}\",\n    \"country_id\": {{city_countryId}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3820,7 +3830,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "{{city_id}}"
+									"value": "{{cityId}}"
 								}
 							]
 						}
@@ -3991,6 +4001,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.globals.clear();",
 									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
 								],
 								"type": "text/javascript",
@@ -4033,7 +4044,7 @@
 									"}",
 									"",
 									"let countryName = generateRandomString(50)",
-									"pm.globals.set(\"countryName\", countryName);"
+									"pm.globals.set(\"address_countryName\", countryName);"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -4057,8 +4068,8 @@
 									"    pm.expect(jsonData.data).to.have.property(\"country_id\").that.is.a(\"number\");",
 									"    pm.expect(jsonData.data).to.have.property(\"country\").that.is.a(\"string\").and.not.empty;",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
-									"    pm.globals.set(\"country_id\", pm.response.json().data.country_id);",
-									"    pm.globals.set(\"country\", pm.response.json().data.country);",
+									"    pm.globals.set(\"address_countryId\", pm.response.json().data.country_id);",
+									"    pm.globals.set(\"address_country\", pm.response.json().data.country);",
 									"});",
 									""
 								],
@@ -4072,7 +4083,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"country\": \"{{countryName}}\"\n}",
+							"raw": "{\n    \"country\": \"{{address_countryName}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4111,7 +4122,7 @@
 									"}",
 									"",
 									"let cityName = generateRandomString(50)",
-									"pm.globals.set(\"cityName\", cityName);"
+									"pm.globals.set(\"address_cityName\", cityName);"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -4135,8 +4146,8 @@
 									"    pm.expect(jsonData.data).to.have.property(\"city_id\").that.is.a(\"number\");",
 									"    pm.expect(jsonData.data).to.have.property(\"city\").that.is.a(\"string\").and.not.empty;",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
-									"    pm.globals.set(\"city_id\", pm.response.json().data.city_id);",
-									"    pm.globals.set(\"city\", pm.response.json().data.city);",
+									"    pm.globals.set(\"address_cityId\", pm.response.json().data.city_id);",
+									"    pm.globals.set(\"address_city\", pm.response.json().data.city);",
 									"});",
 									""
 								],
@@ -4150,7 +4161,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"city\": \"{{cityName}}\",\n    \"country_id\": {{country_id}}\n}",
+							"raw": "{\n    \"city\": \"{{address_cityName}}\",\n    \"country_id\": {{address_countryId}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4238,7 +4249,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"address\": {{addressObject}},\n    \"address2\": {{addressObject2}},\n    \"district\": {{addressDistrictObject}},\n    \"city_id\": {{city_id}},\n    \"postal_code\": {{addressPostalCodeObject}},\n    \"phone\": {{addressPhoneObject}}\n}",
+							"raw": "{\n    \"address\": {{addressObject}},\n    \"address2\": {{addressObject2}},\n    \"district\": {{addressDistrictObject}},\n    \"city_id\": {{address_cityId}},\n    \"postal_code\": {{addressPostalCodeObject}},\n    \"phone\": {{addressPhoneObject}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4437,7 +4448,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"address\": {{addressObject}},\n    \"address2\": {{addressObject2}},\n    \"district\": {{addressDistrictObject}},\n    \"city_id\": {{city_id}},\n    \"postal_code\": {{addressPostalCodeObject}},\n    \"phone\": {{addressPhoneObject}}\n}",
+							"raw": "{\n    \"address\": {{addressObject}},\n    \"address2\": {{addressObject2}},\n    \"district\": {{addressDistrictObject}},\n    \"city_id\": {{address_cityId}},\n    \"postal_code\": {{addressPostalCodeObject}},\n    \"phone\": {{addressPhoneObject}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4548,6 +4559,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.globals.clear();",
 									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
 								],
 								"type": "text/javascript",
@@ -4590,7 +4602,7 @@
 									"}",
 									"",
 									"let countryName = generateRandomString(50)",
-									"pm.globals.set(\"countryName\", countryName);"
+									"pm.globals.set(\"store_countryName\", countryName);"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -4614,8 +4626,8 @@
 									"    pm.expect(jsonData.data).to.have.property(\"country_id\").that.is.a(\"number\");",
 									"    pm.expect(jsonData.data).to.have.property(\"country\").that.is.a(\"string\").and.not.empty;",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
-									"    pm.globals.set(\"country_id\", pm.response.json().data.country_id);",
-									"    pm.globals.set(\"country\", pm.response.json().data.country);",
+									"    pm.globals.set(\"store_countryId\", pm.response.json().data.country_id);",
+									"    pm.globals.set(\"store_country\", pm.response.json().data.country);",
 									"});",
 									""
 								],
@@ -4629,7 +4641,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"country\": \"{{countryName}}\"\n}",
+							"raw": "{\n    \"country\": \"{{store_countryName}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4668,7 +4680,7 @@
 									"}",
 									"",
 									"let cityName = generateRandomString(50)",
-									"pm.globals.set(\"cityName\", cityName);"
+									"pm.globals.set(\"store_cityName\", cityName);"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -4692,8 +4704,8 @@
 									"    pm.expect(jsonData.data).to.have.property(\"city_id\").that.is.a(\"number\");",
 									"    pm.expect(jsonData.data).to.have.property(\"city\").that.is.a(\"string\").and.not.empty;",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
-									"    pm.globals.set(\"city_id\", pm.response.json().data.city_id);",
-									"    pm.globals.set(\"city\", pm.response.json().data.city);",
+									"    pm.globals.set(\"store_cityId\", pm.response.json().data.city_id);",
+									"    pm.globals.set(\"store_city\", pm.response.json().data.city);",
 									"});",
 									""
 								],
@@ -4707,7 +4719,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"city\": \"{{cityName}}\",\n    \"country_id\": {{country_id}}\n}",
+							"raw": "{\n    \"city\": \"{{store_cityName}}\",\n    \"country_id\": {{store_countryId}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4753,7 +4765,7 @@
 									"    pm.expect(jsonData.data).to.have.property(\"postal_code\").that.is.a(\"string\").and.not.empty;",
 									"    pm.expect(jsonData.data).to.have.property(\"phone\").that.is.a(\"string\").and.not.empty;",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
-									"    pm.globals.set(\"address_id\", pm.response.json().data.address_id);",
+									"    pm.globals.set(\"store_addressId\", pm.response.json().data.address_id);",
 									"});"
 								],
 								"type": "text/javascript",
@@ -4778,11 +4790,11 @@
 									"const addressDistrictObject = generateRandomString(20);",
 									"const addressPostalCodeObject = generateRandomString(10);",
 									"const addressPhoneObject = generateRandomString(10);",
-									"pm.globals.set(\"addressObject\", JSON.stringify(addressObject));",
-									"pm.globals.set(\"addressObject2\", JSON.stringify(addressObject2));",
-									"pm.globals.set(\"addressDistrictObject\", JSON.stringify(addressDistrictObject));",
-									"pm.globals.set(\"addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
-									"pm.globals.set(\"addressPhoneObject\", JSON.stringify(addressPhoneObject));",
+									"pm.globals.set(\"store_addressObject\", JSON.stringify(addressObject));",
+									"pm.globals.set(\"store_addressObject2\", JSON.stringify(addressObject2));",
+									"pm.globals.set(\"store_addressDistrictObject\", JSON.stringify(addressDistrictObject));",
+									"pm.globals.set(\"store_addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
+									"pm.globals.set(\"store_addressPhoneObject\", JSON.stringify(addressPhoneObject));",
 									""
 								],
 								"type": "text/javascript",
@@ -4795,7 +4807,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"address\": {{addressObject}},\n    \"address2\": {{addressObject2}},\n    \"district\": {{addressDistrictObject}},\n    \"city_id\": {{city_id}},\n    \"postal_code\": {{addressPostalCodeObject}},\n    \"phone\": {{addressPhoneObject}}\n}",
+							"raw": "{\n    \"address\": {{store_addressObject}},\n    \"address2\": {{store_addressObject2}},\n    \"district\": {{store_addressDistrictObject}},\n    \"city_id\": {{store_cityId}},\n    \"postal_code\": {{store_addressPostalCodeObject}},\n    \"phone\": {{store_addressPhoneObject}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4865,7 +4877,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"address_id\": {{address_id}}\n}",
+							"raw": "{\n    \"address_id\": {{store_addressId}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -5044,11 +5056,11 @@
 									"const addressDistrictObject = generateRandomString(20);",
 									"const addressPostalCodeObject = generateRandomString(10);",
 									"const addressPhoneObject = generateRandomString(10);",
-									"pm.globals.set(\"addressObject\", JSON.stringify(addressObject));",
-									"pm.globals.set(\"addressObject2\", JSON.stringify(addressObject2));",
-									"pm.globals.set(\"addressDistrictObject\", JSON.stringify(addressDistrictObject));",
-									"pm.globals.set(\"addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
-									"pm.globals.set(\"addressPhoneObject\", JSON.stringify(addressPhoneObject));",
+									"pm.globals.set(\"store_addressObject\", JSON.stringify(addressObject));",
+									"pm.globals.set(\"store_addressObject2\", JSON.stringify(addressObject2));",
+									"pm.globals.set(\"store_addressDistrictObject\", JSON.stringify(addressDistrictObject));",
+									"pm.globals.set(\"store_addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
+									"pm.globals.set(\"store_addressPhoneObject\", JSON.stringify(addressPhoneObject));",
 									""
 								],
 								"type": "text/javascript",
@@ -5061,7 +5073,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"address\": {{addressObject}},\n    \"address2\": {{addressObject2}},\n    \"district\": {{addressDistrictObject}},\n    \"city_id\": {{city_id}},\n    \"postal_code\": {{addressPostalCodeObject}},\n    \"phone\": {{addressPhoneObject}}\n}",
+							"raw": "{\n    \"address\": {{store_addressObject}},\n    \"address2\": {{store_addressObject2}},\n    \"district\": {{store_addressDistrictObject}},\n    \"city_id\": {{store_cityId}},\n    \"postal_code\": {{store_addressPostalCodeObject}},\n    \"phone\": {{store_addressPhoneObject}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -5131,7 +5143,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"address_id\": {{address_id}}\n}",
+							"raw": "{\n    \"address_id\": {{store_addressId}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -5245,6 +5257,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.globals.clear();",
 									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
 								],
 								"type": "text/javascript",
@@ -5287,7 +5300,7 @@
 									"}",
 									"",
 									"let countryName = generateRandomString(50)",
-									"pm.globals.set(\"countryName\", countryName);"
+									"pm.globals.set(\"inventory_countryName\", countryName);"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -5311,7 +5324,7 @@
 									"    pm.expect(jsonData.data).to.have.property(\"country_id\").that.is.a(\"number\");",
 									"    pm.expect(jsonData.data).to.have.property(\"country\").that.is.a(\"string\").and.not.empty;",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
-									"    pm.globals.set(\"inventoryCountry_id\", pm.response.json().data.country_id);",
+									"    pm.globals.set(\"inventory_countryId\", pm.response.json().data.country_id);",
 									"});",
 									""
 								],
@@ -5325,7 +5338,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"country\": \"{{countryName}}\"\n}",
+							"raw": "{\n    \"country\": \"{{inventory_countryName}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -5364,7 +5377,7 @@
 									"}",
 									"",
 									"let cityName = generateRandomString(50)",
-									"pm.globals.set(\"cityName\", cityName);"
+									"pm.globals.set(\"inventory_cityName\", cityName);"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -5388,7 +5401,7 @@
 									"    pm.expect(jsonData.data).to.have.property(\"city_id\").that.is.a(\"number\");",
 									"    pm.expect(jsonData.data).to.have.property(\"city\").that.is.a(\"string\").and.not.empty;",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
-									"    pm.globals.set(\"inventoryCity_id\", pm.response.json().data.city_id);",
+									"    pm.globals.set(\"inventory_cityId\", pm.response.json().data.city_id);",
 									"});",
 									""
 								],
@@ -5402,7 +5415,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"city\": \"{{cityName}}\",\n    \"country_id\": {{country_id}}\n}",
+							"raw": "{\n    \"city\": \"{{inventory_cityName}}\",\n    \"country_id\": {{inventory_countryId}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -5448,7 +5461,7 @@
 									"    pm.expect(jsonData.data).to.have.property(\"postal_code\").that.is.a(\"string\").and.not.empty;",
 									"    pm.expect(jsonData.data).to.have.property(\"phone\").that.is.a(\"string\").and.not.empty;",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
-									"    pm.globals.set(\"inventoryAddress_id\", pm.response.json().data.address_id);",
+									"    pm.globals.set(\"inventory_addressId\", pm.response.json().data.address_id);",
 									"});"
 								],
 								"type": "text/javascript",
@@ -5473,11 +5486,11 @@
 									"const addressDistrictObject = generateRandomString(20);",
 									"const addressPostalCodeObject = generateRandomString(10);",
 									"const addressPhoneObject = generateRandomString(10);",
-									"pm.globals.set(\"addressObject\", JSON.stringify(addressObject));",
-									"pm.globals.set(\"addressObject2\", JSON.stringify(addressObject2));",
-									"pm.globals.set(\"addressDistrictObject\", JSON.stringify(addressDistrictObject));",
-									"pm.globals.set(\"addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
-									"pm.globals.set(\"addressPhoneObject\", JSON.stringify(addressPhoneObject));",
+									"pm.globals.set(\"inventory_addressObject\", JSON.stringify(addressObject));",
+									"pm.globals.set(\"inventory_addressObject2\", JSON.stringify(addressObject2));",
+									"pm.globals.set(\"inventory_addressDistrictObject\", JSON.stringify(addressDistrictObject));",
+									"pm.globals.set(\"inventory_addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
+									"pm.globals.set(\"inventory_addressPhoneObject\", JSON.stringify(addressPhoneObject));",
 									""
 								],
 								"type": "text/javascript",
@@ -5490,7 +5503,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"address\": {{addressObject}},\n    \"address2\": {{addressObject2}},\n    \"district\": {{addressDistrictObject}},\n    \"city_id\": {{city_id}},\n    \"postal_code\": {{addressPostalCodeObject}},\n    \"phone\": {{addressPhoneObject}}\n}",
+							"raw": "{\n    \"address\": {{inventory_addressObject}},\n    \"address2\": {{inventory_addressObject2}},\n    \"district\": {{inventory_addressDistrictObject}},\n    \"city_id\": {{inventory_cityId}},\n    \"postal_code\": {{inventory_addressPostalCodeObject}},\n    \"phone\": {{inventory_addressPhoneObject}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -5549,7 +5562,7 @@
 									"    let dateRegex = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$/;",
 									"    pm.expect(jsonData.data.last_update).to.match(dateRegex);",
 									"",
-									"    pm.globals.set(\"inventoryStoreId\", pm.response.json().data.store_id);",
+									"    pm.globals.set(\"inventory_storeId\", pm.response.json().data.store_id);",
 									"});",
 									""
 								],
@@ -5563,7 +5576,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"address_id\": {{address_id}}\n}",
+							"raw": "{\n    \"address_id\": {{inventory_addressId}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -5611,7 +5624,7 @@
 									"}",
 									"",
 									"filmObject = generateRandomFilm()",
-									"pm.globals.set(\"inventoryFilmObject\", JSON.stringify(filmObject));"
+									"pm.globals.set(\"inventory_filmObject\", JSON.stringify(filmObject));"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -5644,8 +5657,8 @@
 									"    pm.expect(responseJSON.data).has.property('last_update').that.is.a('string');",
 									"    pm.expect(responseJSON.data).has.property('special_features').that.is.an('array');",
 									"    pm.expect(responseJSON.data).has.property('fulltext').that.is.a('string');",
-									"    pm.globals.set(\"inventoryFilmId\", pm.response.json().data.film_id);",
-									"    pm.globals.set(\"inventoryFilmTitle\", pm.response.json().data.title);",
+									"    pm.globals.set(\"inventory_filmId\", pm.response.json().data.film_id);",
+									"    pm.globals.set(\"inventory_filmTitle\", pm.response.json().data.title);",
 									"});",
 									""
 								],
@@ -5659,7 +5672,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{{filmObject}}",
+							"raw": "{{inventory_filmObject}}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -5685,15 +5698,15 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"inventoryFilmId = pm.globals.get(\"inventoryFilmId\");",
-									"inventoryStoreId = pm.globals.get(\"inventoryStoreId\");",
+									"inventory_filmId = pm.globals.get(\"inventory_filmId\");",
+									"inventory_storeId = pm.globals.get(\"inventory_storeId\");",
 									"",
-									"let inventory = {",
-									"    film_id: inventoryFilmId,",
-									"    store_id: inventoryStoreId",
+									"let inventoryObject = {",
+									"    film_id: inventory_filmId,",
+									"    store_id: inventory_storeId",
 									"};",
 									"",
-									"pm.globals.set(\"inventoryObject\", JSON.stringify(inventory));"
+									"pm.globals.set(\"inventoryObject\", JSON.stringify(inventoryObject));"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -5911,7 +5924,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n     \"film_id\": {{inventoryFilmId}},\n    \"store_id\": {{inventoryStoreId}}\n}",
+							"raw": "{\n     \"film_id\": {{inventory_filmId}},\n    \"store_id\": {{inventory_storeId}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -6000,7 +6013,741 @@
 		},
 		{
 			"name": "customer",
-			"item": [],
+			"item": [
+				{
+					"name": "GET /ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {",
+									"    pm.expect(pm.response.code).to.be.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains the message 'pong'\", function () {",
+									"    pm.expect(pm.response.json().message).to.equal('pong');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.clear();",
+									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/ping",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /country",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									"",
+									"let countryName = generateRandomString(50)",
+									"pm.globals.set(\"customer_countryName\", countryName);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Checking the data structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"country_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"country\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"customer_countryId\", pm.response.json().data.country_id);",
+									"    pm.globals.set(\"customer_country\", pm.response.json().data.country);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"country\": \"{{customer_countryName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/country",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"country"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /city",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									"",
+									"let cityName = generateRandomString(50)",
+									"pm.globals.set(\"customer_cityName\", cityName);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Checking the data structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"city_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"city\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"customer_cityId\", pm.response.json().data.city_id);",
+									"    pm.globals.set(\"customer_city\", pm.response.json().data.city);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"city\": \"{{customer_cityName}}\",\n    \"country_id\": {{customer_countryId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/city",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"city"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /address",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains 'data' key\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Validate 'data' structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"",
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"address2\").that.is.a(\"string\"); // Can be empty",
+									"    pm.expect(jsonData.data).to.have.property(\"district\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"city_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"postal_code\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"phone\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"customer_addressId\", pm.response.json().data.address_id);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomString(length) {",
+									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    let result = '';",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+									"    }",
+									"    return result;",
+									"}",
+									"",
+									"const addressObject = generateRandomString(50);",
+									"const addressObject2 = generateRandomString(50);",
+									"const addressDistrictObject = generateRandomString(20);",
+									"const addressPostalCodeObject = generateRandomString(10);",
+									"const addressPhoneObject = generateRandomString(10);",
+									"pm.globals.set(\"customer_addressObject\", JSON.stringify(addressObject));",
+									"pm.globals.set(\"customer_addressObject2\", JSON.stringify(addressObject2));",
+									"pm.globals.set(\"customer_addressDistrictObject\", JSON.stringify(addressDistrictObject));",
+									"pm.globals.set(\"customer_addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
+									"pm.globals.set(\"customer_addressPhoneObject\", JSON.stringify(addressPhoneObject));",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": {{customer_addressObject}},\n    \"address2\": {{customer_addressObject2}},\n    \"district\": {{customer_addressDistrictObject}},\n    \"city_id\": {{customer_cityId}},\n    \"postal_code\": {{customer_addressPostalCodeObject}},\n    \"phone\": {{customer_addressPhoneObject}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/address",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /store",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains 'data' key\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    let jsonData = pm.response.json();",
+									"",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"    pm.expect(jsonData.data).to.be.an(\"object\");",
+									"",
+									"    pm.expect(jsonData.data).to.have.property(\"store_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"manager_staff_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"",
+									"    pm.globals.set(\"customer_storeId\", pm.response.json().data.store_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address_id\": {{customer_addressId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/store",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"store"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /customer",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"",
+									"    return result;",
+									"}",
+									"",
+									"customer_storeId = pm.globals.get(\"customer_storeId\");",
+									"let customerFirstName = generateRandomString(45);",
+									"let customerLastName = generateRandomString(45);",
+									"let customerEmail = `customer${Math.floor(Math.random() * 1000)}@example.com`;",
+									"customer_addressId = pm.globals.get(\"customer_addressId\");",
+									"let customerActiveBool = true;",
+									"let customerActive = 1;",
+									"",
+									"let customerObject = {",
+									"    store_id: customer_storeId,",
+									"    first_name: customerFirstName,",
+									"    last_name: customerLastName,",
+									"    email: customerEmail,",
+									"    address_id: customer_addressId,",
+									"    activebool: customerActiveBool,",
+									"    active: customerActive",
+									"};",
+									"",
+									"pm.globals.set(\"customerObject\", JSON.stringify(customerObject));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains 'data' key\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"customer_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"store_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"first_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"email\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"activebool\").that.is.a(\"boolean\");",
+									"    pm.expect(jsonData.data).to.have.property(\"create_date\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"active\").that.is.a(\"number\");",
+									"",
+									"    pm.globals.set(\"customerId\", pm.response.json().data.customer_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{customerObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/customer",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"customer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /customers",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array containing objects with expected customer fields\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
+									"",
+									"    responseData.forEach((customer) => {",
+									"        pm.expect(customer).to.have.property('customer_id').that.is.a('number');",
+									"        pm.expect(customer).to.have.property('store_id').that.is.a('number');",
+									"        pm.expect(customer).to.have.property('first_name').that.is.a('string');",
+									"        pm.expect(customer).to.have.property('last_name').that.is.a('string');",
+									"        pm.expect(customer).to.have.property('email').that.is.a('string');",
+									"        pm.expect(customer).to.have.property('address_id').that.is.a('number');",
+									"        pm.expect(customer).to.have.property('activebool').that.is.a('boolean');",
+									"        pm.expect(customer).to.have.property('create_date').that.is.a('string');",
+									"        pm.expect(customer).to.have.property('last_update').that.is.a('string');",
+									"        pm.expect(customer).to.have.property('active').that.is.a('number');",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"Response contains pagination fields\", function () {",
+									"    var responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('limit').that.is.a('number');",
+									"    pm.expect(responseJson).to.have.property('page').that.is.a('number');",
+									"    pm.expect(responseJson).to.have.property('total').that.is.a('number');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/customers",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /customer/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is an object containing objects with inventory_id, film_id, store_id and last_update\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"    pm.expect(responseData).to.have.property('customer_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('store_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('first_name').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_name').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('email').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('address_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('activebool').that.is.a('boolean');",
+									"    pm.expect(responseData).to.have.property('create_date').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('active').that.is.a('number');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/customer/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"customer",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{customerId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /customer/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains 'data' key\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"customer_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"store_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"first_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"email\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"activebool\").that.is.a(\"boolean\");",
+									"    pm.expect(jsonData.data).to.have.property(\"create_date\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"active\").that.is.a(\"number\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{customerObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/customer/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"customer",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{customerId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /customer/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    var responseData = pm.response.json().deleted;",
+									"    pm.expect(responseData).to.be.an('object').that.is.not.empty;",
+									"",
+									"    pm.expect(responseData).to.have.property(\"customer_id\").that.is.a(\"number\");",
+									"    pm.expect(responseData).to.have.property(\"store_id\").that.is.a(\"number\");",
+									"    pm.expect(responseData).to.have.property(\"first_name\").that.is.a(\"string\");",
+									"    pm.expect(responseData).to.have.property(\"last_name\").that.is.a(\"string\");",
+									"    pm.expect(responseData).to.have.property(\"email\").that.is.a(\"string\");",
+									"    pm.expect(responseData).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(responseData).to.have.property(\"activebool\").that.is.a(\"boolean\");",
+									"    pm.expect(responseData).to.have.property(\"create_date\").that.is.a(\"string\");",
+									"    pm.expect(responseData).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.expect(responseData).to.have.property(\"active\").that.is.a(\"number\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/customer/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"customer",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{customerId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
 			"description": "internal/customer"
 		},
 		{
@@ -6041,6 +6788,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.globals.clear();",
 									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
 								],
 								"type": "text/javascript",
@@ -6084,7 +6832,6 @@
 									"}",
 									"",
 									"userObject = generateUser()",
-									"console.log(userObject)",
 									"pm.globals.set(\"userObject\", JSON.stringify(userObject));",
 									""
 								],
@@ -6266,6 +7013,7 @@
 									"listen": "prerequest",
 									"script": {
 										"exec": [
+											"pm.globals.clear();",
 											"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
 										],
 										"type": "text/javascript",
