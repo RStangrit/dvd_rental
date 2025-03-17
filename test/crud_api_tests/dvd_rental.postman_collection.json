@@ -3513,7 +3513,449 @@
 		},
 		{
 			"name": "city",
-			"item": []
+			"item": [
+				{
+					"name": "GET /ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {",
+									"    pm.expect(pm.response.code).to.be.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains the message 'pong'\", function () {",
+									"    pm.expect(pm.response.json().message).to.equal('pong');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/ping",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /country",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									"",
+									"let countryName = generateRandomString(50)",
+									"pm.globals.set(\"countryName\", countryName);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Checking the data structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"country_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"country\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"country_id\", pm.response.json().data.country_id);",
+									"    pm.globals.set(\"country\", pm.response.json().data.country);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"country\": \"{{countryName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/country",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"country"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /city",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									"",
+									"let cityName = generateRandomString(50)",
+									"pm.globals.set(\"cityName\", cityName);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Checking the data structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"city_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"city\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"city_id\", pm.response.json().data.city_id);",
+									"    pm.globals.set(\"city\", pm.response.json().data.city);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"city\": \"{{cityName}}\",\n    \"country_id\": {{country_id}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/city",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"city"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /cities",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is an array containing objects with city_id, city, and last_update\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
+									"    responseData.forEach((city) => {",
+									"        pm.expect(city).to.have.property('city_id').that.is.a('number');",
+									"        pm.expect(city).to.have.property('city').that.is.a('string');",
+									"        pm.expect(city).to.have.property('last_update').that.is.a('string');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/cities",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"cities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /city/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is an array containing objects with city_id, city, and last_update\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"    pm.expect(responseData).to.be.an('object').that.is.not.empty;",
+									"    pm.expect(responseData).to.have.property('city_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('city').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/city/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"city",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{city_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /city/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"    ",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    ",
+									"    return result;",
+									"}",
+									"",
+									"let updatedCityName = generateRandomString(50)",
+									"pm.globals.set(\"updatedCityName\", updatedCityName);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is an array containing objects with city_id, city, and last_update\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"    pm.expect(responseData).to.be.an('object').that.is.not.empty;",
+									"    pm.expect(responseData).to.have.property('city_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('city').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"city\": \"{{updatedCityName}}\",\n    \"country_id\": {{country_id}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/city/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"city",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{city_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /city/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is an array containing objects with country_id, country, and last_update\", function () {",
+									"    var responseData = pm.response.json().deleted;",
+									"    pm.expect(responseData).to.be.an('object').that.is.not.empty;",
+									"    pm.expect(responseData).to.have.property('country_id').that.is.a('number');",
+									"    pm.expect(responseData).to.have.property('country').that.is.a('string');",
+									"    pm.expect(responseData).to.have.property('last_update').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/country/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"country",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{country_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "address",
