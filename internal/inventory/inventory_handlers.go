@@ -109,5 +109,5 @@ func (handler *InventoryHandler) DeleteInventoryHandler(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"deleted": inventoryId})
+	context.JSON(http.StatusOK, gin.H{"deleted": deletedInventory})
 }
