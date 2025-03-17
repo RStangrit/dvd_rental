@@ -22,7 +22,6 @@ func (service *StaffService) CreateStaff(newStaff *Staff) error {
 	}
 
 	newStaff.Picture = service.GenerateAvatar(newStaff.FirstName, newStaff.LastName)
-	fmt.Println(newStaff)
 
 	return service.repo.InsertStaff(newStaff)
 }

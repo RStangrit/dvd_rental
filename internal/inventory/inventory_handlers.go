@@ -1,7 +1,6 @@
 package inventory
 
 import (
-	"fmt"
 	"main/pkg/db"
 	"main/pkg/utils"
 	"net/http"
@@ -27,7 +26,6 @@ func (handler *InventoryHandler) PostInventoryHandler(context *gin.Context) {
 		return
 	}
 
-	fmt.Println(newInventory)
 	if err = handler.service.CreateInventory(&newInventory); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
