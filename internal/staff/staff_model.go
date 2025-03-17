@@ -15,7 +15,7 @@ type Staff struct {
 	LastName   string            `json:"last_name" gorm:"type:varchar(45);not null"`
 	AddressID  int16             `json:"address_id" gorm:"type:int2;not null;foreignKey:AddressID"`
 	Email      string            `json:"email" gorm:"type:varchar(50);not null;unique;uniqueIndex"`
-	StoreID    int16             `json:"store_id" gorm:"type:int2;not null"`
+	StoreID    int16             `json:"store_id" gorm:"type:int2;not null;foreignKey:StoreID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
 	Active     bool              `json:"active" gorm:"type:boolean;not null;default:true"`
 	Username   string            `json:"username" gorm:"type:varchar(16);not null"`
 	Password   string            `json:"password" gorm:"type:varchar(40);not null"`
