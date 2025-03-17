@@ -3,6 +3,7 @@ package staff
 import (
 	"errors"
 	"fmt"
+	"main/pkg/avatars_generator"
 	"main/pkg/db"
 	"regexp"
 )
@@ -19,6 +20,10 @@ func (service *StaffService) CreateStaff(newStaff *Staff) error {
 	if err := service.ValidateStaff(newStaff); err != nil {
 		return err
 	}
+
+	newStaff.Picture = service.GenerateAvatar(newStaff.FirstName, newStaff.LastName)
+	fmt.Println(newStaff)
+
 	return service.repo.InsertStaff(newStaff)
 }
 
@@ -74,13 +79,24 @@ func (service *StaffService) ValidateStaff(staff *Staff) error {
 	if staff.Password == "" || len(staff.Password) > 40 {
 		return errors.New("password is required and must be less than 40 characters")
 	}
-	if len(staff.Picture) == 0 {
-		return errors.New("picture is required")
-	}
 	return nil
 }
 
 func isValidStaffEmail(email string) bool {
 	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	return re.MatchString(email)
+}
+
+func (service *StaffService) GenerateAvatar(firstName, lastName string) []byte {
+	firstNameLetter := firstLetter(firstName)
+	lastNameLetter := firstLetter(lastName)
+	image, _ := avatars_generator.CreateAvatar(firstNameLetter + lastNameLetter)
+	return image
+}
+
+func firstLetter(s string) string {
+	if s == "" {
+		return ""
+	}
+	return string([]rune(s)[0])
 }
