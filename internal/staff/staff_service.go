@@ -49,6 +49,9 @@ func (service *StaffService) UpdateOneStaff(staff *Staff) error {
 	if err := service.ValidateStaff(staff); err != nil {
 		return err
 	}
+
+	staff.Picture = service.GenerateAvatar(staff.FirstName, staff.LastName)
+
 	return service.repo.UpdateOneStaff(*staff)
 }
 

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "414a24ec-a41c-4b46-a9d6-d5d30465ec97",
+		"_postman_id": "60e28b69-2e26-4901-b1d5-57788080aefe",
 		"name": "dvd_rental",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "7375862"
@@ -62,18 +62,18 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
-									"pm.test(\"Body matches string\", function () {",
+									"pm.test(\"Body matches expectations\", function () {",
 									"    pm.expect(pm.response.text()).to.include(\"language_id\");",
 									"    pm.expect(pm.response.json().data.language_id).to.exist;",
 									"    pm.globals.set(\"languageId\", pm.response.json().data.language_id);",
 									"    pm.globals.set(\"languageName\", pm.response.json().data.name);",
 									"});",
 									"",
-									"pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
+									"pm.test(\"Response structure is valid\", function () {",
 									"    var responseData = pm.response.json().data;",
 									"",
 									"    pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
@@ -97,14 +97,13 @@
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
+									"",
 									"    return result;",
-									"}",
-									""
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -181,11 +180,11 @@
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
+									"",
 									"    return result;",
 									"}"
 								],
@@ -225,7 +224,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an array containing objects with language_id, name, and last_update\", function () {",
@@ -285,7 +284,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an array containing objects with language_id, name, and last_update\", function () {",
@@ -349,17 +348,17 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Body matches string\", function () {",
+									"pm.test(\"Body matches expectations\", function () {",
 									"    pm.expect(pm.response.text()).to.include(\"language_id\");",
 									"    pm.expect(pm.response.json().data.language_id).to.exist;",
 									"    pm.globals.set(\"languageId\", pm.response.json().data.language_id);",
 									"});",
 									"",
-									"pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
+									"pm.test(\"Response structure is valid\", function () {",
 									"    var responseData = pm.response.json().data;",
 									"",
 									"    pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
@@ -420,17 +419,17 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Body matches string\", function () {",
+									"pm.test(\"Body matches expectations\", function () {",
 									"    pm.expect(pm.response.text()).to.include(\"language_id\");",
 									"    pm.expect(pm.response.json().data.language_id).to.exist;",
 									"    pm.globals.set(\"languageId\", pm.response.json().data.language_id);",
 									"});",
 									"",
-									"pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
+									"pm.test(\"Response structure is valid\", function () {",
 									"    var responseData = pm.response.json().data;",
 									"",
 									"    pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
@@ -475,17 +474,17 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Body matches string\", function () {",
+									"pm.test(\"Body matches expectations\", function () {",
 									"    pm.expect(pm.response.text()).to.include(\"language_id\");",
 									"    pm.expect(pm.response.json().deleted.language_id).to.exist;",
 									"    pm.globals.set(\"languageId\", pm.response.json().deleted.language_id);",
 									"});",
 									"",
-									"pm.test(\"Response contains the fields language_id, name, and last_update with correct data types\", function () {",
+									"pm.test(\"Response structure is valid\", function () {",
 									"    var responseData = pm.response.json().deleted;",
 									"",
 									"    pm.expect(responseData).to.have.property('language_id').that.is.a('number');",
@@ -573,7 +572,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"",
 									"let firstName = generateRandomString(6)",
 									"let lastName = generateRandomString(8)",
 									"pm.globals.set(\"firstName\", firstName);",
@@ -583,14 +581,13 @@
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
+									"",
 									"    return result;",
-									"}",
-									""
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -600,17 +597,17 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
-									"pm.test(\"Body matches string\", function () {",
+									"pm.test(\"Body matches expectations\", function () {",
 									"    pm.expect(pm.response.text()).to.include(\"actor_id\");",
 									"    pm.expect(pm.response.json().data.actor_id).to.exist;",
 									"    pm.globals.set(\"actorId\", pm.response.json().data.actor_id);",
 									"});",
 									"",
-									"pm.test(\"Response contains the fields actor_id, first_name, and last_name with correct data types\", function () {",
+									"pm.test(\"Response contains expected fields\", function () {",
 									"    var responseData = pm.response.json().data;",
 									"",
 									"    pm.expect(responseData).to.have.property('actor_id').that.is.a('number');",
@@ -670,14 +667,13 @@
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
+									"",
 									"    return result;",
-									"}",
-									""
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -742,7 +738,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an array containing objects with actor_id, first_name, and last_name\", function () {",
@@ -804,11 +800,11 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Response contains the fields actor_id, first_name, and last_name with correct data types\", function () {",
+									"pm.test(\"Response contains expected fields\", function () {",
 									"    var responseData = pm.response.json().data;",
 									"",
 									"    pm.expect(responseData).to.have.property('actor_id').that.is.a('number');",
@@ -856,11 +852,11 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Response contains the fields actor_id, first_name, and last_name with correct data types\", function () {",
+									"pm.test(\"Response contains expected fields\", function () {",
 									"    var responseData = pm.response.json().data;",
 									"",
 									"    pm.expect(responseData).to.have.property('actor_id').that.is.a('number');",
@@ -909,11 +905,11 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Response contains the fields actor_id, first_name, and last_name with correct data types\", function () {",
+									"pm.test(\"Response contains expected fields\", function () {",
 									"    var responseData = pm.response.json().data;",
 									"",
 									"    pm.expect(responseData).to.have.property('actor_id').that.is.a('number');",
@@ -985,7 +981,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -1077,10 +1073,13 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"filmObject = generateRandomFilm()",
+									"pm.globals.set(\"filmObject\", JSON.stringify(filmObject));",
+									"",
 									"function generateRandomFilm() {",
 									"    const ratings = [\"G\", \"PG\", \"PG-13\", \"R\", \"NC-17\"];",
 									"    const specialFeaturesList = [\"Trailers\", \"Deleted Scenes\", \"Behind the Scenes\", \"Commentaries\"];",
-									"    ",
+									"",
 									"    return {",
 									"        title: `Title ${Math.floor(Math.random() * 1000)}`,",
 									"        description: `Description ${Math.random().toString(36).substring(7)}`,",
@@ -1096,10 +1095,7 @@
 									"        ),",
 									"        fulltext: `Lorem ipsum ${Math.random().toString(36).substring(7)}`,",
 									"    };",
-									"}",
-									"",
-									"filmObject = generateRandomFilm()",
-									"pm.globals.set(\"filmObject\", JSON.stringify(filmObject));"
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1109,7 +1105,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"var responseJSON = pm.response.json();",
@@ -1173,6 +1169,13 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"filmObject1 = generateRandomFilm()",
+									"filmObject2 = generateRandomFilm()",
+									"filmObject3 = { foo: 1 }",
+									"var combinedFilmObject = []",
+									"combinedFilmObject.push(filmObject1, filmObject2, filmObject3)",
+									"pm.globals.set(\"combinedFilmObject\", JSON.stringify(combinedFilmObject));",
+									"",
 									"function generateRandomFilm() {",
 									"    const ratings = [\"G\", \"PG\", \"PG-13\", \"R\", \"NC-17\"];",
 									"    const specialFeaturesList = [\"Trailers\", \"Deleted Scenes\", \"Behind the Scenes\", \"Commentaries\"];",
@@ -1192,14 +1195,7 @@
 									"        ),",
 									"        fulltext: `Lorem ipsum ${Math.random().toString(36).substring(7)}`,",
 									"    };",
-									"}",
-									"",
-									"filmObject1 = generateRandomFilm()",
-									"filmObject2 = generateRandomFilm()",
-									"filmObject3 = { foo: 1 }",
-									"var combinedFilmObject = []",
-									"combinedFilmObject.push(filmObject1, filmObject2, filmObject3)",
-									"pm.globals.set(\"combinedFilmObject\", JSON.stringify(combinedFilmObject));"
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1276,12 +1272,12 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"filmDiscount = getRandomFloat()",
+									"pm.globals.set(\"filmDiscount\", JSON.stringify(filmDiscount));",
+									"",
 									"function getRandomFloat(min = 1, max = 99) {",
 									"    return Math.random() * (max - min) + min;",
-									"}",
-									"",
-									"filmDiscount = getRandomFloat()",
-									"pm.globals.set(\"filmDiscount\", JSON.stringify(filmDiscount));"
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1604,7 +1600,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"var responseJSON = pm.response.json();",
@@ -1668,7 +1664,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -1760,17 +1756,16 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"categoryObject = generateCategory()",
+									"pm.globals.set(\"categoryObject\", JSON.stringify(categoryObject));",
+									"",
 									"function generateCategory(id = null) {",
 									"    return {",
 									"        name: `Category_${Math.random().toString(36).substring(7)}`,",
 									"        last_update: new Date().toISOString(),",
 									"        deleted_at: null",
 									"    };",
-									"}",
-									"",
-									"categoryObject = generateCategory()",
-									"pm.globals.set(\"categoryObject\", JSON.stringify(categoryObject));",
-									""
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1982,7 +1977,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -2073,7 +2068,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"",
 									"let firstName = generateRandomString(6)",
 									"let lastName = generateRandomString(8)",
 									"pm.globals.set(\"firstName\", firstName);",
@@ -2083,14 +2077,13 @@
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
+									"",
 									"    return result;",
-									"}",
-									""
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2100,17 +2093,17 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
-									"pm.test(\"Body matches string\", function () {",
+									"pm.test(\"Body matches expectations\", function () {",
 									"    pm.expect(pm.response.text()).to.include(\"actor_id\");",
 									"    pm.expect(pm.response.json().data.actor_id).to.exist;",
 									"    pm.globals.set(\"film_actors_actorId\", pm.response.json().data.actor_id);",
 									"});",
 									"",
-									"pm.test(\"Response contains the fields actor_id, first_name, and last_name with correct data types\", function () {",
+									"pm.test(\"Response contains expected fields\", function () {",
 									"    var responseData = pm.response.json().data;",
 									"",
 									"    pm.expect(responseData).to.have.property('actor_id').that.is.a('number');",
@@ -2154,10 +2147,13 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"filmObject = generateRandomFilm()",
+									"pm.globals.set(\"film_actors_filmObject\", JSON.stringify(filmObject));",
+									"",
 									"function generateRandomFilm() {",
 									"    const ratings = [\"G\", \"PG\", \"PG-13\", \"R\", \"NC-17\"];",
 									"    const specialFeaturesList = [\"Trailers\", \"Deleted Scenes\", \"Behind the Scenes\", \"Commentaries\"];",
-									"    ",
+									"",
 									"    return {",
 									"        title: `Title ${Math.floor(Math.random() * 1000)}`,",
 									"        description: `Description ${Math.random().toString(36).substring(7)}`,",
@@ -2173,10 +2169,7 @@
 									"        ),",
 									"        fulltext: `Lorem ipsum ${Math.random().toString(36).substring(7)}`,",
 									"    };",
-									"}",
-									"",
-									"filmObject = generateRandomFilm()",
-									"pm.globals.set(\"film_actors_filmObject\", JSON.stringify(filmObject));"
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2186,7 +2179,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"var responseJSON = pm.response.json();",
@@ -2260,7 +2253,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -2312,7 +2305,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -2370,7 +2363,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -2425,10 +2418,13 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"filmObject = generateRandomFilm()",
+									"pm.globals.set(\"filmObject\", JSON.stringify(filmObject));",
+									"",
 									"function generateRandomFilm() {",
 									"    const ratings = [\"G\", \"PG\", \"PG-13\", \"R\", \"NC-17\"];",
 									"    const specialFeaturesList = [\"Trailers\", \"Deleted Scenes\", \"Behind the Scenes\", \"Commentaries\"];",
-									"    ",
+									"",
 									"    return {",
 									"        title: `Title ${Math.floor(Math.random() * 1000)}`,",
 									"        description: `Description ${Math.random().toString(36).substring(7)}`,",
@@ -2444,10 +2440,7 @@
 									"        ),",
 									"        fulltext: `Lorem ipsum ${Math.random().toString(36).substring(7)}`,",
 									"    };",
-									"}",
-									"",
-									"filmObject = generateRandomFilm()",
-									"pm.globals.set(\"filmObject\", JSON.stringify(filmObject));"
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2457,7 +2450,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"var responseJSON = pm.response.json();",
@@ -2666,6 +2659,9 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"categoryObject = generateCategory()",
+									"pm.globals.set(\"film_category_categoryObject\", JSON.stringify(categoryObject));",
+									"",
 									"function generateCategory(id = null) {",
 									"    return {",
 									"        category_id: id ?? Math.floor(Math.random() * 1000),",
@@ -2673,11 +2669,7 @@
 									"        last_update: new Date().toISOString(),",
 									"        deleted_at: null",
 									"    };",
-									"}",
-									"",
-									"categoryObject = generateCategory()",
-									"pm.globals.set(\"film_category_categoryObject\", JSON.stringify(categoryObject));",
-									""
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2739,10 +2731,13 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"filmObject = generateRandomFilm()",
+									"pm.globals.set(\"film_category_filmObject\", JSON.stringify(filmObject));",
+									"",
 									"function generateRandomFilm() {",
 									"    const ratings = [\"G\", \"PG\", \"PG-13\", \"R\", \"NC-17\"];",
 									"    const specialFeaturesList = [\"Trailers\", \"Deleted Scenes\", \"Behind the Scenes\", \"Commentaries\"];",
-									"    ",
+									"",
 									"    return {",
 									"        title: `Title ${Math.floor(Math.random() * 1000)}`,",
 									"        description: `Description ${Math.random().toString(36).substring(7)}`,",
@@ -2758,10 +2753,7 @@
 									"        ),",
 									"        fulltext: `Lorem ipsum ${Math.random().toString(36).substring(7)}`,",
 									"    };",
-									"}",
-									"",
-									"filmObject = generateRandomFilm()",
-									"pm.globals.set(\"film_category_filmObject\", JSON.stringify(filmObject));"
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2771,7 +2763,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"var responseJSON = pm.response.json();",
@@ -2836,8 +2828,8 @@
 								"exec": [
 									"filmId = pm.globals.get(\"film_category_filmId\");",
 									"categoryId = pm.globals.get(\"film_category_categoryId\");",
-									"",
 									"filmCategoryObject = generateFilmCategory(filmId, categoryId)",
+									"pm.globals.set(\"filmCategoryObject\", JSON.stringify(filmCategoryObject));",
 									"",
 									"function generateFilmCategory(filmId, categoryId) {",
 									"    return {",
@@ -2846,9 +2838,7 @@
 									"        last_update: new Date().toISOString(),",
 									"        deleted_at: null",
 									"    };",
-									"}",
-									"",
-									"pm.globals.set(\"filmCategoryObject\", JSON.stringify(filmCategoryObject));"
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2858,7 +2848,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -2908,7 +2898,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -2960,7 +2950,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -3012,7 +3002,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -3098,7 +3088,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -3212,20 +3202,20 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"let countryName = generateRandomString(50)",
+									"pm.globals.set(\"countryName\", countryName);",
+									"",
 									"function generateRandomString(length) {",
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
-									"    return result;",
-									"}",
 									"",
-									"let countryName = generateRandomString(50)",
-									"pm.globals.set(\"countryName\", countryName);"
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -3235,7 +3225,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -3300,7 +3290,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an array containing objects with country_id, country, and last_update\", function () {",
@@ -3350,7 +3340,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an array containing objects with country_id, country, and last_update\", function () {",
@@ -3419,7 +3409,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an array containing objects with country_id, country, and last_update\", function () {",
@@ -3484,7 +3474,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an array containing objects with country_id, country, and last_update\", function () {",
@@ -3582,20 +3572,20 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"let countryName = generateRandomString(50)",
+									"pm.globals.set(\"city_countryName\", countryName);",
+									"",
 									"function generateRandomString(length) {",
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
-									"    return result;",
-									"}",
 									"",
-									"let countryName = generateRandomString(50)",
-									"pm.globals.set(\"city_countryName\", countryName);"
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -3605,7 +3595,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -3660,20 +3650,20 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"let cityName = generateRandomString(50)",
+									"pm.globals.set(\"cityName\", cityName);",
+									"",
 									"function generateRandomString(length) {",
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
-									"    return result;",
-									"}",
 									"",
-									"let cityName = generateRandomString(50)",
-									"pm.globals.set(\"cityName\", cityName);"
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -3683,7 +3673,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -3748,7 +3738,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an array containing objects with city_id, city, and last_update\", function () {",
@@ -3798,7 +3788,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an array containing objects with city_id, city, and last_update\", function () {",
@@ -3867,7 +3857,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -3933,7 +3923,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -4031,20 +4021,20 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"let countryName = generateRandomString(50)",
+									"pm.globals.set(\"address_countryName\", countryName);",
+									"",
 									"function generateRandomString(length) {",
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
-									"    return result;",
-									"}",
 									"",
-									"let countryName = generateRandomString(50)",
-									"pm.globals.set(\"address_countryName\", countryName);"
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -4054,7 +4044,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -4109,6 +4099,9 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"let cityName = generateRandomString(50)",
+									"pm.globals.set(\"address_cityName\", cityName);",
+									"",
 									"function generateRandomString(length) {",
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
@@ -4119,10 +4112,7 @@
 									"    }",
 									"    ",
 									"    return result;",
-									"}",
-									"",
-									"let cityName = generateRandomString(50)",
-									"pm.globals.set(\"address_cityName\", cityName);"
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -4132,7 +4122,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -4187,7 +4177,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -4218,15 +4208,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"function generateRandomString(length) {",
-									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    let result = '';",
-									"    for (let i = 0; i < length; i++) {",
-									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
-									"    }",
-									"    return result;",
-									"}",
-									"",
 									"const addressObject = generateRandomString(50);",
 									"const addressObject2 = generateRandomString(50);",
 									"const addressDistrictObject = generateRandomString(20);",
@@ -4237,7 +4218,15 @@
 									"pm.globals.set(\"addressDistrictObject\", JSON.stringify(addressDistrictObject));",
 									"pm.globals.set(\"addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
 									"pm.globals.set(\"addressPhoneObject\", JSON.stringify(addressPhoneObject));",
-									""
+									"",
+									"function generateRandomString(length) {",
+									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    let result = '';",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+									"    }",
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -4285,7 +4274,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an array containing objects with address_id, address, and last_update\", function () {",
@@ -4340,7 +4329,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an array containing objects with address_id, address, and last_update\", function () {",
@@ -4386,7 +4375,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -4491,7 +4480,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an array containing objects with address_id, address, and last_update\", function () {",
@@ -4589,20 +4578,20 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"let countryName = generateRandomString(50)",
+									"pm.globals.set(\"store_countryName\", countryName);",
+									"",
 									"function generateRandomString(length) {",
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
-									"    return result;",
-									"}",
 									"",
-									"let countryName = generateRandomString(50)",
-									"pm.globals.set(\"store_countryName\", countryName);"
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -4612,7 +4601,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -4667,20 +4656,20 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"let cityName = generateRandomString(50)",
+									"pm.globals.set(\"store_cityName\", cityName);",
+									"",
 									"function generateRandomString(length) {",
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
-									"    return result;",
-									"}",
 									"",
-									"let cityName = generateRandomString(50)",
-									"pm.globals.set(\"store_cityName\", cityName);"
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -4690,7 +4679,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -4745,7 +4734,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -4776,15 +4765,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"function generateRandomString(length) {",
-									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    let result = '';",
-									"    for (let i = 0; i < length; i++) {",
-									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
-									"    }",
-									"    return result;",
-									"}",
-									"",
 									"const addressObject = generateRandomString(50);",
 									"const addressObject2 = generateRandomString(50);",
 									"const addressDistrictObject = generateRandomString(20);",
@@ -4795,6 +4775,15 @@
 									"pm.globals.set(\"store_addressDistrictObject\", JSON.stringify(addressDistrictObject));",
 									"pm.globals.set(\"store_addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
 									"pm.globals.set(\"store_addressPhoneObject\", JSON.stringify(addressPhoneObject));",
+									"",
+									"function generateRandomString(length) {",
+									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    let result = '';",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+									"    }",
+									"    return result;",
+									"}",
 									""
 								],
 								"type": "text/javascript",
@@ -4843,7 +4832,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -4913,7 +4902,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an array containing objects with store_id, store, and last_update\", function () {",
@@ -4964,7 +4953,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an array containing objects with store_id, store, and last_update\", function () {",
@@ -5011,7 +5000,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -5042,15 +5031,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"function generateRandomString(length) {",
-									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    let result = '';",
-									"    for (let i = 0; i < length; i++) {",
-									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
-									"    }",
-									"    return result;",
-									"}",
-									"",
 									"const addressObject = generateRandomString(50);",
 									"const addressObject2 = generateRandomString(50);",
 									"const addressDistrictObject = generateRandomString(20);",
@@ -5061,7 +5041,15 @@
 									"pm.globals.set(\"store_addressDistrictObject\", JSON.stringify(addressDistrictObject));",
 									"pm.globals.set(\"store_addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
 									"pm.globals.set(\"store_addressPhoneObject\", JSON.stringify(addressPhoneObject));",
-									""
+									"",
+									"function generateRandomString(length) {",
+									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    let result = '';",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+									"    }",
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -5109,7 +5097,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -5186,7 +5174,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -5287,20 +5275,20 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"let countryName = generateRandomString(50)",
+									"pm.globals.set(\"inventory_countryName\", countryName);",
+									"",
 									"function generateRandomString(length) {",
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
-									"    return result;",
-									"}",
 									"",
-									"let countryName = generateRandomString(50)",
-									"pm.globals.set(\"inventory_countryName\", countryName);"
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -5310,7 +5298,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -5364,6 +5352,9 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"let cityName = generateRandomString(50)",
+									"pm.globals.set(\"inventory_cityName\", cityName);",
+									"",
 									"function generateRandomString(length) {",
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
@@ -5374,10 +5365,7 @@
 									"    }",
 									"    ",
 									"    return result;",
-									"}",
-									"",
-									"let cityName = generateRandomString(50)",
-									"pm.globals.set(\"inventory_cityName\", cityName);"
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -5387,7 +5375,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -5441,7 +5429,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -5472,15 +5460,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"function generateRandomString(length) {",
-									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    let result = '';",
-									"    for (let i = 0; i < length; i++) {",
-									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
-									"    }",
-									"    return result;",
-									"}",
-									"",
 									"const addressObject = generateRandomString(50);",
 									"const addressObject2 = generateRandomString(50);",
 									"const addressDistrictObject = generateRandomString(20);",
@@ -5491,6 +5470,15 @@
 									"pm.globals.set(\"inventory_addressDistrictObject\", JSON.stringify(addressDistrictObject));",
 									"pm.globals.set(\"inventory_addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
 									"pm.globals.set(\"inventory_addressPhoneObject\", JSON.stringify(addressPhoneObject));",
+									"",
+									"function generateRandomString(length) {",
+									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    let result = '';",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+									"    }",
+									"    return result;",
+									"}",
 									""
 								],
 								"type": "text/javascript",
@@ -5539,7 +5527,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -5602,10 +5590,13 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"filmObject = generateRandomFilm()",
+									"pm.globals.set(\"inventory_filmObject\", JSON.stringify(filmObject));",
+									"",
 									"function generateRandomFilm() {",
 									"    const ratings = [\"G\", \"PG\", \"PG-13\", \"R\", \"NC-17\"];",
 									"    const specialFeaturesList = [\"Trailers\", \"Deleted Scenes\", \"Behind the Scenes\", \"Commentaries\"];",
-									"    ",
+									"",
 									"    return {",
 									"        title: `Title ${Math.floor(Math.random() * 1000)}`,",
 									"        description: `Description ${Math.random().toString(36).substring(7)}`,",
@@ -5621,10 +5612,7 @@
 									"        ),",
 									"        fulltext: `Lorem ipsum ${Math.random().toString(36).substring(7)}`,",
 									"    };",
-									"}",
-									"",
-									"filmObject = generateRandomFilm()",
-									"pm.globals.set(\"inventory_filmObject\", JSON.stringify(filmObject));"
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -5634,7 +5622,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"var responseJSON = pm.response.json();",
@@ -5716,7 +5704,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -5783,7 +5771,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -5835,7 +5823,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an object containing objects with inventory_id, film_id, store_id and last_update\", function () {",
@@ -5892,7 +5880,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -5967,7 +5955,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -6067,20 +6055,20 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"let countryName = generateRandomString(50)",
+									"pm.globals.set(\"customer_countryName\", countryName);",
+									"",
 									"function generateRandomString(length) {",
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
-									"    return result;",
-									"}",
 									"",
-									"let countryName = generateRandomString(50)",
-									"pm.globals.set(\"customer_countryName\", countryName);"
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -6090,7 +6078,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -6145,20 +6133,20 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"let cityName = generateRandomString(50)",
+									"pm.globals.set(\"customer_cityName\", cityName);",
+									"",
 									"function generateRandomString(length) {",
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
-									"    return result;",
-									"}",
 									"",
-									"let cityName = generateRandomString(50)",
-									"pm.globals.set(\"customer_cityName\", cityName);"
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -6168,7 +6156,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -6223,7 +6211,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -6254,15 +6242,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"function generateRandomString(length) {",
-									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    let result = '';",
-									"    for (let i = 0; i < length; i++) {",
-									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
-									"    }",
-									"    return result;",
-									"}",
-									"",
 									"const addressObject = generateRandomString(50);",
 									"const addressObject2 = generateRandomString(50);",
 									"const addressDistrictObject = generateRandomString(20);",
@@ -6273,7 +6252,15 @@
 									"pm.globals.set(\"customer_addressDistrictObject\", JSON.stringify(addressDistrictObject));",
 									"pm.globals.set(\"customer_addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
 									"pm.globals.set(\"customer_addressPhoneObject\", JSON.stringify(addressPhoneObject));",
-									""
+									"",
+									"function generateRandomString(length) {",
+									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    let result = '';",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+									"    }",
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -6321,7 +6308,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -6381,18 +6368,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"function generateRandomString(length) {",
-									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    const charactersLength = characters.length;",
-									"    let result = '';",
-									"",
-									"    for (let i = 0; i < length; i++) {",
-									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
-									"    }",
-									"",
-									"    return result;",
-									"}",
-									"",
 									"customer_storeId = pm.globals.get(\"customer_storeId\");",
 									"let customerFirstName = generateRandomString(45);",
 									"let customerLastName = generateRandomString(45);",
@@ -6411,7 +6386,19 @@
 									"    active: customerActive",
 									"};",
 									"",
-									"pm.globals.set(\"customerObject\", JSON.stringify(customerObject));"
+									"pm.globals.set(\"customerObject\", JSON.stringify(customerObject));",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"",
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -6421,7 +6408,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -6493,7 +6480,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -6560,7 +6547,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Response is an object containing objects with inventory_id, film_id, store_id and last_update\", function () {",
@@ -6622,7 +6609,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -6699,7 +6686,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -6806,20 +6793,20 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"let countryName = generateRandomString(50)",
+									"pm.globals.set(\"staff_countryName\", countryName);",
+									"",
 									"function generateRandomString(length) {",
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
-									"    return result;",
-									"}",
 									"",
-									"let countryName = generateRandomString(50)",
-									"pm.globals.set(\"staff_countryName\", countryName);"
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -6829,7 +6816,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -6883,20 +6870,20 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"let cityName = generateRandomString(50)",
+									"pm.globals.set(\"staff_cityName\", cityName);",
+									"",
 									"function generateRandomString(length) {",
 									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
 									"    const charactersLength = characters.length;",
 									"    let result = '';",
-									"    ",
+									"",
 									"    for (let i = 0; i < length; i++) {",
 									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
 									"    }",
-									"    ",
-									"    return result;",
-									"}",
 									"",
-									"let cityName = generateRandomString(50)",
-									"pm.globals.set(\"staff_cityName\", cityName);"
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -6906,7 +6893,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -6960,7 +6947,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -6991,15 +6978,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"function generateRandomString(length) {",
-									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    let result = '';",
-									"    for (let i = 0; i < length; i++) {",
-									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
-									"    }",
-									"    return result;",
-									"}",
-									"",
 									"const addressObject = generateRandomString(50);",
 									"const addressObject2 = generateRandomString(50);",
 									"const addressDistrictObject = generateRandomString(20);",
@@ -7010,7 +6988,15 @@
 									"pm.globals.set(\"staff_addressDistrictObject\", JSON.stringify(addressDistrictObject));",
 									"pm.globals.set(\"staff_addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
 									"pm.globals.set(\"staff_addressPhoneObject\", JSON.stringify(addressPhoneObject));",
-									""
+									"",
+									"function generateRandomString(length) {",
+									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    let result = '';",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+									"    }",
+									"    return result;",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -7058,7 +7044,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -7077,9 +7063,6 @@
 									"    pm.expect(jsonData.data).to.have.property(\"manager_staff_id\").that.is.a(\"number\");",
 									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
-									"",
-									"    let dateRegex = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$/;",
-									"    pm.expect(jsonData.data.last_update).to.match(dateRegex);",
 									"",
 									"    pm.globals.set(\"staff_storeId\", pm.response.json().data.store_id);",
 									"});",
@@ -7121,18 +7104,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"function generateRandomString(length) {",
-									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    const charactersLength = characters.length;",
-									"    let result = '';",
-									"",
-									"    for (let i = 0; i < length; i++) {",
-									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
-									"    }",
-									"",
-									"    return result;",
-									"}",
-									"",
 									"let staffFirstName = generateRandomString(45);",
 									"let staffLastName = generateRandomString(45);",
 									"staff_addressId = pm.globals.get(\"staff_addressId\");",
@@ -7154,7 +7125,54 @@
 									"    password: staffPassword,",
 									"};",
 									"",
-									"pm.globals.set(\"staffObject\", JSON.stringify(staffObject));"
+									"pm.globals.set(\"staffObject\", JSON.stringify(staffObject));",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"",
+									"    return result;",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains 'data' key\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"staff_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"first_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"email\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"store_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"active\").that.is.a(\"boolean\");",
+									"    pm.expect(jsonData.data).to.have.property(\"username\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"password\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"picture\").that.is.a(\"string\");",
+									"",
+									"    pm.globals.set(\"staffId\", pm.response.json().data.staff_id);",
+									"});",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -7202,7 +7220,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -7248,6 +7266,248 @@
 							],
 							"path": [
 								"staffs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /staff/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"staff_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"first_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"email\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"store_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"active\").that.is.a(\"boolean\");",
+									"    pm.expect(jsonData.data).to.have.property(\"username\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"password\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"picture\").that.is.a(\"string\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/staff/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"staff",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{staffId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /staff",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"",
+									"    return result;",
+									"}",
+									"",
+									"let staffFirstName = generateRandomString(45);",
+									"let staffLastName = generateRandomString(45);",
+									"staff_addressId = pm.globals.get(\"staff_addressId\");",
+									"let staffEmail = `staff${Math.floor(Math.random() * 1000)}@example.com`;",
+									"staff_storeId = pm.globals.get(\"staff_storeId\");",
+									"let staffActive = true;",
+									"let staffUsername = `username` + generateRandomString(8);",
+									"let staffPassword = `password${Math.floor(Math.random() * 1000)}1!*Aa`;",
+									"",
+									"",
+									"let staffObject = {",
+									"    first_name: staffFirstName,",
+									"    last_name: staffLastName,",
+									"    address_id: staff_addressId,",
+									"    email: staffEmail,",
+									"    store_id: staff_storeId,",
+									"    active: staffActive,",
+									"    username: staffUsername,",
+									"    password: staffPassword,",
+									"};",
+									"",
+									"pm.globals.set(\"staffObject\", JSON.stringify(staffObject));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains 'data' key\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"staff_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"first_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"email\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"store_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"active\").that.is.a(\"boolean\");",
+									"    pm.expect(jsonData.data).to.have.property(\"username\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"password\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"picture\").that.is.a(\"string\");",
+									"",
+									"    pm.globals.set(\"staffId\", pm.response.json().data.staff_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{staffObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/staff/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"staff",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{staffId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /staff/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    var jsonData = pm.response.json().deleted;",
+									"    pm.expect(jsonData).to.be.an('object').that.is.not.empty;",
+									"",
+									"    pm.expect(jsonData).to.have.property(\"staff_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData).to.have.property(\"first_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData).to.have.property(\"last_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData).to.have.property(\"email\").that.is.a(\"string\");",
+									"    pm.expect(jsonData).to.have.property(\"store_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData).to.have.property(\"active\").that.is.a(\"boolean\");",
+									"    pm.expect(jsonData).to.have.property(\"username\").that.is.a(\"string\");",
+									"    pm.expect(jsonData).to.have.property(\"password\").that.is.a(\"string\");",
+									"    pm.expect(jsonData).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.expect(jsonData).to.have.property(\"picture\").that.is.a(\"string\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/staff/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"staff",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{staffId}}"
+								}
 							]
 						}
 					},
@@ -7322,6 +7582,9 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"userObject = generateUser()",
+									"pm.globals.set(\"userObject\", JSON.stringify(userObject));",
+									"",
 									"function generateUser() {",
 									"  return {",
 									"    user_id: null,",
@@ -7330,11 +7593,7 @@
 									"    last_update: new Date().toISOString(),",
 									"    deleted_at: null",
 									"  };",
-									"}",
-									"",
-									"userObject = generateUser()",
-									"pm.globals.set(\"userObject\", JSON.stringify(userObject));",
-									""
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -7344,7 +7603,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
 									"",
@@ -7411,7 +7670,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is correct\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
