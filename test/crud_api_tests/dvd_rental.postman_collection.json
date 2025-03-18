@@ -7107,7 +7107,7 @@
 									"let staffFirstName = generateRandomString(45);",
 									"let staffLastName = generateRandomString(45);",
 									"staff_addressId = pm.globals.get(\"staff_addressId\");",
-									"let staffEmail = `staff${Math.floor(Math.random() * 1000)}@example.com`;",
+									"let staffEmail = `staff${generateRandomString(8)}@example.com`;",
 									"staff_storeId = pm.globals.get(\"staff_storeId\");",
 									"let staffActive = true;",
 									"let staffUsername = `username` + generateRandomString(8);",
@@ -7356,7 +7356,7 @@
 									"let staffFirstName = generateRandomString(45);",
 									"let staffLastName = generateRandomString(45);",
 									"staff_addressId = pm.globals.get(\"staff_addressId\");",
-									"let staffEmail = `staff${Math.floor(Math.random() * 1000)}@example.com`;",
+									"let staffEmail = `staff${generateRandomString(8)}@example.com`;",
 									"staff_storeId = pm.globals.get(\"staff_storeId\");",
 									"let staffActive = true;",
 									"let staffUsername = `username` + generateRandomString(8);",
@@ -7887,7 +7887,7 @@
 									"customer_storeId = pm.globals.get(\"rental_customer_storeId\");",
 									"let customerFirstName = generateRandomString(45);",
 									"let customerLastName = generateRandomString(45);",
-									"let customerEmail = `customer${Math.floor(Math.random() * 1000)}@example.com`;",
+									"let customerEmail = `customer${generateRandomString(8)}@example.com`;",
 									"customer_addressId = pm.globals.get(\"rental_customer_addressId\");",
 									"let customerActiveBool = true;",
 									"let customerActive = 1;",
@@ -10145,8 +10145,7 @@
 									"    pm.expect(data).to.have.property(\"rental_id\").that.is.a(\"number\");",
 									"    pm.expect(data).to.have.property(\"amount\").that.is.a(\"number\");",
 									"    pm.expect(data).to.have.property(\"payment_date\").that.is.a(\"string\");",
-									"});",
-									""
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -10272,6 +10271,8 @@
 									"    pm.expect(jsonData.data).to.have.property(\"email\").that.is.a(\"string\");",
 									"    pm.expect(jsonData.data).to.have.property(\"password\").that.is.a(\"string\");",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"",
+									"    pm.globals.set(\"userId\", pm.response.json().data.user_id);",
 									"});",
 									""
 								],
@@ -10369,6 +10370,20 @@
 				},
 				{
 					"name": "GET /users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -10394,6 +10409,230 @@
 								{
 									"key": "limit",
 									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /user/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api_url}}/user/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"user",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /user/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"userObject = generateUser()",
+									"pm.globals.set(\"userObject\", JSON.stringify(userObject));",
+									"",
+									"function generateUser() {",
+									"  return {",
+									"    user_id: null,",
+									"    email: `user${Math.floor(Math.random() * 1000)}@example.com`,",
+									"    password: `password${Math.floor(Math.random() * 1000)}1!*Aa`,",
+									"    last_update: new Date().toISOString(),",
+									"    deleted_at: null",
+									"  };",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response data is existing\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Fields types matches expected ones\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"user_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"email\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"password\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"",
+									"    pm.globals.set(\"userId\", pm.response.json().data.user_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{userObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/user/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"user",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /user/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"userObject = generateUser()",
+									"pm.globals.set(\"userObject\", JSON.stringify(userObject));",
+									"",
+									"function generateUser() {",
+									"  return {",
+									"    user_id: null,",
+									"    email: `user${Math.floor(Math.random() * 1000)}@example.com`,",
+									"    password: `password${Math.floor(Math.random() * 1000)}1!*Aa`,",
+									"    last_update: new Date().toISOString(),",
+									"    deleted_at: null",
+									"  };",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response data is existing\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"deleted\");",
+									"});",
+									"",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    var jsonData = pm.response.json().deleted;",
+									"    pm.expect(jsonData).to.be.an('object').that.is.not.empty;",
+									"",
+									"    let data = jsonData;",
+									"    pm.expect(data).to.have.property(\"user_id\").that.is.a(\"number\");",
+									"    pm.expect(data).to.have.property(\"email\").that.is.a(\"string\");",
+									"    pm.expect(data).to.have.property(\"password\").that.is.a(\"string\");",
+									"    pm.expect(data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{userObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/user/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"user",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId}}"
 								}
 							]
 						}
