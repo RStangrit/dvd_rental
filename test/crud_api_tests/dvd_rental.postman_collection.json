@@ -7517,7 +7517,1417 @@
 		},
 		{
 			"name": "rental",
-			"item": []
+			"item": [
+				{
+					"name": "GET /ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {",
+									"    pm.expect(pm.response.code).to.be.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains the message 'pong'\", function () {",
+									"    pm.expect(pm.response.json().message).to.equal('pong');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.clear();",
+									"pm.globals.set(\"api_url\", \"http://localhost:8080\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/ping",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /country",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let countryName = generateRandomString(50)",
+									"pm.globals.set(\"rental_customer_countryName\", countryName);",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"",
+									"    return result;",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Checking the data structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"country_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"country\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"rental_customer_countryId\", pm.response.json().data.country_id);",
+									"    pm.globals.set(\"rental_customer_country\", pm.response.json().data.country);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"country\": \"{{rental_customer_countryName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/country",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"country"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /city",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let cityName = generateRandomString(50)",
+									"pm.globals.set(\"rental_customer_cityName\", cityName);",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"",
+									"    return result;",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Checking the data structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"city_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"city\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"rental_customer_cityId\", pm.response.json().data.city_id);",
+									"    pm.globals.set(\"rental_customer_city\", pm.response.json().data.city);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"city\": \"{{rental_customer_cityName}}\",\n    \"country_id\": {{rental_customer_countryId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/city",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"city"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /address",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains 'data' key\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Validate 'data' structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"",
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"address2\").that.is.a(\"string\"); // Can be empty",
+									"    pm.expect(jsonData.data).to.have.property(\"district\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"city_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"postal_code\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"phone\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"rental_customer_addressId\", pm.response.json().data.address_id);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const addressObject = generateRandomString(50);",
+									"const addressObject2 = generateRandomString(50);",
+									"const addressDistrictObject = generateRandomString(20);",
+									"const addressPostalCodeObject = generateRandomString(10);",
+									"const addressPhoneObject = generateRandomString(10);",
+									"pm.globals.set(\"rental_customer_addressObject\", JSON.stringify(addressObject));",
+									"pm.globals.set(\"rental_customer_addressObject2\", JSON.stringify(addressObject2));",
+									"pm.globals.set(\"rental_customer_addressDistrictObject\", JSON.stringify(addressDistrictObject));",
+									"pm.globals.set(\"rental_customer_addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
+									"pm.globals.set(\"rental_customer_addressPhoneObject\", JSON.stringify(addressPhoneObject));",
+									"",
+									"function generateRandomString(length) {",
+									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    let result = '';",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+									"    }",
+									"    return result;",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": {{rental_customer_addressObject}},\n    \"address2\": {{rental_customer_addressObject2}},\n    \"district\": {{rental_customer_addressDistrictObject}},\n    \"city_id\": {{rental_customer_cityId}},\n    \"postal_code\": {{rental_customer_addressPostalCodeObject}},\n    \"phone\": {{rental_customer_addressPhoneObject}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/address",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /store",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains 'data' key\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    let jsonData = pm.response.json();",
+									"",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"    pm.expect(jsonData.data).to.be.an(\"object\");",
+									"",
+									"    pm.expect(jsonData.data).to.have.property(\"store_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"manager_staff_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"",
+									"    pm.globals.set(\"rental_customer_storeId\", pm.response.json().data.store_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address_id\": {{rental_customer_addressId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/store",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"store"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /customer",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"customer_storeId = pm.globals.get(\"rental_customer_storeId\");",
+									"let customerFirstName = generateRandomString(45);",
+									"let customerLastName = generateRandomString(45);",
+									"let customerEmail = `customer${Math.floor(Math.random() * 1000)}@example.com`;",
+									"customer_addressId = pm.globals.get(\"rental_customer_addressId\");",
+									"let customerActiveBool = true;",
+									"let customerActive = 1;",
+									"",
+									"let customerObject = {",
+									"    store_id: customer_storeId,",
+									"    first_name: customerFirstName,",
+									"    last_name: customerLastName,",
+									"    email: customerEmail,",
+									"    address_id: customer_addressId,",
+									"    activebool: customerActiveBool,",
+									"    active: customerActive",
+									"};",
+									"",
+									"pm.globals.set(\"rental_customerObject\", JSON.stringify(customerObject));",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"",
+									"    return result;",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains 'data' key\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"customer_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"store_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"first_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"email\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"activebool\").that.is.a(\"boolean\");",
+									"    pm.expect(jsonData.data).to.have.property(\"create_date\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"active\").that.is.a(\"number\");",
+									"",
+									"    pm.globals.set(\"rental_customerId\", pm.response.json().data.customer_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{rental_customerObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/customer",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"customer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /country",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let countryName = generateRandomString(50)",
+									"pm.globals.set(\"rental_staff_countryName\", countryName);",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"",
+									"    return result;",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Checking the data structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"country_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"country\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"rental_staff_countryId\", pm.response.json().data.country_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"country\": \"{{rental_staff_countryName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/country",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"country"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /city",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let cityName = generateRandomString(50)",
+									"pm.globals.set(\"rental_staff_cityName\", cityName);",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"",
+									"    return result;",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Checking the data structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"city_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"city\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"rental_staff_cityId\", pm.response.json().data.city_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"city\": \"{{rental_staff_cityName}}\",\n    \"country_id\": {{rental_staff_countryId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/city",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"city"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /address",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains 'data' key\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Validate 'data' structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"",
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"address2\").that.is.a(\"string\"); // Can be empty",
+									"    pm.expect(jsonData.data).to.have.property(\"district\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"city_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"postal_code\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"phone\").that.is.a(\"string\").and.not.empty;",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.globals.set(\"rental_staff_addressId\", pm.response.json().data.address_id);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const addressObject = generateRandomString(50);",
+									"const addressObject2 = generateRandomString(50);",
+									"const addressDistrictObject = generateRandomString(20);",
+									"const addressPostalCodeObject = generateRandomString(10);",
+									"const addressPhoneObject = generateRandomString(10);",
+									"pm.globals.set(\"rental_staff_addressObject\", JSON.stringify(addressObject));",
+									"pm.globals.set(\"rental_staff_addressObject2\", JSON.stringify(addressObject2));",
+									"pm.globals.set(\"rental_staff_addressDistrictObject\", JSON.stringify(addressDistrictObject));",
+									"pm.globals.set(\"rental_staff_addressPostalCodeObject\", JSON.stringify(addressPostalCodeObject));",
+									"pm.globals.set(\"rental_staff_addressPhoneObject\", JSON.stringify(addressPhoneObject));",
+									"",
+									"function generateRandomString(length) {",
+									"    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    let result = '';",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+									"    }",
+									"    return result;",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": {{rental_staff_addressObject}},\n    \"address2\": {{rental_staff_addressObject2}},\n    \"district\": {{rental_staff_addressDistrictObject}},\n    \"city_id\": {{rental_staff_cityId}},\n    \"postal_code\": {{rental_staff_addressPostalCodeObject}},\n    \"phone\": {{rental_staff_addressPhoneObject}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/address",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /store",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains 'data' key\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    let jsonData = pm.response.json();",
+									"",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"    pm.expect(jsonData.data).to.be.an(\"object\");",
+									"",
+									"    pm.expect(jsonData.data).to.have.property(\"store_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"manager_staff_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"",
+									"    pm.globals.set(\"rental_staff_storeId\", pm.response.json().data.store_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address_id\": {{rental_staff_addressId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/store",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"store"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /staff",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let staffFirstName = generateRandomString(45);",
+									"let staffLastName = generateRandomString(45);",
+									"staff_addressId = pm.globals.get(\"rental_staff_addressId\");",
+									"let staffEmail = `staff${Math.floor(Math.random() * 1000)}@example.com`;",
+									"staff_storeId = pm.globals.get(\"rental_staff_storeId\");",
+									"let staffActive = true;",
+									"let staffUsername = `username` + generateRandomString(8);",
+									"let staffPassword = `password${Math.floor(Math.random() * 1000)}1!*Aa`;",
+									"",
+									"",
+									"let staffObject = {",
+									"    first_name: staffFirstName,",
+									"    last_name: staffLastName,",
+									"    address_id: staff_addressId,",
+									"    email: staffEmail,",
+									"    store_id: staff_storeId,",
+									"    active: staffActive,",
+									"    username: staffUsername,",
+									"    password: staffPassword,",
+									"};",
+									"",
+									"pm.globals.set(\"rental_staffObject\", JSON.stringify(staffObject));",
+									"",
+									"function generateRandomString(length) {",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    const charactersLength = characters.length;",
+									"    let result = '';",
+									"",
+									"    for (let i = 0; i < length; i++) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"",
+									"    return result;",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains 'data' key\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"});",
+									"",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"staff_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"first_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_name\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"email\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"store_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"active\").that.is.a(\"boolean\");",
+									"    pm.expect(jsonData.data).to.have.property(\"username\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"password\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"picture\").that.is.a(\"string\");",
+									"",
+									"    pm.globals.set(\"rental_staffId\", pm.response.json().data.staff_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{rental_staffObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/staff",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"staff"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /film",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"filmObject = generateRandomFilm()",
+									"pm.globals.set(\"rental_inventory_filmObject\", JSON.stringify(filmObject));",
+									"",
+									"function generateRandomFilm() {",
+									"    const ratings = [\"G\", \"PG\", \"PG-13\", \"R\", \"NC-17\"];",
+									"    const specialFeaturesList = [\"Trailers\", \"Deleted Scenes\", \"Behind the Scenes\", \"Commentaries\"];",
+									"",
+									"    return {",
+									"        title: `Title ${Math.floor(Math.random() * 1000)}`,",
+									"        description: `Description ${Math.random().toString(36).substring(7)}`,",
+									"        release_year: Math.floor(Math.random() * (2025 - 1900 + 1)) + 1901,",
+									"        language_id: Math.floor(Math.random() * 6) + 1,",
+									"        rental_duration: Math.floor(Math.random() * 30) + 1,",
+									"        rental_rate: parseFloat((Math.random() * (10 - 1) + 1).toFixed(2)),",
+									"        length: Math.floor(Math.random() * (240 - 60 + 1)) + 60,",
+									"        replacement_cost: parseFloat((Math.random() * (20 - 1) + 1).toFixed(2)),",
+									"        rating: ratings[Math.floor(Math.random() * ratings.length)],",
+									"        special_features: Array.from({ length: Math.floor(Math.random() * specialFeaturesList.length) + 1 }, () =>",
+									"            specialFeaturesList[Math.floor(Math.random() * specialFeaturesList.length)]",
+									"        ),",
+									"        fulltext: `Lorem ipsum ${Math.random().toString(36).substring(7)}`,",
+									"    };",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"var responseJSON = pm.response.json();",
+									"",
+									"pm.test(\"Response body structure is valid\", function () {",
+									"    pm.expect(responseJSON).to.be.an('object').that.has.property('data');",
+									"});",
+									"",
+									"pm.test(\"Film object structure is valid\", function () {",
+									"    pm.expect(responseJSON.data).has.property('film_id').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('title').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('description').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('release_year').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('language_id').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('rental_duration').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('rental_rate').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('length').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('replacement_cost').that.is.a('number');",
+									"    pm.expect(responseJSON.data).has.property('rating').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('last_update').that.is.a('string');",
+									"    pm.expect(responseJSON.data).has.property('special_features').that.is.an('array');",
+									"    pm.expect(responseJSON.data).has.property('fulltext').that.is.a('string');",
+									"    pm.globals.set(\"rental_inventory_filmId\", pm.response.json().data.film_id);",
+									"    pm.globals.set(\"rental_inventory_filmTitle\", pm.response.json().data.title);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{rental_inventory_filmObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/film",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"film"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /inventory",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"inventory_filmId = pm.globals.get(\"rental_inventory_filmId\");",
+									"inventory_storeId = pm.globals.get(\"rental_staff_storeId\");",
+									"",
+									"let inventoryObject = {",
+									"    film_id: inventory_filmId,",
+									"    store_id: inventory_storeId",
+									"};",
+									"",
+									"pm.globals.set(\"rental_inventoryObject\", JSON.stringify(inventoryObject));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response structure is correct\", function () {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"    ",
+									"    let data = jsonData.data;",
+									"    pm.expect(data).to.have.property(\"inventory_id\").that.is.a(\"number\");",
+									"    pm.expect(data).to.have.property(\"film_id\").that.is.a(\"number\");",
+									"    pm.expect(data).to.have.property(\"store_id\").that.is.a(\"number\");",
+									"    pm.expect(data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"",
+									"    let dateRegex = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d+Z$/;",
+									"    pm.expect(data.last_update).to.match(dateRegex);",
+									"",
+									"    pm.globals.set(\"rental_inventoryId\", pm.response.json().data.inventory_id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{rental_inventoryObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/inventory",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"inventory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /rental",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let rentalInventoryId = pm.globals.get(\"rental_inventoryId\");",
+									"let rentalCustomerId = pm.globals.get(\"rental_customerId\");",
+									"let rentalStaffId = pm.globals.get(\"rental_staffId\");",
+									"",
+									"let rentalDate = new Date().toISOString();",
+									"let returnDate = new Date();",
+									"returnDate.setDate(returnDate.getDate() + 7);",
+									"returnDate = returnDate.toISOString();",
+									"",
+									"let rentalObject = {",
+									"    rental_date: rentalDate,",
+									"    inventory_id: rentalInventoryId,",
+									"    customer_id: rentalCustomerId,",
+									"    return_date: returnDate,",
+									"    staff_id: rentalStaffId",
+									"};",
+									"",
+									"pm.globals.set(\"rentalObject\", JSON.stringify(rentalObject));",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response structure is correct\", function () {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"",
+									"    let data = jsonData.data;",
+									"    pm.expect(data).to.have.property(\"rental_id\").that.is.a(\"number\");",
+									"    pm.expect(data).to.have.property(\"rental_date\").that.is.a(\"string\");",
+									"    pm.expect(data).to.have.property(\"inventory_id\").that.is.a(\"number\");",
+									"    pm.expect(data).to.have.property(\"customer_id\").that.is.a(\"number\");",
+									"    pm.expect(data).to.have.property(\"return_date\").that.is.a(\"string\");",
+									"    pm.expect(data).to.have.property(\"staff_id\").that.is.a(\"number\");",
+									"    pm.expect(data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"",
+									"    pm.globals.set(\"rentalId\", pm.response.json().data.rental_id);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{rentalObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/rental",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"rental"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /rentals",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array containing objects with expected rental fields\", function () {",
+									"    var responseData = pm.response.json().data;",
+									"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
+									"",
+									"    responseData.forEach((rental) => {",
+									"        pm.expect(rental).to.have.property('rental_id').that.is.a('number');",
+									"        pm.expect(rental).to.have.property('rental_date').that.is.a('string');",
+									"        pm.expect(rental).to.have.property('inventory_id').that.is.a('number');",
+									"        pm.expect(rental).to.have.property('customer_id').that.is.a('number');",
+									"        pm.expect(rental).to.have.property('return_date').that.is.a('string');",
+									"        pm.expect(rental).to.have.property('staff_id').that.is.a('number');",
+									"        pm.expect(rental).to.have.property('last_update').that.is.a('string');",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"Response contains pagination fields\", function () {",
+									"    var responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('limit').that.is.a('number');",
+									"    pm.expect(responseJson).to.have.property('page').that.is.a('number');",
+									"    pm.expect(responseJson).to.have.property('total').that.is.a('number');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/rentals",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"rentals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /rental/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"rental_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"rental_date\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"inventory_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"customer_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"return_date\").that.is.a(\"string\");",
+									"    pm.expect(jsonData.data).to.have.property(\"staff_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/rental/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"rental",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{rentalId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /rental",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let rentalInventoryId = pm.globals.get(\"rental_inventoryId\");",
+									"let rentalCustomerId = pm.globals.get(\"rental_customerId\");",
+									"let rentalStaffId = pm.globals.get(\"rental_staffId\");",
+									"",
+									"let rentalDate = new Date().toISOString();",
+									"let returnDate = new Date();",
+									"returnDate.setDate(returnDate.getDate() + 7);",
+									"returnDate = returnDate.toISOString();",
+									"",
+									"let rentalObject = {",
+									"    rental_date: rentalDate,",
+									"    inventory_id: rentalInventoryId,",
+									"    customer_id: rentalCustomerId,",
+									"    return_date: returnDate,",
+									"    staff_id: rentalStaffId",
+									"};",
+									"",
+									"pm.globals.set(\"rentalObject\", JSON.stringify(rentalObject));",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response structure is correct\", function () {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"",
+									"    let data = jsonData.data;",
+									"    pm.expect(data).to.have.property(\"rental_id\").that.is.a(\"number\");",
+									"    pm.expect(data).to.have.property(\"rental_date\").that.is.a(\"string\");",
+									"    pm.expect(data).to.have.property(\"inventory_id\").that.is.a(\"number\");",
+									"    pm.expect(data).to.have.property(\"customer_id\").that.is.a(\"number\");",
+									"    pm.expect(data).to.have.property(\"return_date\").that.is.a(\"string\");",
+									"    pm.expect(data).to.have.property(\"staff_id\").that.is.a(\"number\");",
+									"    pm.expect(data).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"",
+									"    pm.globals.set(\"rentalId\", pm.response.json().data.rental_id);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{rentalObject}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/rental/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"rental",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{rentalId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /rental/:id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response structure is valid\", function () {",
+									"    var jsonData = pm.response.json().deleted;",
+									"    pm.expect(jsonData).to.be.an('object').that.is.not.empty;",
+									"",
+									"    pm.expect(jsonData).to.have.property(\"rental_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData).to.have.property(\"rental_date\").that.is.a(\"string\");",
+									"    pm.expect(jsonData).to.have.property(\"inventory_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData).to.have.property(\"customer_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData).to.have.property(\"return_date\").that.is.a(\"string\");",
+									"    pm.expect(jsonData).to.have.property(\"staff_id\").that.is.a(\"number\");",
+									"    pm.expect(jsonData).to.have.property(\"last_update\").that.is.a(\"string\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/rental/:id",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"rental",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{rentalId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "payment",
