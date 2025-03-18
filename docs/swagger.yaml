@@ -1,0 +1,194 @@
+basePath: /
+definitions:
+  language.ErrorResponse:
+    properties:
+      errors:
+        example:
+        - language name is required and must be less than or equal to 20 characters
+        items:
+          type: string
+        type: array
+    type: object
+  language.Language:
+    type: object
+  language.LanguageListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/language.Language'
+        type: array
+      limit:
+        example: 10
+        type: integer
+      page:
+        example: 1
+        type: integer
+      total:
+        example: 307
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: unpredictableanonymous639@gmail.com
+    name: Roman S.
+    url: https://www.linkedin.com/in/roman-s-bba6021a5/
+  description: This is an API for working with the public database **dvd_rental**.
+    \nSupports CRUD operations on movies, actors, rentals, etc. \n**Technologies:**  Go
+    (Gin) + PostgreSQL \n**Database:** dvd_rental \n**Main features:** - Get a list
+    of movies - Search for actors - Make a rental
+  license:
+    name: GPL-3.0 license
+    url: https://www.gnu.org/licenses/gpl-3.0.html
+  termsOfService: http://example.com/terms/
+  title: Dvd Rental API
+  version: "1.0"
+paths:
+  /language:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new language
+      operationId: createLanguage
+      parameters:
+      - description: New language data
+        in: body
+        name: language
+        required: true
+        schema:
+          $ref: '#/definitions/language.Language'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created language
+          schema:
+            $ref: '#/definitions/language.Language'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/language.ErrorResponse'
+      summary: Create Language
+      tags:
+      - Language
+  /language/{id}:
+    delete:
+      description: Deletes a language by its ID
+      operationId: deleteLanguage
+      parameters:
+      - description: Language ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted language
+          schema:
+            $ref: '#/definitions/language.Language'
+        "404":
+          description: Language not found
+          schema:
+            $ref: '#/definitions/language.ErrorResponse'
+      summary: Delete Language
+      tags:
+      - Language
+    get:
+      description: Retrieves a language by its identifier
+      operationId: getLanguageByID
+      parameters:
+      - description: Language ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Found language
+          schema:
+            $ref: '#/definitions/language.Language'
+        "404":
+          description: Language not found
+          schema:
+            $ref: '#/definitions/language.ErrorResponse'
+      summary: Get Language by ID
+      tags:
+      - Language
+    put:
+      consumes:
+      - application/json
+      description: Updates a language by its ID
+      operationId: updateLanguage
+      parameters:
+      - description: Language ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data for update
+        in: body
+        name: language
+        required: true
+        schema:
+          $ref: '#/definitions/language.Language'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated language
+          schema:
+            $ref: '#/definitions/language.Language'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/language.ErrorResponse'
+      summary: Update Language
+      tags:
+      - Language
+  /languages:
+    get:
+      description: Retrieves a list of all languages with pagination
+      operationId: getLanguages
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of languages
+          schema:
+            $ref: '#/definitions/language.LanguageListResponse'
+      summary: Get All Languages
+      tags:
+      - Language
+    post:
+      consumes:
+      - application/json
+      description: Creates multiple languages
+      operationId: createLanguages
+      parameters:
+      - description: Array of languages
+        in: body
+        name: languages
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/language.Language'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created languages
+          schema:
+            $ref: '#/definitions/language.LanguageListResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/language.ErrorResponse'
+      summary: Create Multiple Languages
+      tags:
+      - Language
+swagger: "2.0"

@@ -53,9 +53,6 @@ func (service *RentalService) DeleteOneRental(rental *Rental) error {
 }
 
 func (service *RentalService) ValidateRental(rental *Rental) error {
-	if rental.RentalID <= 0 {
-		return errors.New("rental_id must be a positive integer")
-	}
 	if rental.RentalDate.IsZero() {
 		return errors.New("rental_date must not be empty")
 	}
@@ -76,9 +73,6 @@ func (service *RentalService) ValidateRental(rental *Rental) error {
 	}
 	if rental.StaffID <= 0 {
 		return errors.New("staff_id must be a positive integer")
-	}
-	if rental.LastUpdate.IsZero() {
-		return errors.New("last_update must not be empty")
 	}
 	return nil
 }

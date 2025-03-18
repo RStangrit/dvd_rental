@@ -16,6 +16,16 @@ func NewLanguageHandler(service *LanguageService) *LanguageHandler {
 	return &LanguageHandler{service: service}
 }
 
+// @Summary Create Language
+// @Description Creates a new language
+// @ID createLanguage
+// @Tags Language
+// @Accept json
+// @Produce json
+// @Param language body Language true "New language data"
+// @Success 200 {object} Language "Created language"
+// @Failure 400 {object} ErrorResponse "Validation error"
+// @Router /language [post]
 func (handler *LanguageHandler) PostLanguageHandler(context *gin.Context) {
 	var newLanguage Language
 
@@ -32,6 +42,16 @@ func (handler *LanguageHandler) PostLanguageHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": newLanguage})
 }
 
+// @Summary Create Multiple Languages
+// @Description Creates multiple languages
+// @ID createLanguages
+// @Tags Language
+// @Accept json
+// @Produce json
+// @Param languages body []Language true "Array of languages"
+// @Success 200 {object} LanguageListResponse "Created languages"
+// @Failure 400 {object} ErrorResponse "Validation error"
+// @Router /languages [post]
 func (handler *LanguageHandler) PostLanguagesHandler(context *gin.Context) {
 	var newLanguages []*Language
 
@@ -53,6 +73,13 @@ func (handler *LanguageHandler) PostLanguagesHandler(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"data": createdLanguages})
 }
 
+// @Summary Get All Languages
+// @Description Retrieves a list of all languages with pagination
+// @ID getLanguages
+// @Tags Language
+// @Produce json
+// @Success 200 {object} LanguageListResponse "List of languages"
+// @Router /languages [get]
 func (handler *LanguageHandler) GetLanguagesHandler(context *gin.Context) {
 	var pagination db.Pagination
 
@@ -77,6 +104,15 @@ func (handler *LanguageHandler) GetLanguagesHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": languages, "page": pagination.Page, "limit": pagination.Limit, "total": totalRecords})
 }
 
+// @Summary Get Language by ID
+// @Description Retrieves a language by its identifier
+// @ID getLanguageByID
+// @Tags Language
+// @Produce json
+// @Param id path int true "Language ID"
+// @Success 200 {object} Language "Found language"
+// @Failure 404 {object} ErrorResponse "Language not found"
+// @Router /language/{id} [get]
 func (handler *LanguageHandler) GetLanguageHandler(context *gin.Context) {
 	languageId, err := utils.GetIntParam(context, "id")
 	if err != nil {
@@ -93,6 +129,17 @@ func (handler *LanguageHandler) GetLanguageHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": language})
 }
 
+// @Summary Update Language
+// @Description Updates a language by its ID
+// @ID updateLanguage
+// @Tags Language
+// @Accept json
+// @Produce json
+// @Param id path int true "Language ID"
+// @Param language body Language true "Data for update"
+// @Success 200 {object} Language "Updated language"
+// @Failure 400 {object} ErrorResponse "Validation error"
+// @Router /language/{id} [put]
 func (handler *LanguageHandler) PutLanguageHandler(context *gin.Context) {
 	languageId, err := utils.GetIntParam(context, "id")
 	if err != nil {
@@ -116,6 +163,15 @@ func (handler *LanguageHandler) PutLanguageHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": updatedLanguage})
 }
 
+// @Summary Delete Language
+// @Description Deletes a language by its ID
+// @ID deleteLanguage
+// @Tags Language
+// @Produce json
+// @Param id path int true "Language ID"
+// @Success 200 {object} Language "Deleted language"
+// @Failure 404 {object} ErrorResponse "Language not found"
+// @Router /language/{id} [delete]
 func (handler *LanguageHandler) DeleteLanguageHandler(context *gin.Context) {
 	languageId, err := utils.GetIntParam(context, "id")
 	if err != nil {

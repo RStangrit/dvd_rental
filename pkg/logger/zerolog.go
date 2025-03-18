@@ -9,7 +9,6 @@ import (
 
 func initZerolog() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	// logzerolog.Logger = logzerolog.Output(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339})
 	logzerolog.Logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
 
 }

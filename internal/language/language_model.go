@@ -16,6 +16,17 @@ type Language struct {
 	DeletedAt  gorm.DeletedAt `json:"-"`
 }
 
+type LanguageListResponse struct {
+	Data  []Language `json:"data"`
+	Limit int        `json:"limit" example:"10"`
+	Page  int        `json:"page" example:"1"`
+	Total int        `json:"total" example:"307"`
+}
+
+type ErrorResponse struct {
+	Errors []string `json:"errors" example:"language name is required and must be less than or equal to 20 characters"`
+}
+
 func (Language) TableName() string {
 	return "language"
 }

@@ -1,0 +1,284 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is an API for working with the public database **dvd_rental**. \\nSupports CRUD operations on movies, actors, rentals, etc. \\n**Technologies:**  Go (Gin) + PostgreSQL \\n**Database:** dvd_rental \\n**Main features:** - Get a list of movies - Search for actors - Make a rental",
+        "title": "Dvd Rental API",
+        "termsOfService": "http://example.com/terms/",
+        "contact": {
+            "name": "Roman S.",
+            "url": "https://www.linkedin.com/in/roman-s-bba6021a5/",
+            "email": "unpredictableanonymous639@gmail.com"
+        },
+        "license": {
+            "name": "GPL-3.0 license",
+            "url": "https://www.gnu.org/licenses/gpl-3.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/language": {
+            "post": {
+                "description": "Creates a new language",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Language"
+                ],
+                "summary": "Create Language",
+                "operationId": "createLanguage",
+                "parameters": [
+                    {
+                        "description": "New language data",
+                        "name": "language",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/language.Language"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created language",
+                        "schema": {
+                            "$ref": "#/definitions/language.Language"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/language.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/language/{id}": {
+            "get": {
+                "description": "Retrieves a language by its identifier",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Language"
+                ],
+                "summary": "Get Language by ID",
+                "operationId": "getLanguageByID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Language ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Found language",
+                        "schema": {
+                            "$ref": "#/definitions/language.Language"
+                        }
+                    },
+                    "404": {
+                        "description": "Language not found",
+                        "schema": {
+                            "$ref": "#/definitions/language.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Updates a language by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Language"
+                ],
+                "summary": "Update Language",
+                "operationId": "updateLanguage",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Language ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Data for update",
+                        "name": "language",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/language.Language"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated language",
+                        "schema": {
+                            "$ref": "#/definitions/language.Language"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/language.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes a language by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Language"
+                ],
+                "summary": "Delete Language",
+                "operationId": "deleteLanguage",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Language ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted language",
+                        "schema": {
+                            "$ref": "#/definitions/language.Language"
+                        }
+                    },
+                    "404": {
+                        "description": "Language not found",
+                        "schema": {
+                            "$ref": "#/definitions/language.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/languages": {
+            "get": {
+                "description": "Retrieves a list of all languages with pagination",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Language"
+                ],
+                "summary": "Get All Languages",
+                "operationId": "getLanguages",
+                "responses": {
+                    "200": {
+                        "description": "List of languages",
+                        "schema": {
+                            "$ref": "#/definitions/language.LanguageListResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates multiple languages",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Language"
+                ],
+                "summary": "Create Multiple Languages",
+                "operationId": "createLanguages",
+                "parameters": [
+                    {
+                        "description": "Array of languages",
+                        "name": "languages",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/language.Language"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created languages",
+                        "schema": {
+                            "$ref": "#/definitions/language.LanguageListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/language.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "language.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "language name is required and must be less than or equal to 20 characters"
+                    ]
+                }
+            }
+        },
+        "language.Language": {
+            "type": "object"
+        },
+        "language.LanguageListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/language.Language"
+                    }
+                },
+                "limit": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 307
+                }
+            }
+        }
+    }
+}
