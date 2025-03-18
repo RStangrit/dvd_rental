@@ -26,8 +26,11 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func InitServer(db *gorm.DB) {
@@ -105,4 +108,5 @@ func registerRoutes(server *gin.Engine, db *gorm.DB) {
 	developmentRoutes.RegisterDevelopmentRoutes(server)
 	websocketRoutes, _ := websocket.NewWebSocketRoutes()
 	websocketRoutes.RegisterWSRoutes(server)
+	server.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
