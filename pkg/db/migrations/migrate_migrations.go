@@ -2,6 +2,7 @@ package migrations
 
 import (
 	"fmt"
+	"log"
 	"main/config"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -27,6 +28,6 @@ func launchMigrationsMigrate() error {
 		return fmt.Errorf("error applying migrations: %v", err)
 	}
 
-	fmt.Println("Migrations successfully applied")
+	log.Println("migrations successfully applied")
 	return nil
 }

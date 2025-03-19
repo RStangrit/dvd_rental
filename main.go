@@ -5,6 +5,7 @@ import (
 	_ "main/docs"
 	"main/pkg/db"
 	"main/pkg/db/migrations"
+	redisClient "main/pkg/redis"
 )
 
 // @title           Dvd Rental API
@@ -23,9 +24,8 @@ import (
 // @BasePath  /
 
 func main() {
-	// rdb := redisClient.InitRedis()
-	// db := initialize()
+	redisClient := redisClient.InitRedis()
 	db, _ := db.InitDb()
 	migrations.LaunchMigrations(db)
-	server.InitServer(db)
+	server.InitServer(db, redisClient)
 }

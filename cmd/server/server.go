@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"log"
 	"main/config"
 	"main/internal/actor"
@@ -29,13 +30,14 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func InitServer(db *gorm.DB) {
+func InitServer(db *gorm.DB, redisClient *redis.Client) {
 	params := config.LoadConfig()
-	server := setupServer()
+	server := setupServer(redisClient)
 
 	registerRoutes(server, db)
 
@@ -47,13 +49,43 @@ func InitServer(db *gorm.DB) {
 	}
 }
 
-func setupServer() *gin.Engine {
+func setupServer(redisClient *redis.Client) *gin.Engine {
 	server := gin.Default()
 
 	server.Use(middleware.TimeTrackerMiddleware(), middleware.CorsMiddleware(), middleware.LoggerMiddleware())
 
 	server.GET("/ping", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{"message": "pong"})
+	})
+
+	server.GET("/set/:key/:value", func(c *gin.Context) {
+		key := c.Param("key")
+		value := c.Param("value")
+		ctx := context.Background()
+
+		err := redisClient.Set(ctx, key, value, 0).Err()
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(200, gin.H{"message": "Value set", "key": key, "value": value})
+	})
+
+	server.GET("/get/:key", func(c *gin.Context) {
+		key := c.Param("key")
+		ctx := context.Background()
+
+		value, err := redisClient.Get(ctx, key).Result()
+		if err == redis.Nil {
+			c.JSON(404, gin.H{"error": "Key not found"})
+			return
+		} else if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(200, gin.H{"key": key, "value": value})
 	})
 
 	return server

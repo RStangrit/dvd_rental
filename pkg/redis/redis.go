@@ -7,20 +7,18 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-// var context = context.Background()
-
 func InitRedis() *redis.Client {
-	rdb := redis.NewClient(&redis.Options{
+	redisClient := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
 		DB:       0,
 	})
 
-	err := rdb.Ping(context.Background())
+	_, err := redisClient.Ping(context.Background()).Result()
 	if err != nil {
 		log.Fatalf("Error connecting to Redis: %v", err)
 	}
 
-	log.Println("Connected to Redis")
-	return rdb
+	log.Println("successfully connected to Redis")
+	return redisClient
 }
