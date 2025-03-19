@@ -7,7 +7,7 @@ import (
 	"main/pkg/db"
 )
 
-func CreateTables() error {
+func launchMigrationsGORM() error {
 	models.ReorderModels()
 
 	if len(models.ModelRegistry) == 0 {

@@ -10,7 +10,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func RunMigrations() error {
+func launchMigrationsMigrate() error {
 	params := config.LoadConfig()
 	migrationDatabaseURL := params.MigrationsDatabaseURL
 	migrationSourceURL := params.MigrationsSourceURL
