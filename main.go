@@ -28,6 +28,7 @@ import (
 // @BasePath  /
 
 func main() {
+	// rdb := redisClient.InitRedis()
 	db := initialize()
 	server.InitServer(db)
 }
