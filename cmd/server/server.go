@@ -22,6 +22,7 @@ import (
 	"main/internal/store"
 	user "main/internal/user"
 	"main/middleware"
+	redisClient "main/pkg/redis"
 	"main/pkg/websocket"
 	"net/http"
 	"os"
@@ -33,11 +34,11 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func InitServer(db *gorm.DB) {
+func InitServer(db *gorm.DB, redisInstance *redisClient.RedisClient) {
 	params := config.LoadConfig()
-	server := setupServer()
+	server := setupServer(redisInstance)
 
-	registerRoutes(server, db)
+	registerRoutes(server, db, redisInstance)
 
 	port := getPort(params.Port)
 	log.Printf("Server is running on port %s", port)
@@ -47,7 +48,7 @@ func InitServer(db *gorm.DB) {
 	}
 }
 
-func setupServer() *gin.Engine {
+func setupServer(redisClient *redisClient.RedisClient) *gin.Engine {
 	server := gin.Default()
 
 	server.Use(middleware.TimeTrackerMiddleware(), middleware.CorsMiddleware(), middleware.LoggerMiddleware())
@@ -69,10 +70,10 @@ func getPort(configPort string) string {
 	return "8080"
 }
 
-func registerRoutes(server *gin.Engine, db *gorm.DB) {
+func registerRoutes(server *gin.Engine, db *gorm.DB, redisClient *redisClient.RedisClient) {
 	addressRoutes := address.NewAddressRoutes(db)
 	addressRoutes.RegisterAddressRoutes(server)
-	actorRoutes := actor.NewActorRoutes(db)
+	actorRoutes := actor.NewActorRoutes(db, redisClient)
 	actorRoutes.RegisterActorRoutes(server)
 	categoryRoutes := category.NewCategoryRoutes(db)
 	categoryRoutes.RegisterCategoryRoutes(server)

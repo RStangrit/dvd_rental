@@ -10,3 +10,5 @@ migrate create -ext sql -dir db/migrations create_users_table
 pg_dump -U postgres -h localhost -p 5432 -d dvd_rental -t actor --no-owner --no-comments --schema-only
 
 http://localhost:8080/docs/index.html //swagger
+
+swag init // to update documentation

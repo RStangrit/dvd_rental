@@ -1,6 +1,8 @@
 package actor
 
 import (
+	redisClient "main/pkg/redis"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -9,9 +11,9 @@ type ActorRoutes struct {
 	handler *ActorHandler
 }
 
-func NewActorRoutes(db *gorm.DB) *ActorRoutes {
+func NewActorRoutes(db *gorm.DB, redisClient *redisClient.RedisClient) *ActorRoutes {
 	repo := NewActorRepository(db)
-	service := NewActorService(repo)
+	service := NewActorService(repo, redisClient)
 	handler := NewActorHandler(service)
 
 	return &ActorRoutes{handler: handler}
