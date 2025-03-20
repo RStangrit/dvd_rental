@@ -10,6 +10,7 @@ import (
 )
 
 var secretKey = getSecretKey()
+var tokenBlacklist = make(map[string]struct{})
 
 func getSecretKey() []byte {
 	params := config.LoadConfig()
@@ -46,6 +47,11 @@ func VerifyToken(tokenString string) error {
 		return fmt.Errorf("invalid token")
 	}
 
+	isTokenBlacklisted := isTokenBlacklisted(token.Raw)
+	if isTokenBlacklisted {
+		return fmt.Errorf("request a new token")
+	}
+
 	return nil
 }
 
@@ -59,4 +65,13 @@ func GenerateHashFromPassword(password string) (string, error) {
 
 func CompareHashAndPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+func AddToBlacklist(token string) {
+	tokenBlacklist[token] = struct{}{}
+}
+
+func isTokenBlacklisted(token string) bool {
+	_, blacklisted := tokenBlacklist[token]
+	return blacklisted
 }

@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 	"fmt"
+	"main/pkg/auth"
 	"main/pkg/db"
 	"net/mail"
 	"regexp"
@@ -62,6 +63,38 @@ func (service *UserService) UpdateOneUser(user *User) error {
 
 func (service *UserService) DeleteOneUser(user *User) error {
 	return service.repo.DeleteOneUser(*user)
+}
+
+func (service *UserService) LoginUser(email, password string) (string, error) {
+	user, err := service.ReadOneUserByEmail(email)
+	if err != nil {
+		return "", err
+	}
+
+	if err := auth.CompareHashAndPassword(user.Password, password); err != nil {
+		return "", errors.New("invalid credentials")
+	}
+
+	token, err := auth.CreateToken(user.Email)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
+}
+
+func (service *UserService) LogoutUser(token string) error {
+	if token == "" {
+		return fmt.Errorf("missing token")
+	}
+
+	err := auth.VerifyToken(token)
+	if err != nil {
+		return err
+	}
+
+	auth.AddToBlacklist(token)
+	return nil
 }
 
 func (service *UserService) ValidateUser(user *User) error {
