@@ -14,6 +14,9 @@ type Config struct {
 	MigrationsSourceURL   string
 	MigrationsDatabaseURL string
 	SecretKey             string
+	RedisAddr             string
+	RedisPass             string
+	RedisDB               string
 }
 
 func LoadConfig() *Config {
@@ -29,6 +32,9 @@ func LoadConfig() *Config {
 		MigrationsSourceURL:   getEnv("MIGRATIONS_SOURCE_URL", "pkg/db/migrations/migration_files"),
 		MigrationsDatabaseURL: getEnv("MIGRATIONS_DATABASE_URL", "postgres://user:password@localhost:5432/dvd_rental_v2?sslmode=disable&TimeZone=Asia%2FAlmaty"),
 		SecretKey:             getEnv("SECRET_KEY", "null"),
+		RedisAddr:             getEnv("REDIS_ADDRESS", "localhost:6379"),
+		RedisPass:             getEnv("REDIS_PASS", ""),
+		RedisDB:               getEnv("REDIS_DB", "0"),
 	}
 }
 

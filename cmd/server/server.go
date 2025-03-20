@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"log"
 	"main/config"
 	"main/internal/actor"
@@ -23,6 +22,7 @@ import (
 	"main/internal/store"
 	user "main/internal/user"
 	"main/middleware"
+	redisClient "main/pkg/redis"
 	"main/pkg/websocket"
 	"net/http"
 	"os"
@@ -30,16 +30,15 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis/v9"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func InitServer(db *gorm.DB, redisClient *redis.Client) {
+func InitServer(db *gorm.DB, redisInstance *redisClient.RedisClient) {
 	params := config.LoadConfig()
-	server := setupServer(redisClient)
+	server := setupServer(redisInstance)
 
-	registerRoutes(server, db)
+	registerRoutes(server, db, redisInstance)
 
 	port := getPort(params.Port)
 	log.Printf("Server is running on port %s", port)
@@ -49,43 +48,13 @@ func InitServer(db *gorm.DB, redisClient *redis.Client) {
 	}
 }
 
-func setupServer(redisClient *redis.Client) *gin.Engine {
+func setupServer(redisClient *redisClient.RedisClient) *gin.Engine {
 	server := gin.Default()
 
 	server.Use(middleware.TimeTrackerMiddleware(), middleware.CorsMiddleware(), middleware.LoggerMiddleware())
 
 	server.GET("/ping", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{"message": "pong"})
-	})
-
-	server.GET("/set/:key/:value", func(c *gin.Context) {
-		key := c.Param("key")
-		value := c.Param("value")
-		ctx := context.Background()
-
-		err := redisClient.Set(ctx, key, value, 0).Err()
-		if err != nil {
-			c.JSON(500, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(200, gin.H{"message": "Value set", "key": key, "value": value})
-	})
-
-	server.GET("/get/:key", func(c *gin.Context) {
-		key := c.Param("key")
-		ctx := context.Background()
-
-		value, err := redisClient.Get(ctx, key).Result()
-		if err == redis.Nil {
-			c.JSON(404, gin.H{"error": "Key not found"})
-			return
-		} else if err != nil {
-			c.JSON(500, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(200, gin.H{"key": key, "value": value})
 	})
 
 	return server
@@ -101,10 +70,10 @@ func getPort(configPort string) string {
 	return "8080"
 }
 
-func registerRoutes(server *gin.Engine, db *gorm.DB) {
+func registerRoutes(server *gin.Engine, db *gorm.DB, redisClient *redisClient.RedisClient) {
 	addressRoutes := address.NewAddressRoutes(db)
 	addressRoutes.RegisterAddressRoutes(server)
-	actorRoutes := actor.NewActorRoutes(db)
+	actorRoutes := actor.NewActorRoutes(db, redisClient)
 	actorRoutes.RegisterActorRoutes(server)
 	categoryRoutes := category.NewCategoryRoutes(db)
 	categoryRoutes.RegisterCategoryRoutes(server)

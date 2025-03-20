@@ -24,8 +24,8 @@ import (
 // @BasePath  /
 
 func main() {
-	redisClient := redisClient.InitRedis()
-	db, _ := db.InitDb()
+	redisInstance := redisClient.InitRedis()
+	db := db.InitDb()
 	migrations.LaunchMigrations(db)
-	server.InitServer(db, redisClient)
+	server.InitServer(db, redisInstance)
 }
