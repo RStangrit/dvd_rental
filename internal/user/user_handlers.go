@@ -1,7 +1,6 @@
 package user
 
 import (
-	"main/pkg/auth"
 	"main/pkg/db"
 	"main/pkg/utils"
 	"net/http"
@@ -128,30 +127,29 @@ func (handler *UserHandler) DeleteUserHandler(context *gin.Context) {
 
 func (handler *UserHandler) LoginUserHandler(context *gin.Context) {
 	var inputUser User
-	var err error
 
-	if err = context.ShouldBindJSON(&inputUser); err != nil {
+	if err := context.ShouldBindJSON(&inputUser); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user, err := handler.service.ReadOneUserByEmail(inputUser.Email)
+	token, err := handler.service.LoginUser(inputUser.Email, inputUser.Password)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		context.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = auth.CompareHashAndPassword(user.Password, inputUser.Password)
+	context.JSON(http.StatusOK, gin.H{"data": "successfully authorized", "token": token})
+}
+
+func (handler *UserHandler) LogoutUserHandler(context *gin.Context) {
+	token := context.GetHeader("Authorization")
+
+	err := handler.service.LogoutUser(token)
 	if err != nil {
-		context.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		context.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	tokenString, err := auth.CreateToken(user.Email)
-	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	context.JSON(http.StatusOK, gin.H{"data": "successfully authorized", "token": tokenString})
+	context.JSON(http.StatusOK, gin.H{"message": "successfully logged out"})
 }

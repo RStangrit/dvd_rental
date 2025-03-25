@@ -26,4 +26,5 @@ func (route *UserRoutes) RegisterUserRoutes(server *gin.Engine) {
 	server.PUT("/user/:id", middleware.AuthMiddleware(), route.handler.PutUserHandler)
 	server.DELETE("/user/:id", middleware.AuthMiddleware(), route.handler.DeleteUserHandler)
 	server.POST("/login", route.handler.LoginUserHandler)
+	server.POST("/logout", route.handler.LogoutUserHandler)
 }

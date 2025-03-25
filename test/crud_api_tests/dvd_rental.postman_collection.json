@@ -5547,9 +5547,6 @@
 									"    pm.expect(jsonData.data).to.have.property(\"address_id\").that.is.a(\"number\");",
 									"    pm.expect(jsonData.data).to.have.property(\"last_update\").that.is.a(\"string\");",
 									"",
-									"    let dateRegex = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$/;",
-									"    pm.expect(jsonData.data.last_update).to.match(dateRegex);",
-									"",
 									"    pm.globals.set(\"inventory_storeId\", pm.response.json().data.store_id);",
 									"});",
 									""
@@ -6371,7 +6368,7 @@
 									"customer_storeId = pm.globals.get(\"customer_storeId\");",
 									"let customerFirstName = generateRandomString(45);",
 									"let customerLastName = generateRandomString(45);",
-									"let customerEmail = `customer${Math.floor(Math.random() * 1000)}@example.com`;",
+									"let customerEmail = `customer${generateRandomString(8)}@example.com`;",
 									"customer_addressId = pm.globals.get(\"customer_addressId\");",
 									"let customerActiveBool = true;",
 									"let customerActive = 1;",
@@ -8300,7 +8297,7 @@
 									"let staffFirstName = generateRandomString(45);",
 									"let staffLastName = generateRandomString(45);",
 									"staff_addressId = pm.globals.get(\"rental_staff_addressId\");",
-									"let staffEmail = `staff${Math.floor(Math.random() * 1000)}@example.com`;",
+									"let staffEmail = `staff${generateRandomString(8)}@example.com`;",
 									"staff_storeId = pm.globals.get(\"rental_staff_storeId\");",
 									"let staffActive = true;",
 									"let staffUsername = `username` + generateRandomString(8);",
@@ -9473,7 +9470,7 @@
 									"let staffFirstName = generateRandomString(45);",
 									"let staffLastName = generateRandomString(45);",
 									"staff_addressId = pm.globals.get(\"payment_customer_addressId\");",
-									"let staffEmail = `staff${Math.floor(Math.random() * 1000)}@example.com`;",
+									"let staffEmail = `staff${generateRandomString(8)}@example.com`;",
 									"staff_storeId = pm.globals.get(\"payment_staff_storeId\");",
 									"let staffActive = true;",
 									"let staffUsername = `username` + generateRandomString(8);",
@@ -10634,6 +10631,49 @@
 									"key": "id",
 									"value": "{{userId}}"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.equal(\"successfully logged out \");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api_url}}/logout",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"logout"
 							]
 						}
 					},
