@@ -28,11 +28,11 @@ func LoadConfig() *Config {
 	return &Config{
 		Port:                  getEnv("SERVER_PORT", "8080"),
 		GinMode:               getEnv("GIN_MODE", "debug"),
-		DSN:                   getEnv("DATABASE_URL", "localhost"),
+		DSN:                   getEnv("DATABASE_URL", "host.docker.internal"),
 		MigrationsSourceURL:   getEnv("MIGRATIONS_SOURCE_URL", "pkg/db/migrations/migration_files"),
-		MigrationsDatabaseURL: getEnv("MIGRATIONS_DATABASE_URL", "postgres://user:password@localhost:5432/dvd_rental_v2?sslmode=disable&TimeZone=Asia%2FAlmaty"),
+		MigrationsDatabaseURL: getEnv("MIGRATIONS_DATABASE_URL", "postgres://user:password@host.docker.internal:5432/dvd_rental_v2?sslmode=disable&TimeZone=Asia%2FAlmaty"),
 		SecretKey:             getEnv("SECRET_KEY", "null"),
-		RedisAddr:             getEnv("REDIS_ADDRESS", "localhost:6379"),
+		RedisAddr:             getEnv("REDIS_ADDRESS", "host.docker.internal:6379"),
 		RedisPass:             getEnv("REDIS_PASS", ""),
 		RedisDB:               getEnv("REDIS_DB", "0"),
 	}
