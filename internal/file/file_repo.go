@@ -4,6 +4,7 @@ import (
 	"os"
 )
 
+// Dependency Injection Principle violated here, needs to be rewritten to interfaces
 type FileRepository struct {
 }
 

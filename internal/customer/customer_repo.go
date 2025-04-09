@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Dependency Injection Principle violated here, needs to be rewritten to interfaces
 type CustomerRepository struct {
 	db *gorm.DB
 }

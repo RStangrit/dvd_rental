@@ -12,3 +12,7 @@ pg_dump -U postgres -h localhost -p 5432 -d dvd_rental -t actor --no-owner --no-
 http://localhost:8080/docs/index.html //swagger
 
 swag init // to update documentation
+
+//to launch api in docker container with connection to Redis on the host
+docker build .
+docker run --add-host=host.docker.internal:host-gateway -p 8080:8080 <image_id>
