@@ -13,6 +13,5 @@ http://localhost:8080/docs/index.html //swagger
 
 swag init // to update documentation
 
-//to launch api in docker container with connection to Redis on the host
-docker build .
-docker run --add-host=host.docker.internal:host-gateway -p 8080:8080 <image_id>
+//to launch containers
+docker-compose up -d --build
