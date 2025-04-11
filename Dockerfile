@@ -15,6 +15,7 @@ COPY --from=builder /usr/local/bin/app /usr/local/bin/app
 
 COPY /assets/fonts/nimbussanl_boldcond.ttf ./assets/fonts/nimbussanl_boldcond.ttf
 COPY .env .env
+COPY pkg/db/migrations/migration_files ./pkg/db/migrations/migration_files
 
 EXPOSE 8080
 
