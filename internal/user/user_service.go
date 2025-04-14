@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"main/pkg/auth"
 	"main/pkg/db"
+	emailclient "main/pkg/email_client"
 	"net/mail"
 	"regexp"
 )
@@ -21,6 +22,9 @@ func (service *UserService) CreateUser(newUser *User) error {
 	if err := service.ValidateUser(newUser); err != nil {
 		return err
 	}
+
+	emailclient.SendEmail("admin@dvdrental.com", newUser.Email, "Registration confirmation", "You have successfully completed registration")
+
 	return service.repo.InsertUser(newUser)
 }
 
