@@ -21,7 +21,7 @@ services:
       - pgdata:/var/lib/postgresql/data
   
   rabbitmq:
-    image: rabbitmq:latest
+    image: rabbitmq:management
     container_name: rabbit_mq
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
