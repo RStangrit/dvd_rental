@@ -20,8 +20,6 @@ type Notification struct {
 
 func connect() (*amqp.Connection, *amqp.Channel) {
 	params := config.LoadConfig()
-
-	// conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@rabbitmq:5672/", params.RABBITMQ_USER, params.RABBITMQ_PASSWORD))
 	conn, err := connectWithRetry(params)
 
 	failOnError(err, "Failed to connect to RabbitMQ")
@@ -105,8 +103,7 @@ func SendEmailNotification(sender, receiver, subject, body string) {
 
 func failOnError(err error, msg string) {
 	if err != nil {
-		// log.Fatalf("%s: %s", msg, err)
-		fmt.Println("%s: %s", msg, err)
+		fmt.Printf("%s: %s", msg, err)
 	}
 }
 
