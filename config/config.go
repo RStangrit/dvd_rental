@@ -17,6 +17,8 @@ type Config struct {
 	RedisAddr             string
 	RedisPass             string
 	RedisDB               string
+	RABBITMQ_USER         string
+	RABBITMQ_PASSWORD     string
 }
 
 func LoadConfig() *Config {
@@ -35,6 +37,8 @@ func LoadConfig() *Config {
 		RedisAddr:             getEnv("REDIS_ADDRESS", "host.docker.internal:6379"),
 		RedisPass:             getEnv("REDIS_PASS", ""),
 		RedisDB:               getEnv("REDIS_DB", "0"),
+		RABBITMQ_USER:         getEnv("RABBITMQ_USER", "guest"),
+		RABBITMQ_PASSWORD:     getEnv("RABBITMQ_PASSWORD", "guest"),
 	}
 }
 

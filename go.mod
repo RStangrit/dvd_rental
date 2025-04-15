@@ -15,6 +15,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
 	github.com/olahol/melody v1.2.1
+	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/redis/go-redis/v9 v9.7.1
 	github.com/rs/zerolog v1.33.0
 	github.com/swaggo/files v1.0.1

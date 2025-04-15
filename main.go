@@ -5,6 +5,7 @@ import (
 	_ "main/docs"
 	"main/pkg/db"
 	"main/pkg/db/migrations"
+	"main/pkg/rabbitmq"
 	redisClient "main/pkg/redis"
 )
 
@@ -24,6 +25,7 @@ import (
 // @BasePath  /
 
 func main() {
+	go rabbitmq.StartConsumer()
 	redisInstance := redisClient.InitRedis()
 	db := db.InitDb()
 	migrations.LaunchMigrations(db)
