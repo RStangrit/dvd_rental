@@ -1,4 +1,4 @@
-FROM golang:1.24
+FROM golang:1.24 AS builder
 
 WORKDIR /usr/src/app
 
@@ -8,6 +8,16 @@ RUN go mod download
 COPY . .
 
 RUN go build -v -o /usr/local/bin/app .
+
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y telnet && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /usr/local/bin/app /usr/local/bin/app
+
+COPY /assets/fonts/nimbussanl_boldcond.ttf ./assets/fonts/nimbussanl_boldcond.ttf
+COPY .env .env
+COPY pkg/db/migrations/migration_files ./pkg/db/migrations/migration_files
 
 EXPOSE 8080
 

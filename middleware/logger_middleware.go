@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"log"
 	"main/pkg/logger"
@@ -15,12 +16,12 @@ func LoggerMiddleware() gin.HandlerFunc {
 
 	return func(context *gin.Context) {
 		body, _ := context.GetRawData()
-		log.Printf("Method: %s\nPath: %s\nHeaders: %v\nBody: %s\n\n",
+		fmt.Printf("Method: %s\nPath: %s\nHeaders: %v\nBody: %s\n\n",
 			context.Request.Method, context.Request.URL.Path, context.Request.Header, string(body))
 		file, err := os.OpenFile("requestsLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println(err)
 		}
 
 		log.SetOutput(file)

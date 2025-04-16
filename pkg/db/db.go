@@ -29,16 +29,10 @@ func InitDb() *gorm.DB {
 			Colorful:                  true,          // Disable color
 		},
 	)
+	maxRetries := 5
+	retryInterval := 2 * time.Second
 
-	var err error
-
-	GORM, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger: newLogger,
-	})
-	if err != nil {
-		panic(err)
-	}
-	log.Println("connection to the database has been successfully established")
+	connectWithRetry(dsn, newLogger, maxRetries, retryInterval)
 
 	pool, err := GORM.DB()
 	if err != nil {
@@ -49,7 +43,7 @@ func InitDb() *gorm.DB {
 	pool.SetMaxIdleConns(2)
 	pool.SetConnMaxLifetime(30 * time.Minute)
 	pool.SetConnMaxIdleTime(10 * time.Minute)
-	log.Println("database has been successfully configured")
+	fmt.Println("database has been successfully configured")
 
 	trackQueryTime()
 
@@ -70,6 +64,22 @@ func trackQueryTime() {
 		duration := time.Since(startTime.(time.Time))
 		fmt.Printf("Query took: %v\n", duration)
 	})
+}
+
+func connectWithRetry(dsn string, newLogger logger.Interface, maxRetries int, retryInterval time.Duration) {
+	var err error
+	for i := 0; i < maxRetries; i++ {
+		GORM, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
+			Logger: newLogger,
+		})
+		if err == nil {
+			fmt.Println("Connection to the database has been successfully established")
+			return
+		}
+		fmt.Printf("Failed to connect to the database (attempt %d/%d): %v\n", i+1, maxRetries, err)
+		time.Sleep(retryInterval)
+	}
+	panic(fmt.Sprintf("Could not connect to the database after %d attempts: %v", maxRetries, err))
 }
 
 type Pagination struct {

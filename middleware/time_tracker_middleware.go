@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"log"
+	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -14,6 +14,6 @@ func TimeTrackerMiddleware() gin.HandlerFunc {
 		context.Next()
 
 		duration := time.Since(start)
-		log.Printf("Request %s %s took %v", context.Request.Method, context.Request.URL.Path, duration)
+		fmt.Printf("Request %s %s took %v", context.Request.Method, context.Request.URL.Path, duration)
 	}
 }

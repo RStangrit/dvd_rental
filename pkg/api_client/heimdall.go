@@ -1,8 +1,8 @@
 package apiclient
 
 import (
+	"fmt"
 	"io"
-	"log"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +27,7 @@ func Heimdall(context *gin.Context) {
 
 	res, err := client.Get("https://jsonplaceholder.typicode.com/posts/1", nil)
 	if err != nil {
-		log.Printf("Error when requesting external API: %v", err)
+		fmt.Printf("Error when requesting external API: %v", err)
 		context.JSON(500, gin.H{"error": "Unable to fetch data from external API"})
 		return
 	}

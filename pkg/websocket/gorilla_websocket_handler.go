@@ -1,7 +1,7 @@
 package websocket
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"sync"
 
@@ -35,7 +35,7 @@ func (handler *GorillaWebSocketHandler) Handle() gin.HandlerFunc {
 
 		conn, err := handler.upgrader.Upgrade(context.Writer, context.Request, nil)
 		if err != nil {
-			log.Println("Upgrade error:", err)
+			fmt.Println("Upgrade error:", err)
 			return
 		}
 		defer conn.Close()
@@ -44,12 +44,12 @@ func (handler *GorillaWebSocketHandler) Handle() gin.HandlerFunc {
 		handler.clients[conn] = true
 		handler.mu.Unlock()
 
-		log.Println("Connection has been established")
+		fmt.Println("Connection has been established")
 
 		for {
 			_, msg, err := conn.ReadMessage()
 			if err != nil {
-				log.Println("Reading error:", err)
+				fmt.Println("Reading error:", err)
 				handler.mu.Lock()
 				delete(handler.clients, conn)
 				handler.mu.Unlock()

@@ -20,4 +20,5 @@ func NewDevelopmentRoutes(db *gorm.DB) *DevelopmentRoutes {
 func (route *DevelopmentRoutes) RegisterDevelopmentRoutes(server *gin.Engine) {
 	server.GET("/test", route.handler.GetTestHandler)
 	server.POST("/development/transaction", route.handler.GetTestHandler)
+	server.GET("/reindex-films", route.handler.GetReindexFilmsHandler)
 }

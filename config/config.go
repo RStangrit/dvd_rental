@@ -1,7 +1,7 @@
 package config
 
 import (
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -17,12 +17,15 @@ type Config struct {
 	RedisAddr             string
 	RedisPass             string
 	RedisDB               string
+	RABBITMQ_USER         string
+	RABBITMQ_PASSWORD     string
+	ELASTICSEARCH_HOST    string
 }
 
 func LoadConfig() *Config {
 	err := godotenv.Load()
 	if err != nil {
-		log.Println("Warning: No .env file found")
+		fmt.Println("Warning: No .env file found")
 	}
 
 	return &Config{
@@ -35,6 +38,9 @@ func LoadConfig() *Config {
 		RedisAddr:             getEnv("REDIS_ADDRESS", "host.docker.internal:6379"),
 		RedisPass:             getEnv("REDIS_PASS", ""),
 		RedisDB:               getEnv("REDIS_DB", "0"),
+		RABBITMQ_USER:         getEnv("RABBITMQ_USER", "guest"),
+		RABBITMQ_PASSWORD:     getEnv("RABBITMQ_PASSWORD", "guest"),
+		ELASTICSEARCH_HOST:    getEnv("ELASTICSEARCH_HOST", "http://elasticsearch:9200"),
 	}
 }
 
