@@ -1,7 +1,7 @@
 package websocket
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/centrifugal/centrifuge"
 	"github.com/gin-gonic/gin"
@@ -19,7 +19,7 @@ func NewCentrifugeWebSocketHandler() (*CentrifugeWebSocketHandler, error) {
 
 	go func() {
 		if err := node.Run(); err != nil {
-			log.Fatal("Centrifuge error:", err)
+			fmt.Println("Centrifuge error:", err)
 		}
 	}()
 
@@ -29,7 +29,7 @@ func NewCentrifugeWebSocketHandler() (*CentrifugeWebSocketHandler, error) {
 func (h *CentrifugeWebSocketHandler) Handle() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		if h.node == nil {
-			log.Println("Centrifuge server is not running")
+			fmt.Println("Centrifuge server is not running")
 			context.JSON(500, gin.H{"error": "Centrifuge server is not running"})
 			return
 		}
@@ -42,6 +42,6 @@ func (h *CentrifugeWebSocketHandler) Handle() gin.HandlerFunc {
 func (h *CentrifugeWebSocketHandler) Shutdown(context *gin.Context) {
 	if h.node != nil {
 		h.node.Shutdown(context)
-		log.Println("Centrifuge server stopped")
+		fmt.Println("Centrifuge server stopped")
 	}
 }

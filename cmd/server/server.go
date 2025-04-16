@@ -1,7 +1,7 @@
 package server
 
 import (
-	"log"
+	"fmt"
 	"main/config"
 	"main/internal/actor"
 	"main/internal/address"
@@ -41,10 +41,10 @@ func InitServer(db *gorm.DB, redisInstance *redisClient.RedisClient) {
 	registerRoutes(server, db, redisInstance)
 
 	port := getPort(params.Port)
-	log.Printf("Server is running on port %s", port)
+	fmt.Printf("Server is running on port %s", port)
 
 	if err := server.Run(":" + port); err != nil {
-		log.Fatal("Failed to start server:", err)
+		fmt.Println("Failed to start server:", err)
 	}
 }
 

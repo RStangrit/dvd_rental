@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"log"
+	"fmt"
 	"main/pkg/logger"
 	"main/pkg/utils/seeds"
 
@@ -11,7 +11,7 @@ import (
 func LaunchMigrations(db *gorm.DB) {
 	logger.InfoLogger.Println("Initializing database...")
 
-	log.Println("running migrations...")
+	fmt.Println("running migrations...")
 	// if err := launchMigrationsGORM(); err != nil {
 	// 	logger.ErrorLogger.Printf("Failed to perform migrations: %v", err)
 	// }
@@ -19,7 +19,7 @@ func LaunchMigrations(db *gorm.DB) {
 		logger.ErrorLogger.Printf("failed to perform migrations: %v", err)
 	}
 
-	log.Println("seeding initial data...")
+	fmt.Println("seeding initial data...")
 	if err := seeds.SeedLanguageData(); err != nil {
 		logger.WarningLogger.Printf("failed to seed language data: %v", err)
 	}

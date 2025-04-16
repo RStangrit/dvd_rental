@@ -2,7 +2,6 @@ package migrations
 
 import (
 	"fmt"
-	"log"
 	"main/internal/models"
 	"main/pkg/db"
 )
@@ -15,7 +14,7 @@ func launchMigrationsGORM() error {
 	}
 
 	for _, model := range models.ModelRegistry {
-		log.Printf("Starting migration for table: %T\n", model)
+		fmt.Printf("Starting migration for table: %T\n", model)
 	}
 
 	return db.GORM.AutoMigrate(models.ModelRegistry...)

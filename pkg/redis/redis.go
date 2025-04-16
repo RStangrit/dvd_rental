@@ -2,7 +2,7 @@ package redisClient
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"main/config"
 	"time"
 
@@ -24,10 +24,10 @@ func InitRedis() *RedisClient {
 
 	_, err := client.Ping(context.Background()).Result()
 	if err != nil {
-		log.Fatalf("error connecting to Redis: %v", err)
+		fmt.Printf("error connecting to Redis: %v", err)
 	}
 
-	log.Println("successfully connected to Redis")
+	fmt.Println("successfully connected to Redis")
 
 	return &RedisClient{Client: client}
 }

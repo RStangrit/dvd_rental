@@ -3,7 +3,6 @@ package rabbitmq
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"main/config"
 	emailclient "main/pkg/email_client"
 	"time"
@@ -66,7 +65,7 @@ func PublishRegistrationNotification(sender, receiver, subject, body string) {
 	)
 	failOnError(err, "Failed to publish a message")
 
-	log.Printf(" [x] Sent notification for %s\n", receiver)
+	fmt.Printf(" [x] Sent notification for %s\n", receiver)
 }
 
 func StartConsumer() {
@@ -85,11 +84,11 @@ func StartConsumer() {
 	)
 	failOnError(err, "Failed to register consumer")
 
-	log.Println(" [*] Waiting for messages...")
+	fmt.Println(" [*] Waiting for messages...")
 	for d := range msgs {
 		var notif Notification
 		if err := json.Unmarshal(d.Body, &notif); err != nil {
-			log.Println("Invalid message:", err)
+			fmt.Println("Invalid message:", err)
 			continue
 		}
 		SendEmailNotification(notif.Sender, notif.Receiver, notif.Subject, notif.Body)
@@ -116,10 +115,10 @@ func connectWithRetry(params *config.Config) (*amqp.Connection, error) {
 	for i := 0; i < 10; i++ {
 		conn, err = amqp.Dial(rabbitmqURL)
 		if err == nil {
-			log.Println("Successfully connected to RabbitMQ.")
+			fmt.Println("Successfully connected to RabbitMQ.")
 			return conn, nil
 		}
-		log.Printf("RabbitMQ not ready (attempt %d/10), retrying in 3s...\n", i+1)
+		fmt.Printf("RabbitMQ not ready (attempt %d/10), retrying in 3s...\n", i+1)
 		time.Sleep(3 * time.Second)
 	}
 

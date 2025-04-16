@@ -2,7 +2,7 @@ package file
 
 import (
 	"errors"
-	"log"
+	"fmt"
 	"os"
 	"strings"
 )
@@ -26,7 +26,7 @@ func (service *FileService) IsFileExists(filepath string) (bool, error) {
 	} else if os.IsNotExist(err) {
 		return false, err
 	} else {
-		log.Fatal(err)
+		fmt.Println(err)
 		return false, err
 	}
 }
