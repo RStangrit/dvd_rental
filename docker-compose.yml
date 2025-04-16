@@ -71,6 +71,7 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: ${RABBITMQ_USER}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST}
     depends_on:
       - redis
       - rabbitmq

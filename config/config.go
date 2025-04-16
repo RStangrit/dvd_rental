@@ -19,6 +19,7 @@ type Config struct {
 	RedisDB               string
 	RABBITMQ_USER         string
 	RABBITMQ_PASSWORD     string
+	ELASTICSEARCH_HOST    string
 }
 
 func LoadConfig() *Config {
@@ -39,6 +40,7 @@ func LoadConfig() *Config {
 		RedisDB:               getEnv("REDIS_DB", "0"),
 		RABBITMQ_USER:         getEnv("RABBITMQ_USER", "guest"),
 		RABBITMQ_PASSWORD:     getEnv("RABBITMQ_PASSWORD", "guest"),
+		ELASTICSEARCH_HOST:    getEnv("ELASTICSEARCH_HOST", "http://elasticsearch:9200"),
 	}
 }
 
