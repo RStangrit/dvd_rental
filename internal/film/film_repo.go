@@ -1,7 +1,10 @@
 package film
 
 import (
+	"encoding/json"
+	"fmt"
 	"main/pkg/db"
+	"main/pkg/elasticsearch"
 
 	"gorm.io/gorm"
 )
@@ -23,8 +26,22 @@ func (repo *FilmRepository) SelectAllFilms(pagination db.Pagination, filters Fil
 	var films []Film
 	var totalRecords int64
 
+	serializedFilters, err := json.Marshal(filters)
+	if err != nil {
+		fmt.Printf("Error while serializing:: %v", err)
+	}
+
+	filmsFromES, totalFromES, err := elasticsearch.SearchFilms(pagination, serializedFilters)
+	if err == nil && len(filmsFromES) > 0 {
+		err := json.Unmarshal(filmsFromES, &films)
+		if err != nil {
+			fmt.Printf("Error while deserializing:: %v", err)
+		}
+		return films, totalFromES, nil
+	}
+
 	repo.db.Table("film").Where("deleted_at IS NULL").Count(&totalRecords)
-	err := repo.db.Table("film").
+	err = repo.db.Table("film").
 		Offset(pagination.GetOffset()).
 		Limit(pagination.GetLimit()).
 		Order("film_id asc").

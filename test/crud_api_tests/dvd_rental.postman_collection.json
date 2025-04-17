@@ -10649,7 +10649,7 @@
 									"",
 									"pm.test(\"Body is correct\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.equal(\"successfully logged out \");",
+									"    pm.expect(jsonData.message).to.equal(\"successfully logged out\");",
 									"});",
 									""
 								],
@@ -10790,6 +10790,23 @@
 									],
 									"path": [
 										"test"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /reindex-films",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/reindex-films",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"reindex-films"
 									]
 								}
 							},
