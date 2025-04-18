@@ -21,5 +21,11 @@ install docker.io
 install docker-compose
 run sudo usermod -aG docker $USER
 sudo apt install python3-setuptools
+
+// if installed:
+sudo service apache2 stop
+sudo apt-get purge apache2 apache2-utils apache2.2-bin
+sudo rm -rf /etc/apache2
+
 docker-compose up -d --build
 docker-compose down -v
