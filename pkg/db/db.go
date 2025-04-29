@@ -30,7 +30,7 @@ func InitDb() *gorm.DB {
 		},
 	)
 	maxRetries := 5
-	retryInterval := 2 * time.Second
+	retryInterval := 3 * time.Second
 
 	connectWithRetry(dsn, newLogger, maxRetries, retryInterval)
 

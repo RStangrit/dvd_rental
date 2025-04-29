@@ -1,21 +1,17 @@
 package development
 
 import (
-	"errors"
 	"fmt"
 	"main/internal/city"
 	"main/internal/country"
-	"main/internal/film"
+	"main/pkg/elasticsearch"
 
 	"gorm.io/gorm"
 )
 
 // Dependency Injection Principle violated here, needs to be rewritten to interfaces
 type DevelopmentRepository struct {
-	db      *gorm.DB
-	country *country.Country
-	city    *city.City
-	film    *film.Film
+	db *gorm.DB
 }
 
 func NewDevelopmentRepository(db *gorm.DB) *DevelopmentRepository {
@@ -38,15 +34,10 @@ func (repo *DevelopmentRepository) MakeTransaction(country *country.Country, cit
 	})
 }
 
-func (repo *DevelopmentRepository) SelectAllFilmsForIndexing(batchSize int) ([]film.Film, error) {
-	var allFilms []film.Film
+func (repo *DevelopmentRepository) SelectAllFilmsForIndexing(batchSize int) ([]elasticsearch.FilmDTO, error) {
+	var allFilms []elasticsearch.FilmDTO
 	var totalRecords int64
 	offset := 0
-
-	if repo.db == nil {
-		fmt.Println("repo.db is nil!")
-		return nil, errors.New("repo.db is nil")
-	}
 
 	err := repo.db.Table("film").Where("deleted_at IS NULL").Count(&totalRecords).Error
 	if err != nil {
@@ -55,7 +46,7 @@ func (repo *DevelopmentRepository) SelectAllFilmsForIndexing(batchSize int) ([]f
 	fmt.Println(totalRecords)
 
 	for offset < int(totalRecords) {
-		var foundFilms []film.Film
+		var foundFilms []elasticsearch.FilmDTO
 
 		err := repo.db.Table("film").
 			Offset(offset).

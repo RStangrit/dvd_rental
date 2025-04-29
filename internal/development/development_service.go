@@ -4,7 +4,6 @@ import (
 	"errors"
 	"main/internal/city"
 	"main/internal/country"
-	"main/internal/film"
 	"main/pkg/elasticsearch"
 	"math/rand"
 )
@@ -49,7 +48,7 @@ func (service *DevelopmentService) GenerateRandomString(stringLength int) string
 	return string(b)
 }
 
-func (service *DevelopmentService) ReadAllFilmsForIndexing() ([]film.Film, error) {
+func (service *DevelopmentService) ReadAllFilmsForIndexing() ([]elasticsearch.FilmDTO, error) {
 	batchSize := 20
 	films, err := service.repo.SelectAllFilmsForIndexing(batchSize)
 	if err != nil {
